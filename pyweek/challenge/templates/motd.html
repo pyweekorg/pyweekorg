@@ -14,7 +14,7 @@
   </p>
   <p>Congratulations to <a href="/{{ previous.number }}/entries/">everyone who entered</a>! </p>
  {% endif %}
- <p>The next challenge is <a href="/{{ challenge.number }}/">{{ challenge.title }}</a>.</p>
+ <p>The <b>next challenge</b> is <a href="/{{ challenge.number }}/">{{ challenge.title }}</a>.</p>
  <p>Registration will be open 30 days before it starts.</p>
 {% endif %}
 
@@ -49,7 +49,7 @@ Twitters</a>.</p>
  {% if challenge.torrent_url %}
   <p>Please use <a href="http://btfaq.com/">BitTorrent</a> to download all
   the games if you can - the site hosts will appreciate it. The torrent file is
-  <A href="{{ torrent_url }}">here</a>.</p>
+  <A href="{{ challenge.torrent_url }}">here</a>.</p>
  {% endif %}
 {% endif %}
 
