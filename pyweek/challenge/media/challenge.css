@@ -42,6 +42,7 @@ h1 {
 
 #menu {
     clear: both;
+    z-index: 10;
 }
 
 /* Page */
@@ -344,11 +345,11 @@ dl#entry-list dd {
 
 
 #cssdropdown {
-    z-index:10;
     font-size: 90%;
 }
 #cssdropdown, #cssdropdown ul {
     list-style: none; display: block;
+    z-index:10;
 }
 #cssdropdown, #cssdropdown * {
     padding: 0;
