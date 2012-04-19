@@ -1,8 +1,5 @@
 import os
 
-import sys
-sys.setdefaultencoding('utf-8')
-
 from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
@@ -844,8 +841,8 @@ class Poll(models.Model):
 
 
 class Option(models.Model):
-    poll = models.ForeignKey(Poll, 
-                             edit_inline=models.TABULAR, 
+    poll = models.ForeignKey(Poll,
+                             edit_inline=models.TABULAR,
                              num_in_admin=5,
                              num_extra_on_change=5)
     text = models.CharField(maxlength=100, core=True)
