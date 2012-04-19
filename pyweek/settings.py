@@ -4,9 +4,7 @@ DEBUG = False #or True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-    ('Richard Jones', 'richard@pyweek.org'),
-    ('Richard Jones', 'rjones@ekit-inc.com'),
+    ('Richard Jones', 'r1chardj0n3s@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -18,8 +16,7 @@ DIARY_RSS_FILE = '/home/pyweek/media/rss/diaries.rss'
 if hostname == 'shiny':
     DATABASE_ENGINE = 'postgresql'
     DATABASE_NAME = 'rjones_pyweek'
-    DATABASE_USER = 'rjones_pyweek'
-    DATABASE_PASSWORD = 'NaDYNyt7'
+    DATABASE_USER = 'pyweek'
 
     # Absolute path to the directory that holds media.
     # Example: "/home/media/media.lawrence.com/"
@@ -72,7 +69,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"
@@ -122,5 +119,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    "pyweek.challenge",
+    'pyweek.challenge',
+    'django_wysiwyg',
 )
