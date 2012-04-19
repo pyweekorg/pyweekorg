@@ -1,0 +1,21 @@
+
+<div class="diary">
+{% for entry in diary_entries %}
+{% ifchanged %}<h2>{{ entry.created|date:"l d F, Y" }}</h2>{% endifchanged %}
+
+<div class="diary-entry">
+<h3 class="diary-title">[
+  <a href="/u/{{ entry.user.username }}/">{{ entry.user.username }}</a>
+ @ {{ entry.created|date:"H:i" }}
+] {{ entry.title }}</h3>
+<p>{{ entry.content }}</p>
+
+<p class="diary-byline">
+<a href="/d/{{ entry.id }}/">show
+{% if entry.get_diarycomment_list %}comments{% endif %}</a>
+// ({% if is_user %}<a href="/d/{{ entry.id }}/#add-comment">add comment</a>{% else %}login to comment{% endif %})
+</p>
+</div>
+{% endfor %}
+</div>
+

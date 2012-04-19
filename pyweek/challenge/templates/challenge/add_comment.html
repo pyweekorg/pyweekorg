@@ -1,0 +1,48 @@
+
+{% extends "base" %}
+
+{% block title %}PyWeek - add comment for {{ entry.name }}{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+tinyMCE.init({
+	mode : "textareas"
+	theme : "simple",
+});
+</script>
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error, see below:</div>
+{% endif %}
+
+{% if previewed %}
+<fieldset>
+<legend>Preview</legend>
+{{ content }}
+</fieldset>
+{% endif %}
+
+<p><b>Add Comment</b></p>
+<form class="form" method="post" action=".">
+    {{ form.as_plain }}
+    <br><input type="submit" name="save" value="Save">
+</form>
+
+<hr />
+<strong>Previous Comments</strong><br />
+<div class="comment">
+{% for comment in comments %}
+<div class="diary-comment">
+
+<p>{{ comment.content }}</p>
+<p class="diary-byline">
+&mdash; {{ comment.get_user }}  on {{comment.created|date:"Y/m/d H:i"}}
+</p>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav" %}{% endblock %}
+

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek - {{ profile_user }}{% endblock %}
+
+{% block leftbar %}
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ profile_user }}</h1>
+
+{{ profile_user.userprofile_set.all.0.content }}
+
+<p>Entries this user has been in:</p>
+<table id="files">
+<tr><th>PyWeek</th><th>Name</th><th>Team?</th><th>Rating</th></tr>
+{% for entry in entries %}
+<tr class="{% cycle even,odd %}">
+    <td align="center">{{ entry.challenge.number }}</td>
+    <td><a href="/e/{{ entry.name }}/">{{ entry.title }}</a></td>
+    <td>{% if entry.is_team %}yes{% else %}no{% endif %}</td>
+    <td>{% if entry.challenge.isCompFinished %}{% if entry.has_final %}{{ entry.ratingtally_set.all.0.overall }}{% else %}DNF{% endif %}{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% if received_awards %}
+  <p>Awards this user has received:</p>
+  {% for entryaward in received_awards %}
+    <div class="award">
+      <a href="/a/{{entryaward.award.id}}">
+        <img src="http://media.pyweek.org/dl/{{entryaward.award.content}}">
+      </a>
+      <br/>
+      <strong>{{entryaward.description|escape}}</strong>
+      <em>Presented 
+        by <a href="/u/{{entryaward.creator}}">{{entryaward.creator}}</a>
+        for <a href="/e/{{entryaward.entry.name}}">{{entryaward.entry.title|escape}}</a>
+       </em>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% if given_awards %}
+  <p style="clear:left">Awards this user has created:</p>
+  {% for award in given_awards %}
+    <div class="award">
+      <a href="/a/{{award.id}}">
+        <img src="http://media.pyweek.org/dl/{{award.content}}">
+      </a>
+      <br/>
+      <strong>{{award.description|escape}}</strong><br/>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% endblock %}

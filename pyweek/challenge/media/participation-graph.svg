@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   inkscape:export-filename="/home/richard/src/svn.pyweek.org/branches/update_to_current_django/pyweek/challenge/media/participation-graph.png"
+   inkscape:export-xdpi="100"
+   inkscape:export-ydpi="100"
+   sodipodi:docbase="/home/richard/src/pyweek/branches/update_to_current_django/pyweek/challenge/media"
+   sodipodi:docname="participation-graph.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path11060"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path11063"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="305.2294"
+     inkscape:cy="401.36494"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false"
+     inkscape:window-width="947"
+     inkscape:window-height="924"
+     inkscape:window-x="97"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.1762301pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 154.49703,750.19423 L 154.49703,760.1302"
+       id="path7085"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.1762301pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 254.52009,750.19423 L 254.52009,760.1302"
+       id="path7087"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.1762301pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 354.54314,750.19423 L 354.54314,760.1302"
+       id="path7089"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.1762301pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 554.58925,750.19423 L 554.58925,760.1302"
+       id="path7093"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.1762301pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 454.56619,750.19423 L 454.56619,760.1302"
+       id="path7097"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.25pt;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:none;stroke-opacity:1"
+       d="M 726.01398,750.24034 L 54.543136,750.24034 L 54.247269,499.94447"
+       id="path7099"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="148.66423"
+       y="779.82043"
+       id="text7101"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7103"
+         x="148.66423"
+         y="779.82043">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="248.82048"
+       y="780.08411"
+       id="text7105"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7107"
+         x="248.82048"
+         y="780.08411">2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="348.42007"
+       y="780.08411"
+       id="text7109"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7111"
+         x="348.42007"
+         y="780.08411">3</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="448.56656"
+       y="779.82043"
+       id="text7113"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7115"
+         x="448.56656"
+         y="779.82043">4</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="548.56659"
+       y="779.82043"
+       id="text7117"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7119"
+         x="548.56659"
+         y="779.82043">5</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="265.91034"
+       y="805.43567"
+       id="text7121"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7123"
+         x="265.91034"
+         y="805.43567">PyWeek</tspan></text>
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.17625015pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.589226,700.28643 C 49.62126,700.28643 49.62126,700.28643 49.62126,700.28643"
+       id="path7125"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.17625015pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.589226,650.26339 C 44.653291,650.26339 44.653291,650.26339 44.653291,650.26339"
+       id="path7127"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.17625015pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.589226,600.24034 C 49.62126,600.24034 49.62126,600.24034 49.62126,600.24034"
+       id="path7129"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.17625015pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.589226,550.21729 C 44.653291,550.21729 44.653291,550.21729 44.653291,550.21729"
+       id="path7131"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.17625015pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.589226,500.19425 C 49.62126,500.19425 49.62126,500.19425 49.62126,500.19425"
+       id="path7133"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="22.972822"
+       y="705.01379"
+       id="text7135"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7137"
+         x="22.972822"
+         y="705.01379">50</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="12.785322"
+       y="655.01379"
+       id="text7139"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7141"
+         x="12.785322"
+         y="655.01379">100</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="12.785322"
+       y="605.01379"
+       id="text7143"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7145"
+         x="12.785322"
+         y="605.01379">150</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="12.785322"
+       y="555.01379"
+       id="text7147"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7149"
+         x="12.785322"
+         y="555.01379">200</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="12.785322"
+       y="507.11536"
+       id="text7151"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan7153"
+         x="12.785322"
+         y="507.11536">250</tspan></text>
+    <path
+       style="fill:#3aff5a;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.25pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.543136,750.24034 L 164.54314,590.24034 L 254.54314,620.24034 L 354.54314,610.24034 L 454.54314,560.24034 L 554.54569,530.08805 L 654.54824,485.28855 L 654.54824,750.24034 L 54.543136,750.24034 z "
+       id="path8128"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:#ff8e8e;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.25pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.543136,750.24034 L 159.54314,635.24034 L 254.54314,675.24034 L 354.54314,670.24034 L 454.54314,650.24034 L 554.54569,640.69465 L 654.54824,631.65404 L 654.54824,750.24034 L 54.543136,750.24034 z "
+       id="path7155"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:#7d71ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.25pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 54.543136,750.24034 L 154.54314,730.24034 L 254.54314,716.19973 L 354.54314,720.24034 L 454.54314,695.69465 L 554.54569,699.9878 L 654.54824,691.65404 L 654.54824,750.24034 L 54.543136,750.24034 z "
+       id="path9099"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.25463443pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.52061857"
+       d="M 54.548986,650.24034 L 725.34681,650.24034"
+       id="path11239"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.25463443pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.53092783"
+       d="M 54.548986,550.24034 L 725.34681,550.24034"
+       id="path11241"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.25463443pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.24226804"
+       d="M 54.551946,600.39949 L 725.34976,600.39949"
+       id="path13181"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.25463443pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.24226804"
+       d="M 54.551956,500.39949 L 723.07691,500.39949"
+       id="path14152"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.25463443pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.24226804"
+       d="M 54.702286,700.0812 L 725.5001,700.0812"
+       id="path14154"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="662.37964"
+       y="586.42932"
+       id="text14207"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan14209"
+         x="662.37964"
+         y="586.42932">Users</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="662.15503"
+       y="730.88116"
+       id="text14211"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan14213"
+         x="662.15503"
+         y="730.88116">Entries</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="664.17651"
+       y="678.35321"
+       id="text14215"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan14217"
+         x="664.17651"
+         y="678.35321">Teams</tspan></text>
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#000000;stroke-width:0.1762301pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 654.55489,749.9183 L 654.55489,759.85427"
+       id="path2308"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="647.81403"
+       y="779.69836"
+       id="text2312"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/graph.png"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"><tspan
+         sodipodi:role="line"
+         id="tspan2314"
+         x="647.81403"
+         y="779.69836">6</tspan></text>
+  </g>
+</svg>

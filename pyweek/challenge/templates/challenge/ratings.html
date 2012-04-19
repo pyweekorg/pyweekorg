@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ challenge.pageTitle }} &mdash; results{% endblock %}
+
+{% block leftbar %}
+ <ul>
+ <li><strong>Polls:</strong></li>
+ {% for poll in polls %}
+  <li><a href="/p/{{ poll.id }}">{{ poll.title|escape }}</a></li>
+  {% if not poll.is_open %}-- closed{% endif %}
+ {% endfor %}
+ </ul>
+{% endblock %}
+
+
+{% block content %}
+<h1>{{ challenge.pageTitle }} &mdash; results</h1>
+
+<table id="diary-board" style="width: auto">
+<tr><th style="text-align: center" colspan="8">Individual Entries</th></tr>
+<tr><th>Entry</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Avg</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
+{% for rating in individual_ratings %}
+ <tr class="{% cycle even,odd %}">
+  <td>
+   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a>
+  </td>
+  <td>{{ rating.fun }}</td>
+  <td>{{ rating.innovation }}</td>
+  <td>{{ rating.production }}</td>
+  <td>{{ rating.overall }}</td>
+  <td>{{ rating.respondents }}</td>
+  <td>{{ rating.nonworking }}%</td>
+  <td>{{ rating.disqualify }}%</td>
+ </tr>
+{% endfor %}
+
+<tr><th style="border-top: thin solid gray; text-align: center" colspan="8">Team Entries</th></tr>
+<tr><th>Entry</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Avg</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
+{% for rating in team_ratings %}
+ <tr class="{% cycle even,odd %}">
+  <td>
+   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a>
+  </td>
+  <td>{{ rating.fun }}</td>
+  <td>{{ rating.innovation }}</td>
+  <td>{{ rating.production }}</td>
+  <td>{{ rating.overall }}</td>
+  <td>{{ rating.respondents }}</td>
+  <td>{{ rating.nonworking }}%</td>
+  <td>{{ rating.disqualify }}%</td>
+ </tr>
+{% endfor %}
+
+</table>
+
+<p>The column headings are:</p>
+<dl>
+<dt>Fun</dt>
+<dd>Was this game fun to play. Would you want to come back and play it again?
+</dd>
+<dt>Inno (innovation)</dt>
+<dd>Did this game break new ground in terms of
+  gameplay, genre or approach?
+</dd>
+<dt>Prod (production)</dt>
+<dd>Did the game have nice graphics? Did it
+  include sound and music? Were these elements appropriate and balanced?</dd>
+<dt>Avg (average score)</dt>
+<dd>This is the score used to rank the entries and is the average of the above three scores.</dd>
+<dt>Ents</dt>
+<dd>The number of participants (users) who rated this entry.</dd>
+<dt>DNW</dt>
+<dd>The percentage of participants (users) who rated this game and couldn't get the game to run.</dd>
+<dt>DQ</dt>
+<dd>The percentage of total participants (users from finishing entries) who thought the entry broke the challenge <a href="http://media.pyweek.org/static/rules.html">rules</a>. </dd>
+</dl>
+
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ challenge.pageTitle }} &mdash; entries{% endblock %}
+
+{% block content %}
+<h1>{{ challenge.pageTitle }} &mdash; entries</h1>
+
+{% if finished %}
+<p>To play the games listed here, you may need to install <a
+href="http://www.python.org/">Python</a> (typically 2.5+).
+<a href="http://www.pygame.org/">PyGame</a>, <a href="http://www.pyglet.org/">pyglet</a> or
+<a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>. See the game's
+README file for specific requirements. Windows or OS X users
+downloading the versions of games specific to them shouldn't need to install anything.</p>
+
+{% if challenge.torrent_url %}
+<p>Please use <a href="http://btfaq.com/">BitTorrent</a> to download all the games if
+you can - the site hosts will appreciate it. The torrent file is
+<A href="http://media.pyweek.org/dl/PyWeek-10-finals.torrent">PyWeek-10-finals.torrent</a>.</p>
+{% endif %}
+
+{% endif %}
+
+<table>
+{% for entry in entries %}
+<tr><th bgcolor="#eeeeee" colspan="2" align="left">
+<a href="/e/{{ entry.name }}/">{{ entry.title }}</a> ({{ entry.name }})
+  {% if entry.may_rate %}&mdash;
+  {% if entry.has_rated %}<span style="color: green">rated</span>{% else %}<span style="color: red">not rated</span>{% endif %}
+  {% endif %}
+</th></tr>
+<tr><td class="entry-description" valign="top">
+ {% for file in entry.files %}
+  <a href="{{ file.get_content_url }}">{{ file.filename }}</a>
+  &mdash; {{ file.description }}
+  ({{ file.pretty_size }}
+  on {{ file.created|date:"Y/m/d" }}) <br>
+ {% endfor %}
+{{ entry.description }}
+</td>
+{% if entry.thumb %}
+<td valign="top" align="right">
+<a href="{{ entry.thumb.get_content_url }}"><img border="0" width="150" src="{{ entry.thumb.get_content_url }}-thumb.png"></a>
+</td>
+{% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
+
+{% block content %}
+<h1>Give an Award to {{ entry.title|escape }}</h1>
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error</div>
+{% endif %}
+
+
+<fieldset>
+  <legend>Give a new award</legend>
+  <form class="form" method="post" action="." enctype="multipart/form-data">
+    <table cellspacing=0 cellpadding=0>
+      <tr{% if form.content_file.errors %} class="form-error"{% endif %}>
+        <td class="form-label" valign="top">
+          <label for="id_content_file">Award image:</label>
+        </td>
+        <td>
+          {{ form.content_file }}
+          {% if form.content_file.errors %}
+            <p class="form-error">{{ form.content_file.errors|join:", "}}</p>
+          {% else %}
+            <p>Image must be PNG format and have dimensions of exactly 64x64</p>
+
+<p>Please don't upload anything that could be considered offensive; this includes
+nudity (partial or otherwise), rude words, etc. Keep in mind that the recipient
+of your award may have differeing sensibilities to yourself.</p>
+
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr{% if form.description.errors %} class="form-error"{% endif %}>
+        <td class="form-label">
+          <label for="id_description">Award description:</label>
+        </td>
+        <td>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <p class="form-error">{{ form.description.errors|join:", "}}</p>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td><input type="submit" value="Give Award"></td>
+      </tr>
+    </table>
+  </form>
+</fieldset>
+
+{% if awards %}
+  <fieldset>
+    <legend>Give an award you've given before</legend>
+    <form class="form" method="post" action=".">
+      <table cellspacing=0 cellpadding=0>
+        {% for award in awards %}
+          <tr>
+            <td>
+              <input type="radio" name="award" value="{{award.id}}" />
+            </td>
+            <td>
+              <img src="http://media.pyweek.org/dl/{{award.content}}" /><br/>
+              <strong>{{award.description}}</strong>
+            </td>
+          </tr>
+        {% endfor %}
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Give Award"></td>
+        </tr>
+      </table>
+    </form>
+  </fieldset>
+{% endif %}
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav.html" %}{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block links %}
+    <script src="/js/jquery.flot.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block title %}PyWeek - Stats{% endblock %}
+
+{% block content %}
+
+<div id="placeholder" style="width:600px;height:300px;"></div> 
+
+<script id="source" language="javascript" type="text/javascript"> 
+$(function () {
+  function onDataReceived(series) {
+    var users = [];
+    var entries = [];
+    var finals = [];
+    for (var n in series['stats']) {
+        users.push([n, series['stats'][n]['users']]);
+    }
+    for (var n in series['stats']) {
+        entries.push([n, series['stats'][n]['entries']]);
+    }
+    for (var n in series['stats']) {
+        finals.push([n, series['stats'][n]['finals']]);
+    }
+    var plot = $.plot($("#placeholder"), [
+       {
+           data: users,
+           lines: {show: true, fill: true},
+           label: 'Users'
+       },
+       {
+           data: entries,
+           lines: {show: true, fill: true},
+           label: 'Entries'
+       },
+       {
+           data: finals,
+           lines: {show: true, fill: true},
+           label: 'Games Submitted'
+       }
+    ], {
+       legend: {
+          position: "nw",
+       }
+    });
+  }
+
+  $.ajax({
+    url: 'http://pyweek.org/stats.json',
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived
+  });
+});
+</script>
+
+{% endblock %}
+

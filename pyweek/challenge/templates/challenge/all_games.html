@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek - Python Game Programming Challenge{% endblock %}
+
+{% block content %}
+<h1>All games produced during past PyWeeks</h1>
+<table id="diary-board">
+<tr><th>Game</th><th>Ch.</th><th>Rating</th><th>Team</th></tr>
+{% for entry in all_games %}
+<tr class="{% cycle even,odd %}{% if entry.winner %} winner{% endif %}">
+ <td valign="top"><a href="/e/{{ entry.entry_id }}/">{{ entry.game_name }}</a></td>
+ <td valign="top"><a href="/{{ entry.challenge_num }}/">{{ entry.challenge_num }}</a></td>
+ <td valign="top">{{ entry.rating }}</td>
+ <td valign="top">{{ entry.team }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
+

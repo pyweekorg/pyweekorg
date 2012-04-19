@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
+
+{% block content %}
+<h1>PyWeek - {{ entry.title|escape }} - feedback</h1>
+
+<table border="1" cellspacing="0">
+<tr>
+<th>Fun</th>
+<th>Prod</th>
+<th>Inno</th>
+<th>Disq</th>
+<th>N/W</th>
+<th>Comments</th>
+</tr>
+{% for rating in entry.rating_set.all %}
+<tr>
+<td valign="top">{{ rating.fun }}</td>
+<td valign="top">{{ rating.production }}</td>
+<td valign="top">{{ rating.innovation }}</td>
+<td valign="top">{{ rating.disqualify|yesno:"yes, " }}</td>
+<td valign="top">{{ rating.nonworking|yesno:"yes, " }}</td>
+<td valign="top">{{ rating.comment|escape|linebreaks }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav.html" %}{% endblock %}

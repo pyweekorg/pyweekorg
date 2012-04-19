@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ challenge.pageTitle }}{% endblock %}
+
+{% block content %}
+{% if screenie %}
+<div id="thumb" style="width: {{ screenie.thumb_width }}px">
+<p><strong>Latest Screenshot</strong></p>
+<a href="{{ screenie.get_content_url }}"><img src="{{ screenie.get_content_url }}-thumb.png"></a>
+<p>{{ screenie.description }}</p>
+</div>
+{% endif %}
+
+<h1>{{ challenge.pageTitle }}</h1>
+
+{% include "motd.html" %}
+
+{% if open_polls %}
+ <p>
+ <strong>Polls:</strong><br>
+ {% for poll in open_polls %}
+ <a href="/p/{{ poll.id }}">{{ poll.title|escape }}</a><br>
+ {% endfor %}
+ {% for poll in closed_polls %}
+ Closed: <a href="/p/{{ poll.id }}">{{ poll.title|escape }}</a><br>
+ {% endfor %}
+ </p>
+{% endif %}
+
+{% if all_done %}
+<p>This challenge ran from {{ challenge.start }} to {{ challenge.end }}.</p>
+{% else %}
+<p>The dates of this challenge are are 00:00 UTC {{ challenge.start }}
+to 00:00 UTC {{ challenge.end }}.</p>
+{% endif %}
+
+{% if not all_done %}
+<table id="timetable">
+<tr><th colspan="2">Timetable</th></tr>
+{{ challenge.timetableHTML }}
+</table>
+{% endif %}
+
+<p>View this challenge's <a href="entries">entries</a>{% if challenge.isAllDone %} and <a href="/{{ challenge.number}}/ratings/">rankings</a>{% endif %}.
+
+
+{% if recent_entryawards %}
+  <p>Recent awards:</p>
+  {% for entryaward in recent_entryawards %}
+    <div class="award">
+      <a href="/a/{{entryaward.award.id}}">
+        <img src="http://media.pyweek.org/dl/{{entryaward.content}}">
+      </a>
+      <br>
+      <strong>{{entryaward.description|escape}}</strong><br>
+      <em>Presented
+        by <a href="/u/{{entryaward.creator}}">{{entryaward.creator}}</a>
+        to <a href="/e/{{entryaward.entry.name}}">{{entryaward.entry.title|escape}}</a>
+      </em>
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% endblock %}

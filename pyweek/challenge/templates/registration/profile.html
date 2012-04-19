@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error</div>
+{% endif %}
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0>
+    <tr>
+        <th bgcolor="#e0e0e0"><strong>User Profile</strong></th>
+        <th style="border: thin solid #e0e0e0"><a
+                href="/profile_description/"><strong>User Description</strong></a></th>
+        <th style="border: thin solid #e0e0e0"><a
+                href="/u/{{ user.username }}"><strong>View Your Profile</strong></a></th>
+    </tr>
+    <tr><td colspan="3" bgcolor="#e0e0e0">
+<form class="form" method="post" action=".">
+
+<div {% if form.name.errors %} class="form-error"{% endif %}>
+<label for="id_name">Username:</label><br>
+ {{ form.name }}
+  {% if form.name.errors %}
+   <p class="form-error">{{ form.name.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<div {% if form.email.errors %} class="form-error"{% endif %}>
+<label for="id_email">Email:</label><br>
+ {{ form.email }}
+  {% if form.email.errors %}
+   <p class="form-error">{{ form.email.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<div {% if form.password.errors %} class="form-error"{% endif %}>
+	<label for="id_password">Password:</label><br>
+{{ form.password }}
+  {% if form.password.errors %}
+   <p class="form-error">{{ form.password.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<div {% if form.again.errors %} class="form-error"{% endif %}>
+	<label for="id_again">Again:</label><br>
+ {{ form.again }}
+  {% if form.again.errors %}
+   <p class="form-error">{{ form.again.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<input type="submit" value="Save Changes">
+
+<input type="hidden" name="next" value="{{ next|urlencode }}">
+</form>
+</td></tr></table>
+
+{% endblock %}

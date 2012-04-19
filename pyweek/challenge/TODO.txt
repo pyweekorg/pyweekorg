@@ -1,0 +1,20 @@
+Stuff still to do:
+
+- emailing comments
+- entry wiki
+- FTP file drop
+
+- last_modified and last_comment_id on diary entry
+
+General ideas:
+
+- Image sizes in tags on entry screen
+- Let entrants be able to choose a primary screen shot. This screenshot will
+  be shown as a thumbnail next to their name on the main page. (Easier to
+  remember a picture than to remember someone's nick or game name.)  Or at
+  least, show the picture on the entry vote page.  
+- Might also be nice to display the scores you gave a user next to their
+  name as well.  
+- on the main pyweek 2 page, if a diary entry has an image in it, put a
+  thumbnail of that image next to it -- make it easy for people to spot
+  entries with neat looking screenshots, etc.

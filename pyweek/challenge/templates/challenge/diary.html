@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block links %}
+{% load wysiwyg %}
+{% wysiwyg_setup %}
+<script type="text/javascript" charset="utf-8">
+ django_wysiwyg_editor_config['height'] = "200px";
+ django_wysiwyg_editor_config['toolbar']['titlebar'] = "";
+ django_wysiwyg_editor_config['toolbar']['collapse'] = false;
+ django_wysiwyg_editor_config['toolbar']['draggable'] = false;
+</script>
+{% endblock %}
+
+{% block title %}PyWeek - {{ diary.title }}{% endblock %}
+
+{% block content %}
+<h1>PyWeek - {{ diary.title }}</h1>
+
+{{ diary.content }}
+
+<p>&mdash;
+  <a href="/u/{{ diary.user.username }}/">{{ diary.user }}</a> on {{ diary.created|date:"Y/m/d H:i" }}
+  {% if entry %}
+    of <a href="/e/{{ diary.entry.name }}/">{{ diary.entry.title }}</a>
+  {% endif %}
+
+  {% ifequal diary.user user %}
+    <br><a class="edit" href="/d/{{ diary.id }}/edit/">edit this entry</a>
+    <br><b class="delete">delete this entry</b>
+    <form class="delete-form hidden" action="/d/{{ diary.id }}/delete/" method="POST">
+     <input type="submit" name="delete" value="Delete">
+     <input type="button" name="cancel" value="Cancel" class="delete">
+    </form>
+  {% endifequal %}
+
+  {% if diary.edited %}
+    <br>&mdash; <b>edited</b> on {{ diary.edited|date:"Y/m/d H:i" }}
+  {% endif %}
+
+  {% if diary.diarycomment_set.count %}
+  <hr>
+  <p><strong>Comments:</strong>
+  ({% if is_user %}<a href="#add-comment">add comment</a>{% else %}log in to comment{% endif %})
+</p>
+
+{% include "diary_comments.html" %}
+
+{% endif %}
+
+{% if is_user %}
+
+<a name="add-comment"><hr /></a>
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error, see below:</div>
+{% endif %}
+
+{% if previewed %}
+<fieldset>
+<legend>Preview</legend>
+{{ content }}
+</fieldset>
+{% endif %}
+
+<p>
+<b>Add Comment</b><br>
+
+<form class="form" method="post" action="#add-comment">
+
+{{ form.as_plain }}
+    <br><input type="submit" name="save" value="Save">
+</form>
+
+{% wysiwyg_editor "id_content" %}
+
+</p>
+
+
+{% endif %}
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $(".delete").click( function () {
+            if ($(".delete-form").hasClass("hidden")) {
+                $(".delete-form").removeClass("hidden");
+            } else {
+                $(".delete-form").addClass("hidden");
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav.html" %}{% endblock %}
+

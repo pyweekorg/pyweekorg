@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek Awards{% endblock %}
+
+{% block content %}
+
+<h1>The &ldquo;{{award.description}}&rdquo; Award</h1>
+
+
+<img src="http://media.pyweek.org/dl/{{award.content}}" /><br/>
+<em>Presented by <a href="/u/{{award.creator}}">{{award.creator}}</a></em> to:
+<p>
+<table>
+{% for entry in entries %}
+<tr><th bgcolor="#eeeeee" colspan="2">
+<a href="/e/{{ entry.name }}/">{{ entry.title }}</a> ({{ entry.name }})
+</th></tr>
+<tr><td valign="top">
+{{ entry.description }}
+</td>
+{% if entry.thumb %}
+<td valign="top" align="right">
+<a href="{{ entry.thumb.get_content_url }}"><img border="0" width="150" src="{{ entry.thumb.get_content_url }}-thumb.png"></a>
+</td>
+{% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

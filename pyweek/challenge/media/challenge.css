@@ -1,0 +1,690 @@
+a[href] {
+    text-decoration: none;
+}
+a[href]:visited {
+    text-decoration: none;
+}
+a[href]:hover {
+    text-decoration: underline;
+}
+
+body {
+	margin-top: 20px;
+	padding: 0px;
+	font: 13px sans-serif;
+	color: #212121;
+	background: #e6ce84 url(img01.jpg) repeat-x left top;
+}
+
+h1 {
+    font-size: 1.2em;
+}
+
+/* Header */
+
+#header {
+	width: 750px;
+	height: 80px;
+	margin: 0px auto;
+        padding-top: 3px;
+	background: url(img02.jpg) no-repeat left top;
+}
+
+#header a {
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+#logo {
+	float: left;
+	padding-left: 20px;
+}
+
+#menu {
+    clear: both;
+}
+
+/* Page */
+
+#page {
+	width: 750px;
+	margin: 0px auto;
+}
+
+/* Content */
+
+#content {
+	float: left;
+	width: 730px;
+        padding: 10px;
+        background: white;
+}
+
+#footer {
+	clear: both;
+	width: 750px;
+	height: 100px;
+	margin: 0px auto 30px auto;
+
+    /*
+    float: left;
+    width: 750px;
+    margin: 0px;
+    */
+    text-align: center;
+    padding-top: 1em;
+    font-size: 80%;
+}
+
+#motd {
+    clear: both;
+    border: thin solid #B399FF;
+    background: #AADDFF;
+    padding: 1em;
+}
+
+form.form {
+    padding: 5px;
+}
+
+form label { 
+    font-weight: bold;
+}
+
+ul.errorlist {
+    background: rgb(255,214,214);
+    margin: 0px;
+    list-style-type: none;
+    padding: 2px;
+}
+ul.errorlist li {
+    margin: 0px;
+}
+
+p.form-error {
+    margin-top: 1px;
+    color: red;
+}
+p.form-help {
+    margin-top: 1px;
+    font-size: 75%;
+}
+
+ul.messages {
+    border: thin solid green;
+    background: lightgreen;
+    margin: 1em;
+    padding: 5px;
+    list-style-type: none;
+}
+
+div.diary {
+    background: white;
+}
+
+div.diary h2 {
+    font-size: 1em;
+    border-top: thin solid gray;
+    background: #EEE;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+div.diary h3 {
+    font-size: 1em;
+    margin-top: 1px;
+    border-bottom: thin solid gray;
+}
+
+div.diary-comment {
+    margin-bottom: 1em;
+    border: thin solid #ddd;
+    padding: 5px;
+}
+
+textarea#id_content,textarea#id_comment {
+    width: 100%;
+    height: 15em;
+}
+
+table.form {
+    width: 100%;
+}
+
+div.odd {
+    background: #e0e0e0;
+}
+p.diary-byline {
+    margin-top: 0px;
+    font-weight: bold;
+    border-bottom: thin dashed #ddd;
+}
+table#files {
+    border: thin solid gray;
+    border-collapse: separate;
+    border-spacing: 0px 0px;
+}
+table#files th {
+    text-align: left;
+    font-weight: bold;
+    background: #e0e0e0;
+    border-bottom: thin solid gray;
+}
+table#files td {
+    padding-right: 1em;
+}
+table#files tr.odd td {
+    background: #e0e0e0;
+}
+.winner {
+    font-weight: bold;
+}
+
+table#diary-board {
+    clear: none !important;
+    border: thin solid gray;
+    border-collapse: separate;
+    border-spacing: 0px 0px;
+    width: 100%;
+}
+table#diary-board th {
+    text-align: left;
+    font-weight: bold;
+    background: #e0e0e0;
+    border-bottom: thin solid gray;
+    border-left: thin solid gray;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+table#diary-board th:first-child {
+    border-left: none;
+}
+table#diary-board td {
+    border-left: thin solid gray;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+table#diary-board td:first-child {
+    border-left: none;
+}
+table#diary-board tr.odd td {
+    background: #e0e0e0;
+}
+
+#pagination {
+       background-color: #F3F3F3;
+       margin-top:1em;
+       padding:0.4em;
+       text-align:right;
+       font-size: 90%;
+}
+
+#pagination span {
+       background-color: #0162BE;
+       color: white;
+       margin: .1em;
+       padding-left: 2px;
+       padding-right: 2px;
+}
+
+a.button {
+       text-decoration: none;
+       color: #0162BE;
+       border: thin solid #0162BE;
+       margin: .1em;
+       padding-left: 2px;
+       padding-right: 2px;
+}
+a.button:visited {
+       color: #0162BE;
+}
+
+a.button:hover {
+       background-color: white;
+       color: blue;
+       text-decoration: none;
+}
+
+
+table#timetable {
+    border-collapse: separate;
+    border-spacing: 0px 0px;
+}
+table#timetable th {
+    text-align: left;
+    font-weight: bold;
+    background: #e0e0e0;
+}
+table#timetable td {
+    padding-right: 1em;
+    padding-left: 1em;
+    border-left: thin solid gray;
+    border-top: thin solid gray;
+}
+table#timetable td:first-child {
+    border-left: none;
+}
+table#timetable tr.active td {
+    font-weight: bold;
+}
+table#timetable tr.done td {
+    text-decoration: line-through;
+}
+
+div#thumb  {
+    border: thin solid gray;
+    float: right;
+    margin-left: 1em;
+    margin-bottom: 1em;
+}
+div#thumb p {
+    padding-left: 2px;
+    padding-right: 2px;
+    margin: 0px;
+    background: white;
+    text-align: center;
+}
+
+b.delete, a.delete[href] {
+    white-space: pre;
+    color: red;
+    cursor: pointer;
+    padding-left:12px;
+    background:url(http://media.pyweek.org/media/img/admin/icon_deletelink.gif) 0 .25em no-repeat;
+    text-decoration:none;
+}
+
+a.add[href] {
+    white-space: pre;
+    color: green;
+    cursor: pointer;
+    padding-left:12px;
+    background:url(http://media.pyweek.org/media/img/admin/icon_addlink.gif) 0 .25em no-repeat;
+    text-decoration:none;
+}
+
+a.edit[href] {
+    white-space: pre;
+    color: blue;
+    cursor: pointer;
+    padding-left:12px;
+    background:url(http://media.pyweek.org/media/img/admin/icon_changelink.gif) 0 .25em no-repeat;
+    text-decoration:none;
+}
+
+dl#entry-list dt {
+    font-weight: bold;
+}
+dl#entry-list dd {
+    margin-bottom: 1em;
+}
+
+.entry-description {
+   display: block;
+   width: 570px;
+   overflow: auto;
+}
+
+.small {
+    font-size: 75%;
+}
+
+.award {
+    float: left;
+    text-align: center;
+    margin: 4px;
+    width: 128px;
+    /* height: 128px; */
+    overflow: hidden;
+}
+
+.award em {
+    font-size: 80%;
+}
+
+
+#cssdropdown {
+    z-index:10;
+    font-size: 90%;
+}
+#cssdropdown, #cssdropdown ul {
+    list-style: none; display: block;
+}
+#cssdropdown, #cssdropdown * {
+    padding: 0;
+    margin: 0;
+}
+#cssdropdown li.headlink {
+    width: 150px;
+    float: left;
+    background-color: #dab74d;
+    text-align: center;
+}
+#cssdropdown li.headlink > a { display: block; padding: 5px; }
+#cssdropdown li.headlink > span { display: block; padding: 5px; }
+
+#cssdropdown li.headsummary {
+    text-align: center;
+    width: 750px;
+    float: left;
+    background-color: #dab74d;
+    color: white;
+}
+
+/* Child lists and links */
+#cssdropdown li.headlink ul {
+    padding: 5px;
+    display: none;
+    text-align: left;
+    width: 140px;
+    /* margin: 0px -1px;
+    border: 1px #dab74d solid; */
+    background-color: #dab74d;
+    color: white;
+}
+#cssdropdown li.headlink:hover ul {
+    display: block;
+    position:absolute;
+}
+#cssdropdown a:hover { text-decoration: none; color: #659dd7;}
+
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 6253 2010-03-02 00:24:53Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }

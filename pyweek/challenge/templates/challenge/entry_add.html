@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
+
+{% block content %}
+<h1>PyWeek - Add Entry</h1>
+
+<p>Use this page to register an entry in the challenge. You may enter as
+either an individual or as a team. By registering a team you will become
+that team's "admin" user. You will be able to change the title and team
+roster after you've added it.</p>
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error</div>
+{% endif %}
+
+<b>Entry Profile</b>
+<form class="form" method="post" action=".">
+
+<div {% if form.name.errors %} class="form-error"{% endif %}>
+	<label for="id_name">Short Name:</label><br>
+ {{ form.name }}
+  {% if form.name.errors %}
+   <p class="form-error">{{ form.name.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">This should be less than 15 characters and only
+  contain letters, numbers, dash or underscore.</p>
+</div>
+
+<div {% if form.title.errors %} class="form-error"{% endif %}>
+	<label for="id_title">Name:</label><br>
+ {{ form.title }}
+  {% if form.title.errors %}
+   <p class="form-error">{{ form.title.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<div {% if form.description.errors %} class="form-error"{% endif %}>
+	<label for="id_description">Description:</label><br>
+ {{ form.description }}
+  {% if form.description.errors %}
+   <p class="form-error">{{ form.description.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<div {% if form.users.errors %} class="form-error"{% endif %}>
+ <label for="id_users">Team Members:</label><br>
+ {{ form.users }}
+  {% if form.users.errors %}
+   <p class="form-error">{{ form.users.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">Enter a comma-separated list of the member
+  usernames.</p>
+<br>
+
+<input type="submit" value="Save Changes">
+
+</form>
+
+{% endblock %}
+
+{% block rightbar %}
+<div id="rightbar">
+
+<strong>Files:</strong><br />
+ {% for file in files %}
+  <a href="/p/{{ file.url }}">{{ file.filename }}</a>
+  {% if not file.is_final %}-- final{% endif %}
+  <br />
+ {% endfor %}
+
+</div>
+{% endblock %}
+

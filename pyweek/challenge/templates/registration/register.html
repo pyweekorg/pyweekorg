@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Registration Form{% endblock %}
+
+{% block content %}
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error</div>
+{% endif %}
+
+<p>By signing up to this challenge, you agree to its
+<a href="http://media.pyweek.org/static/conditions.html">conditions of use</a>.</p>
+
+<fieldset>
+<legend>Registration Form</legend>
+<form class="form" method="post" action=".">
+<table cellspacing=0 cellpadding=0>
+
+<tr{% if form.name.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_username">Username:</label></td>
+ <td>{{ form.name }}
+  {% if form.name.errors %}
+   <p class="form-error">{{ form.name.errors|join:", " }}</p>
+  {% endif %}
+ </td>
+</tr>
+
+<tr{% if form.email.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_email">Email:</label></td>
+ <td>{{ form.email }}
+  {% if form.email.errors %}
+   <p class="form-error">{{ form.email.errors|join:", " }}</p>
+  {% endif %}
+ </td>
+</tr>
+
+<tr{% if form.password.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_password">Password:</label></td>
+ <td>{{ form.password }}
+  {% if form.password.errors %}
+   <p class="form-error">{{ form.password.errors|join:", " }}</p>
+  {% endif %}
+ </td>
+</tr>
+
+<tr{% if form.again.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_again">Again:</label></td>
+ <td>{{ form.again }}
+  {% if form.again.errors %}
+   <p class="form-error">{{ form.again.errors|join:", " }}</p>
+  {% endif %}
+</td>
+</tr>
+<tr><td></td><td>
+<input type="submit" value="Register">
+</td></tr>
+</table>
+
+<input type="hidden" name="next" value="{{ next|urlencode }}">
+</form>
+</fieldset>
+
+{% endblock %}

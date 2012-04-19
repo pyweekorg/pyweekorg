@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /> 
+    <link rel="stylesheet" href="http://media.pyweek.org/static/challenge.css" type="text/css">
+    <link rel="alternate" type="application/rss+xml"
+       title="PyWeek Diaries RSS feed"
+       href="http://media.pyweek.org/rss/diaries.rss">
+    <script src="/js/challenge.js" type="text/javascript"></script>
+    <script src="/js/jquery.js" type="text/javascript"></script>
+    {% block links %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+    {% block scripts %}
+    {% endblock %}
+</head>
+
+<body>
+<div id="header">
+ <div id="logo">
+    <A href="/"><IMG border="0" src="http://media.pyweek.org/static/pyweek.png"></A></span>
+ </div>
+ <div id="menu">
+  <ul id="cssdropdown">
+    <li class="headsummary">{{ latest.summary }}</li>
+  </ul>
+
+  <ul id="cssdropdown">
+
+    <li class="headlink">
+         {% if not latest.isCompStarted %}
+            <A href="/{{ latest.number }}/">Next Challenge</A>
+         {% endif %}
+
+         {% if latest.isCompStarted and not latest.isAllDone %}
+            <A href="/{{ latest.number }}/">Current Challenge</A>
+         {% endif %}
+         {% if latest.isAllDone %}
+            <A href="/{{ latest.number }}/">Last Challenge</A>
+         {% endif %}
+         <ul>
+            <li><strong><a href="/{{ latest.number }}/">{{ latest.title|escape }}</a></strong></li>
+            {% if user.is_authenticated  %}
+             {% if not latest.isCompFinished %}
+              <li><a href="/{{ latest.number }}/entry_add/">Register Entry</a></li>
+             {% endif %}
+             {% if latest.theme_poll %}
+              {% if latest.theme_poll.is_open %}
+               <li><a href="/p/{{ latest.theme_poll.id }}/">Vote for the Theme</a></li>
+              {% else %}
+               <li><a href="/p/{{ latest.theme_poll.id }}/">Theme Poll</a></li>
+              {% endif %}
+             {% endif %}
+            {% else %}
+             {% if latest.isRegoOpen %}
+              <li><a href="/register/">Register</a></li>
+             {% endif %}
+            {% endif %}
+           <li><a href="/{{ latest.number }}/entries/">Entries</a></li>
+         </ul>
+    </li>
+
+    <li class="headlink">
+       <a href="/all_games/">Previous Challenges</a>
+       <ul>
+          <li><a href="/all_games/">All Games</a></li>
+          {% for one in all reversed %}
+             <li><a title="{{ one.title|escape }}" href="/{{ one.number }}/">{{ one.start|date:"F Y" }}</a></li>
+          {% endfor %}
+          <li><a href="http://media.pyweek.org/static/pygame.draw-0606.html">June 2006 (mini)</a></li>
+          <li><a href="http://www.mechanicalcat.net/tech/PyWeek/1">August 2005</a></li>
+      </ul>
+
+    <li class="headlink">
+      <A href="/messages/">Discussion</a>
+    </li>
+
+    <li class="headlink">
+      {% if not user.is_authenticated  %}
+       <span>Not logged in</span>
+       <ul>
+       <li><a href="/login/">Login</a></li>
+        {% for one in all reversed %}
+         {% if forloop.first %}
+          {% if one.isRegoOpen %}
+           <li><a href="/register/">Register</a></li>
+          {% endif %}
+         {% endif %}
+        {% endfor %}
+
+      {% else %}
+       <A href="http://pyweek.org/profile/">Your Account</A>
+       <ul>
+
+       {% if challenge %}
+        {% if not challenge.isCompFinished %}
+         <li><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
+        {% endif %}
+       {% endif %}
+
+       {% if user_entries %}
+        <li><strong>Your Entries:</strong></li>
+        {% for e in user_entries %}
+          <li><a href="/e/{{e.name}}/">{{e.challenge_id}}) {{e.name}}</a></li>
+        {% endfor %}
+       {% endif %}
+        <li>&nbsp;</li>
+        <li><A href="http://pyweek.org/logout/">Logout</A></li>
+
+      {% endif %}
+
+      </ul>
+    </li>
+
+    <li class="headlink">
+      <a href="http://pyweek.org/s/rules">About</a>
+      <ul>
+       <li><a href="http://pyweek.org/s/rules">Rules</a></li>
+       <li><a href="http://pyweek.org/s/help">Help</a></li>
+      </ul>
+    </li>
+  </ul>
+ </div> <!-- end #menu -->
+
+ {% block leftbar %}{% endblock %}
+
+</div> <!-- end #header -->
+
+<div id="page">
+
+<div id="content">
+
+{% if messages %}
+<ul class="messages">
+  <li><strong style="font-variant: small-caps; border-bottom: thin solid
+  gray">Notice</strong></li>
+  {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+
+{% block leftbottom %}{% endblock %}
+
+</div> <!-- content -->
+
+</div> <!-- page -->
+
+<div id="footer">
+Contact &lt;richard@pyweek.org&gt; with any enquiries.
+Site <A href="http://media.pyweek.org/static/conditions.html">conditions of use</A>.
+Hosting thanks to <A href="http://tummy.com/">tummy.com</A>.<BR>
+Site developed in <A href="http://www.python.org/">Python</A>
+using <A href="http://www.djangoproject.com/">Django</A>.
+</div>
+
+
+<SCRIPT type="text/javascript">
+$(document).ready(function(){
+        $('li.headlink').hover(
+                    function() { $('ul', this).css('display', 'block'); },
+                                function() { $('ul', this).css('display',
+                                'none'); });
+                                    });
+</SCRIPT>
+
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-3679620-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+

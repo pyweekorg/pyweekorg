@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block links %}
+{% load wysiwyg %}
+{% wysiwyg_setup %}
+<script type="text/javascript" charset="utf-8">
+ django_wysiwyg_editor_config['height'] = "200px";
+ django_wysiwyg_editor_config['toolbar']['titlebar'] = "";
+ django_wysiwyg_editor_config['toolbar']['collapse'] = false;
+ django_wysiwyg_editor_config['toolbar']['draggable'] = false;
+</script>
+{% endblock %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error</div>
+{% endif %}
+
+<p><a href="/d/{{ diary.id }}/">Back to the entry</a></p>
+
+<fieldset><legend>Entry Text</legend>{{ diary.content }}</fieldset>
+
+<form class="form" method="post" action=".">
+    {{ form.as_plain }}
+    <br><input type="submit" value="Save Changes">
+</form>
+
+{% wysiwyg_editor "id_content" %}
+
+{% endblock %}

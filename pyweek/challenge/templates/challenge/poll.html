@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek{{ challenge.number}} - {{ poll.title }}{% endblock %}
+
+{% block content %}
+<h1>PyWeek{{ challenge.number}} - {{ poll.title }}</h1>
+
+{{ poll.description }}
+
+{% if poll.is_open %}
+{{ instructions }}
+{% endif %}
+
+{{ fields }}
+
+{% endblock %}
+

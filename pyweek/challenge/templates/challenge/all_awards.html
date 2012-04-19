@@ -1,0 +1,24 @@
+
+{% extends "base.html" %}
+
+{% block title %}PyWeek - All Awards{% endblock %}
+
+{% block content %}
+<table width="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td valign="top">
+<h1>PyWeek - All Awards</h1>
+
+{% for award in awards %}
+  <div class="award">
+    <a href="/a/{{award.id}}">
+      <img src="http://media.pyweek.org/dl/{{award.content}}">
+    </a>
+    <br>
+    <strong>{{award.description|escape}}</strong><br>
+    <em>Presented by <a href="/u/{{award.creator}}">{{award.creator}}</a></em>
+  </div>
+{% endfor %}
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav.html" %}{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base" %}
+{% load i18n %}
+
+{% block title %}{% trans 'login form' %}{% endblock %}
+
+{% block header %}
+<h1>{% trans 'login to the gallery' %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<form class="form" method="post" action=".">
+<table>
+<tr><td><label for="id_username">{% trans 'username:' %}</label></td><td>{{ form.username }}</td></tr>
+<tr><td><label for="id_password">{% trans 'password:' %}</label></td><td>{{ form.password }}</td></tr>
+</table>
+
+{% if form.has_errors %}
+<p>{% trans "The login didn't work. Please keep in mind: usernames and
+passwords are case sensitive!" %}
+</p>
+{% endif %}
+
+<input type="submit" value="{% trans 'login' %}">
+<input type="hidden" name="next" value="{{ next|urlencode }}">
+</form>
+
+{% endblock %}

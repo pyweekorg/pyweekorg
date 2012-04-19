@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
+
+{% block content %}
+<h1>PyWeek - Add File or Screenshot</h1>
+
+<p>Use this page to add a file or screenshot to your entry.</p>
+
+<p><b>Final Entries</b>: If this is your <strong>final entry</strong> then you must mark it as
+such by checking the checkbox below. You may upload as many final entries as you like.</p>
+
+<p><b>Screenshots</b>: If this is a screenshot, and you check the checkbox below then it will
+appear on your entry's home page. A thumbnail image will be automatically
+produced to fit a 250 x 250 pixel box.</p>
+
+<p>
+
+{% if form.has_errors %}
+<div class="form-error">Sorry, there's been an error</div>
+{% endif %}
+
+{% if entry.isUploadOpen %}
+<fieldset>
+<legend>Upload a File</legend>
+<form class="form" method="post" action="." enctype="multipart/form-data">
+<table cellspacing=0 cellpadding=0>
+
+<tr{% if form.content_file.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_content_file">File:</label></td>
+ <td>{{ form.content_file }}
+  {% if form.content_file.errors %}
+   <p class="form-error">{{ form.content_file.errors|join:", " }}</p>
+  {% endif %}
+ </td>
+</tr>
+
+<tr{% if form.description.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_description">Description:</label></td>
+ <td>{{ form.description }}
+  {% if form.description.errors %}
+   <p class="form-error">{{ form.description.errors|join:", " }}</p>
+  {% endif %}
+ </td>
+</tr>
+
+<tr{% if form.is_screenshot.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_is_screenshot">Is a Screenshot?:</label></td>
+ <td>{{ form.is_screenshot }}
+  {% if form.is_screenshot.errors %}
+   <p class="form-error">{{ form.is_screenshot.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">
+    If this is a screenshot, and you check the checkbox below then it will
+    appear on your entry's home page. A thumbnail image will be automatically
+    produced to fit a 250 x 250 pixel box.
+  </p>
+ </td>
+</tr>
+
+{% if challenge.isFinalUploadOpen %}
+ <tr{% if form.is_final.errors %} class="form-error"{% endif %}>
+  <td class="form-label"><label for="id_is_final">Final Submission?:</label></td>
+  <td>{{ form.is_final }}
+   {% if form.is_final.errors %}
+    <p class="form-error">{{ form.is_final.errors|join:", " }}</p>
+   {% endif %}
+   <p class="form-help">
+    You may mark as many files "final" as you like - the very last one will
+    be used in the peer judging.
+   </p>
+  </td>
+ </tr>
+{% endif %}
+
+<tr><td></td><td>
+<input type="submit" value="Add File">
+</td></tr>
+</table>
+
+</form>
+</fieldset>
+{% else %}
+File upload is not currently available for this entry.
+{% endif %}
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav.html" %}{% endblock %}

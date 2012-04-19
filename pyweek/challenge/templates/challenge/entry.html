@@ -1,0 +1,173 @@
+
+{% extends "base.html" %}
+
+{% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
+
+{% block content %}
+<table width="100%" border=0 cellspacing=0 cellpadding=0>
+<tr><td valign="top">
+<h1>PyWeek - {{ entry.title|escape }}</h1>
+
+<table cellspacing=0 cellpadding=0 border=0 width="100%"><tr>
+<td valign="top">{{ description }}</td>
+{% if thumb %}
+<td valign="top" width="{{ thumb.thumb_width }}px">
+<a href="{{ thumb.get_content_url }}"><img src="{{ thumb.get_content_url }}-thumb.png"></a>
+<br>{{ thumb.description }}
+</td>
+{% endif %}
+</tr>
+</table>
+
+<h2>Awards</h2>
+{% for award in awards %}
+  <div class="award">
+    <a href="/a/{{award.award.id}}">
+      <img src="http://media.pyweek.org/dl/{{award.content}}">
+    </a>
+    <br>
+    <strong>{{award.description|escape}}</strong><br>
+    <em>Presented by <a href="/u/{{award.creator}}">{{award.creator}}</a></em>
+  </div>
+{% endfor %}
+
+<p style="clear:left">
+  <a href="/e/{{entry.name}}/give_award/">Give this entry an award<a>
+</p>
+
+{% if rating %}
+<strong>Ratings</strong> (<a href="/e/{{ entry.name }}/ratings/">show
+detail</a>)<br >
+<strong>Fun</strong>: {{ rating.fun|floatformat }}<br >
+<strong>Production</strong>: {{ rating.production|floatformat }}<br >
+<strong>Innovation</strong>: {{ rating.innovation|floatformat }}<br >
+{% if rating.nonworking %}
+<strong>{{ rating.dnwp }} respondents marked the game as not working.</strong><br >
+{% endif %}
+{% if rating.disqualify %}
+<strong>{{ rating.dp }} of respondents wished to disqualify the entry.</strong><br >
+{% endif %}
+<strong>Respondents</strong>: {{ rating.respondents|floatformat }}<br >
+{% endif %}
+
+
+{% if form %}
+<fieldset id="ratings">
+<legend>Entry Rating</legend>
+<p>When rating each game, please consider it on its own merits. Don't try
+to compare games.</p>
+<form class="form" method="post" action=".">
+<table cellspacing=0 cellpadding=0>
+
+<tr{% if form.fun.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_fun">Fun:</label></td>
+ <td>{{ form.fun }}
+  {% if form.fun.errors %}
+   <p class="form-error">{{ form.fun.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">Consider: was this game fun to play. Would you want
+  to come back and play it again?</p>
+ </td>
+</tr>
+
+<tr{% if form.innovation.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_innovation">Innovation:</label></td>
+ <td>{{ form.innovation }}
+  {% if form.innovation.errors %}
+   <p class="form-error">{{ form.innovation.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">Consider: did this game break new ground in terms of
+  gameplay, genre or approach?</p>
+ </td>
+</tr>
+
+<tr{% if form.production.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_production">Production:</label></td>
+ <td>{{ form.production }}
+  {% if form.production.errors %}
+   <p class="form-error">{{ form.production.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">Consider: did the game have nice graphics? Did it
+  include sound and music? Were these elements appropriate and balanced?</p>
+ </td>
+</tr>
+
+<tr{% if form.nonworking.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_nonworking">Entry Did Not Work:</label></td>
+ <td>{{ form.nonworking }}
+  {% if form.nonworking.errors %}
+   <p class="form-error">{{ form.nonworking.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">The entry did not work for you.
+  Please explain what happened, including how you ran the game and what
+  resulted from that (include a traceback if you got one).<br>
+<i>If you choose this option then the ratings above will not be counted
+in the entry's total.</i></p>
+ </td>
+</tr>
+
+<tr{% if form.disqualify.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_disqualify">Disqualify Entry:</label></td>
+ <td>{{ form.disqualify }}
+  {% if form.disqualify.errors %}
+   <p class="form-error">{{ form.disqualify.errors|join:", " }}</p>
+  {% endif %}
+  <p class="form-help">The entry clearly cheated or otherwise broke the rules
+  of the challenge. You must explain your reasoning in the comments below.
+<br>
+  <i>If you choose this option then the ratings you assign will still be
+   counted in the entry's total.</i></p>
+ </td>
+</tr>
+
+<tr{% if form.comment.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_comment">Comments:</label></td>
+ <td>{{ form.comment }}
+  {% if form.comment.errors %}
+   <p class="form-error">{{ form.comment.errors|join:", " }}</p>
+  {% endif %}
+ </td>
+</tr>
+
+<tr><td></td><td>
+<input type="submit" value="Save Changes">
+</td></tr>
+</table>
+</fieldset>
+{% endif %}
+</td>
+</tr>
+</table>
+
+
+{% if files %}
+<table width="100%" id="files">
+<tr><th colspan="2">Files:</th>
+<th>Uploader</th>
+<th>Date</th>
+</tr>
+ {% for file in files %}
+  <tr class="{% cycle even,odd %}"><td>
+  <a href="{{ file.get_content_url }}">{{ file.filename }}</a>
+  {% if file.is_final %}&mdash; <b>final</b>{% endif %}
+  </td>
+  <td style="whitespace: pre">
+  {{ file.pretty_size }}
+  </td>
+  <td>{{ file.user }}</td>
+  <td style="whitespace: pre">{{ file.created|date:"Y/m/d H:i" }}</td>
+  </tr>
+  <tr class="{% cycle even,odd %}"><td colspan="{%if is_member%}3{%else%}4{%endif%}">{{ file.description }}</td>
+{% if is_member %}
+  <td><a class="delete" href="/e/{{entry.name}}/delete/{{file.filename}}">delete</a></td>
+{% endif %}
+</tr>
+ {% endfor %}
+</table>
+{% endif %}
+
+{% include "diary_entries.html" %}
+
+{% endblock %}
+
+{% block leftbar %}{% include "entry_nav.html" %}{% endblock %}

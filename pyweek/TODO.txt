@@ -1,0 +1,8 @@
+
+Fix md5 adding during last few hours.
+
+Fix pyweek-upload to not truncate upload.
+Change pyweek-upload to automatically handle final-hours md5 stuff.
+
+
+Fix skellington to work with py2exe.
