@@ -238,10 +238,3 @@ any code you produce must work on those versions.
 If you are the maintainer of a library, we would ask that you make all efforts to not
 sabotage existing users of your library. It's probably safer to wait until after the
 challenge to release the new version, and use the old version for the challenge.
-
--------------------
-
-
-The `PyWeek Game Programming Challenge`__ Rules Committee <pyweek1@mechanicalcat.net>
-
-__ http://www.mechanicalcat.net/tech/PyWeek
