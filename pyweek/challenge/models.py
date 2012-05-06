@@ -117,7 +117,10 @@ class Challenge(models.Model):
 
     def __repr__(self):
         return '<Challenge %d: %r>' % (self.number, self.title)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'Challenge %d: %r' % (self.number, self.title)
+    def __unicode__(self):
+        return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
 
     def start_utc(self, UTC=UTC):
         return datetime.datetime(self.start.year, self.start.month,
@@ -393,7 +396,10 @@ class Entry(models.Model):
             'challenge', 'is_upload_open')
     def __repr__(self):
         return '<Entry %r>' % (self.name, )
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'Entry "%s"' % (self.name, )
+    def __unicode__(self):
+        return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
 
     def is_team(self):
         return len(self.users.all()) > 1
@@ -481,7 +487,11 @@ class Rating(models.Model):
 
     def __repr__(self):
         return '%r rating %r'%(self.user, self.entry)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return '%s rating %s'%(self.user, self.entry)
+    def __unicode__(self):
+        return u'%s rating %s'%(self.user.name.decode('utf8', 'replace'),
+            self.entry)
 
     def save(self, UTC=UTC):
         if self.created == None:
@@ -510,7 +520,10 @@ class RatingTally(models.Model):
 
     def __repr__(self):
         return '%r rating tally'%(self.entry, )
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return '%s rating tally'%(self.entry, )
+    def __unicode__(self):
+        return u'%s rating tally'%(self.entry,)
 
 class DiaryEntry(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)      # convenience
@@ -537,7 +550,11 @@ class DiaryEntry(models.Model):
 
     def __repr__(self):
         return '%r by %r'%(self.title, self.user)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return '%s by %s'%(self.title, self.user)
+    def __unicode__(self):
+        return u'%s by %s'%(self.title.decode('utf8', 'replace'),
+            self.user.name.decode('utf8', 'replace'))
 
     def summary(self):
         ''' summary text - remove HTML and truncate '''
@@ -570,7 +587,9 @@ class DiaryComment(models.Model):
 
     def __repr__(self):
         return 'diary_comment-%r'%self.id
-    __unicode__ = __str__ = __repr__
+    __str__ = __repr__
+    def __unicode__(self):
+        return u'diary_comment-%r'%self.id
 
     def save(self, UTC=UTC):
         if self.created == None:
@@ -598,7 +617,11 @@ class File(models.Model):
 
     def __repr__(self):
         return 'file for %r (%r)'%(self.entry, self.description)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'file for %s (%s)'%(self.entry, self.description)
+    def __unicode__(self):
+        return u'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
+            self.description.decode('utf8', 'replace'))
 
     def save(self, UTC=UTC):
         if self.created == None:
@@ -637,7 +660,11 @@ class Award(models.Model):
 
     def __repr__(self):
         return 'award from %r (%r)'%(self.creator, self.description)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'award from %s (%s)'%(self.creator, self.description)
+    def __unicode__(self):
+        return u'award from %s (%s)'%(self.creator.name.decode('utf8', 'replace'),
+            self.description.decode('utf8', 'replace'))
 
     def filename(self):
         return os.path.basename(self.get_content_filename())
@@ -663,7 +690,10 @@ class EntryAward(models.Model):
 
     def __repr__(self):
         return '%r to %r' % (self.award, self.entry)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return '%s to %s' % (self.award, self.entry)
+    def __unicode__(self):
+        return u'%s to %s' % (self.award, self.entry)
 
     def content(self):
         return self.award.content
@@ -698,7 +728,8 @@ class Checksum(models.Model):
 
     def __repr__(self):
         return 'MD5 hash %r' % (self.md5)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'MD5 hash %r' % (self.md5)
 
     def save(self, UTC=UTC):
         if self.created == None:
@@ -741,7 +772,10 @@ class Poll(models.Model):
 
     def __repr__(self):
         return '<Poll %r>' % (self.title, )
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'Poll %s' % (self.title, )
+    def __str__(self):
+        return 'Poll %s' % (self.title.encode('utf8', 'replace'), )
 
     def save(self, UTC=UTC):
         if self.created == None:
@@ -856,7 +890,10 @@ class Option(models.Model):
 
     def __repr__(self):
         return '<Poll %r Option %r>' % (self.poll, self.text)
-    __unicode__ = __str__ = __repr__
+    def __str__(self):
+        return 'Poll %s Option "%s"' % (self.poll, self.text)
+    def __unicode__(self):
+        return u'Poll %s Option "%s"' % (self.poll, self.text.decode('utf8', 'replace'))
 
 class Response(models.Model):
     poll = models.ForeignKey(Poll)
