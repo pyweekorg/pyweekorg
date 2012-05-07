@@ -21,7 +21,7 @@
 
 <p><a href="/d/{{ diary.id }}/">Back to the entry</a></p>
 
-<fieldset><legend>Entry Text</legend>{{ diary.content }}</fieldset>
+<fieldset><legend>Entry Text</legend>{% autoescape off %}{{ diary.content }}{% endautoescape %}</fieldset>
 
 <form class="form" method="post" action=".">
     {{ form.as_plain }}

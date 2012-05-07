@@ -2,7 +2,6 @@
 import cgi, urllib, random, hashlib
 
 from django import forms
-from django import newforms
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -28,19 +27,11 @@ def isCommaSeparatedUserList(field_data, all_data):
         if not models.User.objects.filter(username__exact=name):
             raise validators.CriticalValidationError, ['No such user %s'%name]
 
-class AddEntryManipulator(forms.Manipulator):
-    def __init__(self):
-        self.fields = (
-            forms.TextField(field_name="name", length=15,
-                validator_list=[validators.isSlug, isUnusedEntryName],
-                maxlength=15, is_required=True),
-            forms.TextField(field_name="title", is_required=True,
-                validator_list=[isUnusedEntryTitle]),
-            forms.LargeTextField(field_name="description",
-                is_required=False),
-            forms.TextField(field_name="users", length=40,
-                validator_list=[isCommaSeparatedUserList]),
-        )
+class AddEntryForm(forms.Form):
+    name = forms.CharField(max_length=15, validators=[validators.validate_slug, isUnusedEntryName], required=True)
+    title = forms.CharField(required=True, validators=[isUnusedEntryTitle])
+    description = forms.CharField(required=False, widget=forms.Textarea)
+    users = forms.CharField(validators=[isCommaSeparatedUserList])
 
 def entry_list(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
@@ -147,36 +138,31 @@ def entry_add(request, challenge_id):
             request.user.message_set.create(message='Entry registration closed')
         return HttpResponseRedirect("/%s/"%challenge_id)
 
-    manipulator = AddEntryManipulator()
     if request.POST:
-        new_data = request.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
+        f = AddEntryForm(request.POST)
+        if f.is_valid():
             new_users = []
-            if new_data['users'].strip():
-                for user in [u.strip() for u in new_data['users'].split(',')]:
+            if f.cleaned_data['users'].strip():
+                for user in [u.strip() for u in f.cleaned_data['users'].split(',')]:
                     new_users.append(models.User.objects.get(username__exact=user).id)
             if request.user.id not in new_users:
                 new_users.append(request.user.id)
-            entry = models.Entry(name=new_data['name'],
+            entry = models.Entry(name=f.cleaned_data['name'],
                 challenge=challenge, user=request.user,
-                description=html2safehtml(new_data['description'], safeTags),
-                title=new_data['title'])
+                description=html2safehtml(f.cleaned_data['description'], safeTags),
+                title=f.cleaned_data['title'])
             entry.save()
             for u in new_users:
                 entry.users.add(u)
             request.user.message_set.create(message='Entry created!')
             return HttpResponseRedirect("/e/%s/"%entry.name)
     else:
-        errors = {}
-        new_data = {}
+        f = AddEntryForm()
 
-    form = forms.FormWrapper(manipulator, new_data, errors)
     return render_to_response('challenge/entry_add.html',
         {
             'challenge': challenge,
-            'form': form,
+            'form': f,
             'is_member': True,
             'is_owner': True,
         }, context_instance=RequestContext(request))
@@ -192,7 +178,7 @@ def entry_display(request, entry_id):
     if files: thumb = files[0]
 
     # handle ratings
-    form = False
+    f = False
     if entry.may_rate(request.user, challenge) and challenge.isRatingOpen():
         errors = {}
         l = entry.rating_set.filter(user__id__exact=request.user.id)
@@ -237,7 +223,6 @@ def entry_display(request, entry_id):
                     place = manipulator.save(new_data)
                     request.user.message_set.create(message='Ratings saved!')
                     return HttpResponseRedirect("/e/%s/"%entry.name)
-        form = forms.FormWrapper(manipulator, data, errors)
 
     rating_results = False
     if challenge.isAllDone() and entry.has_final:
@@ -257,7 +242,7 @@ def entry_display(request, entry_id):
             'is_member': is_member,
             'is_team': len(user_list) > 1,
             'is_owner': entry.user == request.user,
-            'form': form,
+            'form': f,
             'rating': rating_results,
             'awards': entry.entryaward_set.all(),
         }, context_instance=RequestContext(request))
@@ -284,22 +269,11 @@ def entry_ratings(request, entry_id):
             'is_owner': entry.user == request.user,
         }, context_instance=RequestContext(request))
 
-def isCommaSeparatedUserList(field_data, all_data):
-    for name in [e.strip() for e in field_data.split(',')]:
-        if not models.User.objects.filter(username__exact=name):
-            raise validators.CriticalValidationError, [
-                'No such user %s'%name]
-
-class EntryManipulator(forms.Manipulator):
-    def __init__(self):
-        self.fields = (
-            forms.TextField(field_name="title", is_required=True),
-            forms.TextField(field_name="game", is_required=True),
-            forms.LargeTextField(field_name="description",
-                is_required=False),
-            forms.TextField(field_name="users", length=40,
-                validator_list=[isCommaSeparatedUserList]),
-        )
+class EntryForm(forms.Form):
+    title = forms.CharField(required=True)
+    game = forms.CharField(required=True)
+    description = forms.CharField(required=False, widget=forms.Textarea)
+    users = forms.CharField(validators=[isCommaSeparatedUserList])
 
 def entry_manage(request, entry_id):
     if request.user.is_anonymous():
@@ -309,35 +283,32 @@ def entry_manage(request, entry_id):
         request.user.message_set.create(message="You're not allowed to manage this entry!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
-    manipulator = EntryManipulator()
     if request.POST:
-        new_data = request.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
-            entry.description = html2safehtml(new_data['description'], safeTags)
-            entry.title = new_data['title']
-            entry.game = new_data['game']
+        f = EntryForm(request.POST)
+        if f.is_valid():
+            entry.description = html2safehtml(f.cleaned_data['description'], safeTags)
+            entry.title = f.cleaned_data['title']
+            entry.game = f.cleaned_data['game']
             new_users = []
-            for user in [u.strip() for u in new_data['users'].split(',')]:
+            for user in [u.strip() for u in f.cleaned_data['users'].split(',')]:
                 new_users.append(models.User.objects.get(username__exact=user).id)
             entry.users = new_users
             entry.save()
             request.user.message_set.create(message='Changes saved!')
             return HttpResponseRedirect("/e/%s/"%entry_id)
     else:
-        errors = {}
-        new_data = {'name': entry.name, 'title': entry.title,
+        f = EntryForm({'name': entry.name, 'title': entry.title,
             'description': entry.description, 'game': entry.game,
-            'users': ', '.join(map(str, entry.users.all()))}
+            'users': ', '.join(map(str, entry.users.all()))})
 
     challenge = entry.challenge
-    form = forms.FormWrapper(manipulator, new_data, errors)
+    #form = forms.FormWrapper(f, new_data, errors)
     return render_to_response('challenge/entry_admin.html',
         {
             'challenge': challenge,
             'entry': entry,
-            'form': form,
+            'form': f,
             'is_member': True,
             'is_owner': True,
         }, context_instance=RequestContext(request))
+

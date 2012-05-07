@@ -5,7 +5,6 @@ import xml.sax.saxutils
 from PIL import Image
 
 from django import forms
-from django import newforms
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -22,12 +21,12 @@ from stripogram import html2text, html2safehtml
 safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
     ul ol li span div'''.split()
 
-class SafeHTMLField(newforms.CharField):
-    widget = newforms.Textarea
+class SafeHTMLField(forms.CharField):
+    widget = forms.Textarea
     def clean(self, value):
         if '<' in value:
             value = html2safehtml(value, safeTags)
-        if not value: raise newforms.ValidationError(['This field is required'])
+        if not value: raise forms.ValidationError(['This field is required'])
         return value
 
 def index(request):

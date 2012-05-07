@@ -10,6 +10,7 @@
 {% block content %}
 
 <form class="form" method="post" action=".">
+{{ form.non_field_errors }}
 <table>
 <tr><td><label for="id_username">{% trans 'username:' %}</label></td><td>{{ form.username }}</td></tr>
 <tr><td><label for="id_password">{% trans 'password:' %}</label></td><td>{{ form.password }}</td></tr>

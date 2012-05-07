@@ -2,7 +2,7 @@ import os, cgi
 import datetime
 import xml.sax.saxutils
 
-from django import newforms
+from django import forms
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -13,12 +13,12 @@ from stripogram import html2text, html2safehtml
 
 safeTags = '''strong em blockquote pre b a i br img table tr th td pre p dl dd dt ul ol li span div'''.split()
 
-class SafeHTMLField(newforms.CharField):
-    widget = newforms.Textarea
+class SafeHTMLField(forms.CharField):
+    widget = forms.Textarea
     def clean(self, value):
         if '<' in value:
             value = html2safehtml(value, safeTags)
-        if not value: raise newforms.ValidationError(['This field is required'])
+        if not value: raise forms.ValidationError(['This field is required'])
         return value
 
 
@@ -132,8 +132,8 @@ def messages(request):
     } , context_instance=RequestContext(request))
 
 
-class DiaryForm(newforms.Form):
-    title = newforms.CharField(required=True, widget=newforms.TextInput(attrs={'size':'60'}))
+class DiaryForm(forms.Form):
+    title = forms.CharField(required=True, widget=forms.TextInput(attrs={'size':'60'}))
     content = SafeHTMLField(required=True)
         #help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
     def as_plain(self):
@@ -148,7 +148,7 @@ def message_add(request):
     if request.POST:
         form = DiaryForm(request.POST)
         if form.is_valid():
-            content = form.clean_data['content']
+            content = form.cleaned_data['content']
 
             previewed = True
             if 1: #request.POST.has_key('save'):
@@ -157,11 +157,11 @@ def message_add(request):
                 diary.content = content
                 diary.user = request.user
                 diary.actor = request.user
-                diary.title = form.clean_data['title']
+                diary.title = form.cleaned_data['title']
                 diary.created = datetime.datetime.now(models.UTC)
                 diary.save()
                 generate_diary_rss()
-                request.user.message_set.create(message='Entry saved!')
+#                request.user.message_set.create(message='Entry saved!')
                 return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
         form = DiaryForm()
@@ -189,7 +189,7 @@ def entry_diary(request, entry_id):
     if request.POST:
         form = DiaryForm(request.POST)
         if form.is_valid():
-            content = form.clean_data['content']
+            content = form.cleaned_data['content']
 
             previewed = True
             if 1: #request.POST.has_key('save'):
@@ -200,11 +200,12 @@ def entry_diary(request, entry_id):
                 diary.content = content
                 diary.user = request.user
                 diary.actor = request.user
-                diary.title = form.clean_data['title']
+                diary.title = form.cleaned_data['title']
                 diary.created = datetime.datetime.now(models.UTC)
                 diary.save()
                 generate_diary_rss()
-                request.user.message_set.create(message='Entry saved!')
+                # XXX new user message middleware
+                #request.user.message_set.create(message='Entry saved!')
                 return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
         form = DiaryForm()
@@ -277,7 +278,7 @@ def generate_diary_rss():
     f.close()
     os.rename(settings.DIARY_RSS_FILE_NEW, settings.DIARY_RSS_FILE)
 
-class CommentForm(newforms.Form):
+class CommentForm(forms.Form):
     content = SafeHTMLField(required=True)
         #help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
     def as_plain(self):
@@ -296,7 +297,7 @@ def diary_display(request, diary_id):
         previewed = True
         form = CommentForm(request.POST)
         if form.is_valid():
-            content = form.clean_data['content']
+            content = form.cleaned_data['content']
 
             if 1: # request.POST.has_key('save'):
                 # do the save
@@ -308,7 +309,7 @@ def diary_display(request, diary_id):
                 diary.last_comment = comment
                 diary.reply_count = diary.reply_count + 1
                 diary.save()
-                request.user.message_set.create(message='Comment added!')
+                #request.user.message_set.create(message='Comment added!')
                 return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
                     comment.id))
     else:
@@ -343,14 +344,14 @@ def diary_edit(request, diary_id):
     if request.POST:
         form = DiaryForm(request.POST)
         if form.is_valid():
-            content = form.clean_data['content']
+            content = form.cleaned_data['content']
 
             # do the save
             diary.content = content
-            diary.title = form.clean_data['title']
+            diary.title = form.cleaned_data['title']
             diary.edited = datetime.datetime.now(models.UTC)
             diary.save()
-            request.user.message_set.create(message='Edit saved!')
+            #request.user.message_set.create(message='Edit saved!')
             return HttpResponseRedirect('/d/%s/edit/'%diary_id)
     else:
         form = DiaryForm(data)
@@ -374,7 +375,7 @@ def diary_delete(request, diary_id):
     if request.POST and 'delete' in request.POST:
         diary.delete()
         generate_diary_rss()
-        request.user.message_set.create(message="Diary entry deleted!")
+        #request.user.message_set.create(message="Diary entry deleted!")
         return HttpResponseRedirect('/e/%s/'%diary.entry_id)
     else:
         return HttpResponseRedirect('/d/%s/'%diary_id)

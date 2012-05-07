@@ -9,7 +9,7 @@
 <h1>PyWeek - {{ entry.title|escape }}</h1>
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%"><tr>
-<td valign="top">{{ description }}</td>
+<td valign="top">{% autoescape off %}{{ description }}{% endautoescape %}</td>
 {% if thumb %}
 <td valign="top" width="{{ thumb.thumb_width }}px">
 <a href="{{ thumb.get_content_url }}"><img src="{{ thumb.get_content_url }}-thumb.png"></a>

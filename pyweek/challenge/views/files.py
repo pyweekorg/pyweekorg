@@ -1,12 +1,9 @@
-# XXX UPDATE TO NEWFORMS
-
 import os
 import datetime
 
 from PIL import Image
 
 from django import forms
-from django import newforms
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -16,6 +13,9 @@ from pyweek.settings import MEDIA_ROOT
 
 from stripogram import html2text
 
+class FileForm(forms.ModelForm):
+    class Meta:
+        model = models.File
 
 def entry_upload(request, entry_id):
     if request.user.is_anonymous():
@@ -30,7 +30,7 @@ def entry_upload(request, entry_id):
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
     # for context
-    manipulator = models.File.AddManipulator()
+    f = FileForm()
     info = {
         'challenge': challenge,
         'entry': entry,
@@ -40,9 +40,9 @@ def entry_upload(request, entry_id):
     }
 
     # display the form
-    if not (request.POST or request.FILES):
+    if not (request.POST or request.FILES) or not f.is_valid():
         # XXX hard-code the is_screenshot checkbox
-        info['form'] = forms.FormWrapper(manipulator, {}, {})
+        info['form'] = f
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
@@ -66,16 +66,16 @@ def entry_upload(request, entry_id):
     # XXX make this better
     data = {}
     if errors:
-        info['form'] = forms.FormWrapper(manipulator, data, errors)
+        info['form'] = f
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
     data = _save_upload(challenge, entry, request.user, content_path, request)
     if data:
         # problem creating the thumbnail, so remove that file and tell the user
+        # XXX need feedback with custom error "file is not an image"
         os.remove(fspath)
-        info['form'] = forms.FormWrapper(manipulator, data,
-            {'content_file': ['Not an image file']})
+        info['form'] = f
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 

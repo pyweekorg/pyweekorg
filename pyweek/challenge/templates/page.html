@@ -2,4 +2,4 @@
 
 {% block title %}PyWeek - Python Game Programming Challenge{% endblock %}
 
-{% block content %}{{ content }}{% endblock %}
+{% block content %}{% autoescape off %}{{ content }}{% endautoescape %}{% endblock %}

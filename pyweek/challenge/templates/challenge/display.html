@@ -37,7 +37,9 @@ to 00:00 UTC {{ challenge.end }}.</p>
 {% if not all_done %}
 <table id="timetable">
 <tr><th colspan="2">Timetable</th></tr>
+{% autoescape off %}
 {{ challenge.timetableHTML }}
+{% endautoescape %}
 </table>
 {% endif %}
 

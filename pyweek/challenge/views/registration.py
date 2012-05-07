@@ -6,111 +6,92 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms 
 from django.core.mail import send_mail
-from django.core.validators import RequiredIfOtherFieldsGiven
 from django.contrib.auth.forms import AuthenticationForm
 #from django.models.auth import users
 from django.contrib.sites.models import Site
 from django.contrib import auth
 
-class RegistrationManipulator(forms.Manipulator):
-    def __init__(self):
-        self.fields = (
-            forms.TextField(field_name="name", length=15,
-                maxlength=15, is_required=True),
-            forms.EmailField(field_name="email", is_required=True),
-            forms.PasswordField(field_name="password", length=15),
-            forms.PasswordField(field_name="again", length=15,
-                validator_list=[RequiredIfOtherFieldsGiven(['password'])]),
-        )
+
+class RegistrationForm(forms.Form):
+    name = forms.CharField(max_length=15, required=True)
+    email = forms.EmailField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput)
+    again = forms.CharField(widget=forms.PasswordInput)
 
 
 def register(request):
-    manipulator = RegistrationManipulator()
     redirect_to = request.REQUEST.get('next', '')
     if request.POST:
-        new_data = request.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
-            if not new_data['password']:
+        f = RegistrationForm(request.POST)
+        if f.is_valid():
+            if not f.cleaned_data['password']:
                 errors['password'] = ['This field is required.']
-            if new_data['password'] != new_data['again']:
+            if f.cleaned_data['password'] != f.cleaned_data['again']:
                 errors['again'] = ['Does not match password.']
-            if User.objects.filter(username__exact=new_data['name']):
+            if User.objects.filter(username__exact=f.cleaned_data['name']):
                 errors['name'] = ['Username already registered']
-            if User.objects.filter(email__exact=new_data['email']):
+            if User.objects.filter(email__exact=f.cleaned_data['email']):
                 errors['email'] = ['Email address already registered']
             if not errors:
-                user = User(username=new_data['name'],
-                    email=new_data['email'], is_active=True,
-                    is_superuser=False, is_staff=False)
-                user.set_password(new_data['password'])
-                user.save()
-                request.session[auth.SESSION_KEY] = user.id
+                user = User.objects.create_user(f.cleaned_data['name'],
+                    f.cleaned_data['email'], f.cleaned_data['password'])
+                auth.login(request, user)
                 user.message_set.create(message='Welcome to the Challenge!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
-        errors = new_data = {}
-    form = forms.FormWrapper(manipulator, new_data, errors)
-    return render_to_response('registration/register.html', {'form': form},
+        f = RegistrationForm()
+    return render_to_response('registration/register.html', {'form': f},
         context_instance=RequestContext(request))
 
 
 def profile(request):
-    manipulator = RegistrationManipulator()
     redirect_to = request.REQUEST.get('next', '')
     if request.user.is_anonymous():
         return HttpResponseRedirect('/login/')
     elif request.POST:
-        new_data = request.POST.copy()
-        errors = manipulator.get_validation_errors(new_data)
-        if not errors:
-            manipulator.do_html2python(new_data)
-            if new_data['password'] != new_data['again']:
-                errors['again'] = ['Does not match password.']
+        f = RegistrationForm(request.POST)
+        if f.is_valid():
+            if f.cleaned_data['password'] != f.cleaned_data['again']:
+                f.errors['again'] = ['Does not match password.']
             if not errors:
-                request.user.username = new_data['name']
-                request.user.email = new_data['email']
-                if new_data['password']:
-                    request.user.set_password(new_data['password'])
+                request.user.username = f.cleaned_data['name']
+                request.user.email = f.cleaned_data['email']
+                if f.cleaned_data['password']:
+                    request.user.set_password(f.cleaned_data['password'])
                 request.user.save()
                 request.user.message_set.create(message='Changes saved!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         errors = {}
-        new_data = {
+        f = RegistrationForm({
             'name': request.user.username,
             'email': request.user.email,
-        }
-    form = forms.FormWrapper(manipulator, new_data, errors)
-    return render_to_response('registration/profile.html', {'form': form},
+        })
+    return render_to_response('registration/profile.html', {'form': f},
         context_instance=RequestContext(request))
 
 def login_page(request, message=None, error=None):
     "Displays the login form and handles the login action."
-    manipulator = AuthenticationForm(request)
     redirect_to = request.REQUEST.get('next', '')
-    if not (message or error) and request.POST:
+    if request.POST:
+        # Oh, Django, you are shitting me...
+        f = AuthenticationForm(data=request.POST)
+    else:
+        f = AuthenticationForm()
+    if not (message or error) and request.POST and f.is_valid():
         request.session.delete_test_cookie()
-        username = request.POST['username']
-        password = request.POST['password']
+        username = f.cleaned_data['username']
+        password = f.cleaned_data['password']
         user = auth.authenticate(username=username, password=password)
         if user is not None:
-            if user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(redirect_to or '/')
-            else:
-                error = "account disabled"
+            auth.login(request, user)
+            return HttpResponseRedirect(redirect_to or '/')
         else:
             # Return an 'invalid login' error message.    
             error = "invalid login"
-            errors = {}
-            #return HttpResponseRedirect(redirect_to or '/login/')
-    else:
-        errors = {}
     request.session.set_test_cookie()
     info = {
-        'form': forms.FormWrapper(manipulator, request.POST, errors),
+        'form': f,
         'next': redirect_to,
         'site_name': Site.objects.get_current().name,
     }

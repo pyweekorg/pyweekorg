@@ -16,7 +16,9 @@
 {% block content %}
 <h1>PyWeek - {{ diary.title }}</h1>
 
+{% autoescape off %}
 {{ diary.content }}
+{% endautoescape %}
 
 <p>&mdash;
   <a href="/u/{{ diary.user.username }}/">{{ diary.user }}</a> on {{ diary.created|date:"Y/m/d H:i" }}

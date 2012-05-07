@@ -8,7 +8,7 @@
   <a href="/u/{{ entry.user.username }}/">{{ entry.user.username }}</a>
  @ {{ entry.created|date:"H:i" }}
 ] {{ entry.title }}</h3>
-<p>{{ entry.content }}</p>
+<p>{% autoescape off %}{{ entry.content }}{% endautoescape %}</p>
 
 <p class="diary-byline">
 <a href="/d/{{ entry.id }}/">show

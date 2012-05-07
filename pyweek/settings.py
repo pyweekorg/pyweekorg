@@ -13,38 +13,20 @@ import socket
 hostname = socket.gethostname()
 DIARY_RSS_FILE_NEW = '/home/pyweek/media/rss/diaries.rss.new'
 DIARY_RSS_FILE = '/home/pyweek/media/rss/diaries.rss'
-if hostname == 'shiny':
-    DATABASE_ENGINE = 'postgresql'
-    DATABASE_NAME = 'rjones_pyweek'
-    DATABASE_USER = 'pyweek'
+DATABASES = {
+  'default': dict(
+    ENGINE = 'django.db.backends.postgresql_psycopg2',
+    NAME = 'rjones_pyweek',
+    USER = 'rjones_pyweek',
+    PASSWORD = open('/home/pyweek/database-password.txt', 'r').read().strip(),
+  ),
+}
 
-    # Absolute path to the directory that holds media.
-    # Example: "/home/media/media.lawrence.com/"
-    MEDIA_ROOT = '/home2/rjones/webapps/media/dl/'
-elif hostname == 'lucio-torres-ibook-g4.local':
-    DATABASE_ENGINE = 'sqlite3'
-    DATABASE_NAME = '/Users/lucio/tmp/pyweek-test.db'
-    DATABASE_USER = ''
-    DATABASE_PASSWORD = ''
-    DIARY_RSS_FILE_NEW = '/Users/lucio/tmp/diaries.rss.new'
-    DIARY_RSS_FILE = '/Users/lucio/tmp/diaries.rss'
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = '/home/pyweek/media/dl/'
 
-    # Absolute path to the directory that holds media.
-    # Example: "/home/media/media.lawrence.com/"
-    MEDIA_ROOT = '/Users/lucio/src/pyweek/site/dl/'
-    EMAIL_HOST = '192.168.1.10'
-else:
-    DATABASE_ENGINE = 'postgresql'
-    DATABASE_NAME = 'rjones_pyweek'
-    DATABASE_USER = 'rjones_pyweek'
-    DATABASE_PASSWORD = open('/home/pyweek/database-password.txt',
-        'r').read().strip()
-
-    # Absolute path to the directory that holds media.
-    # Example: "/home/media/media.lawrence.com/"
-    MEDIA_ROOT = '/home/pyweek/media/dl/'
-
-    PAGES_DIR = '/home/pyweek/lib/pyweek/challenge/media/'
+PAGES_DIR = '/home/pyweek/lib/pyweek/challenge/media/'
 
 if hostname == 'l-rjones':
     DEBUG = True
@@ -84,11 +66,11 @@ ADMIN_MEDIA_PREFIX = 'http://media.pyweek.org/media/'
 SECRET_KEY = '7h+@gd=zdc=+2crk8s#1_$mh$l6&fn(8@n#g9@$g7p(==68=+5'
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-    'django.template.loaders.eggs.load_template_source',
-)
+#TEMPLATE_LOADERS = (
+#    'django.template.loaders.filesystem.load_template_source',
+#    'django.template.loaders.app_directories.load_template_source',
+#    'django.template.loaders.eggs.load_template_source',
+#)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -107,7 +89,7 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.core.context_processors.auth",
+    "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
 #    "django.core.context_processors.i18n",
     "pyweek.challenge.views.context.challenges",

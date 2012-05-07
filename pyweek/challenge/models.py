@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 
 from stripogram import html2text
 import datetime
-import sets
 
 # Maximum number of checksums per entry. Set to None to disable
 MAX_CHECKSUMS = 5
@@ -100,14 +99,14 @@ def participation():
 # Create your models here.
 class Challenge(models.Model):
     number = models.IntegerField(primary_key=True)
-    title = models.CharField(maxlength=100)
+    title = models.CharField(max_length=100)
     start = models.DateField()
     end = models.DateField()
     motd = models.TextField()
     is_rego_open = models.BooleanField(default=False)
     theme_poll = models.ForeignKey('Poll', null=True, blank=True, related_name='poll_challenge')
-    theme = models.CharField(maxlength=100, null=True, blank=True, default='')
-    torrent_url = models.CharField(maxlength=255, null=True, blank=True, default='')
+    theme = models.CharField(max_length=100, null=True, blank=True, default='')
+    torrent_url = models.CharField(max_length=255, null=True, blank=True, default='')
 
     class Meta:
         ordering = ['start']
@@ -374,12 +373,12 @@ class Challenge(models.Model):
 
 
 class Entry(models.Model):
-    name = models.CharField(maxlength=15, primary_key=True,
-        validator_list=[validators.isSlug])
-    title = models.CharField(maxlength=100)
-    game = models.CharField(maxlength=100)
-    challenge = models.ForeignKey(Challenge)
-    winner = models.ForeignKey(Challenge, blank=True, null=True)
+    name = models.CharField(max_length=15, primary_key=True,
+        validators=[validators.validate_slug])
+    title = models.CharField(max_length=100)
+    game = models.CharField(max_length=100)
+    challenge = models.ForeignKey(Challenge, related_name='challenge')
+    winner = models.ForeignKey(Challenge, blank=True, null=True, related_name='winner')
     user = models.ForeignKey(User, verbose_name='entry owner', related_name="owner")
     users = models.ManyToManyField(User)
     description = models.TextField()
@@ -502,10 +501,10 @@ class RatingTally(models.Model):
     challenge = models.ForeignKey(Challenge)      # convenience
     entry = models.ForeignKey(Entry)
     individual = models.BooleanField()
-    fun = models.FloatField(max_digits=3, decimal_places=2)
-    innovation = models.FloatField(max_digits=3, decimal_places=2)
-    production = models.FloatField(max_digits=3, decimal_places=2)
-    overall = models.FloatField(max_digits=3, decimal_places=2)
+    fun = models.FloatField()#max_digits=3, decimal_places=2)
+    innovation = models.FloatField()#max_digits=3, decimal_places=2)
+    production = models.FloatField()#max_digits=3, decimal_places=2)
+    overall = models.FloatField()#max_digits=3, decimal_places=2)
     nonworking = models.PositiveIntegerField()
     disqualify = models.PositiveIntegerField()
     respondents = models.PositiveIntegerField()
@@ -529,7 +528,7 @@ class DiaryEntry(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)      # convenience
     entry = models.ForeignKey(Entry, blank=True, null=True)
     user = models.ForeignKey(User, related_name='author')
-    title = models.CharField(maxlength=100)
+    title = models.CharField(max_length=100)
     content = models.TextField()
     created = models.DateTimeField()
     edited = models.DateTimeField(blank=True, null=True)
@@ -603,7 +602,7 @@ class File(models.Model):
     thumb_width = models.PositiveIntegerField()
     content = models.FileField(upload_to='/tmp')
     created = models.DateTimeField()
-    description = models.CharField(maxlength=255)
+    description = models.CharField(max_length=255)
     is_final = models.BooleanField(default=False)
     is_screenshot = models.BooleanField(default=False)
 
@@ -649,7 +648,7 @@ class Award(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField()
     content = models.FileField(upload_to='/tmp')
-    description = models.CharField(maxlength=255)
+    description = models.CharField(max_length=255)
 
     class Meta:
         get_latest_by = 'created'
@@ -710,9 +709,9 @@ class Checksum(models.Model):
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
     created = models.DateTimeField()
-    description = models.CharField(maxlength=255)
-    md5 = models.CharField(maxlength=32, unique=True,
-        validator_list=[validators.MatchesRegularExpression(
+    description = models.CharField(max_length=255)
+    md5 = models.CharField(max_length=32, unique=True,
+        validators=[validators.RegexValidator(
             '[0-9a-fA-F]{32}','Invalid md5 hash. Should be 32 hex digits')]
         )
     is_final = models.BooleanField(default=False)
@@ -748,7 +747,7 @@ POLL_CHOICES = (
 )
 class Poll(models.Model):
     challenge = models.ForeignKey(Challenge)
-    title = models.CharField(maxlength=100)
+    title = models.CharField(max_length=100)
     description = models.TextField()
     created = models.DateTimeField()
     is_open = models.BooleanField()
@@ -789,8 +788,7 @@ class Poll(models.Model):
         '''
         tally = {}
         responses = self.response_set.all()
-        import sets
-        respondees = sets.Set()
+        respondees = set()
         for response in responses:
             respondees.add(response.user_id)
             sum = tally.get(response.option_id, 0)
@@ -875,11 +873,8 @@ class Poll(models.Model):
 
 
 class Option(models.Model):
-    poll = models.ForeignKey(Poll,
-                             edit_inline=models.TABULAR,
-                             num_in_admin=5,
-                             num_extra_on_change=5)
-    text = models.CharField(maxlength=100, core=True)
+    poll = models.ForeignKey(Poll) #, edit_inline=models.TABULAR, num_in_admin=5, num_extra_on_change=5)
+    text = models.CharField(max_length=100)  #, core=True)
 
     class Meta:
         ordering = ['id']

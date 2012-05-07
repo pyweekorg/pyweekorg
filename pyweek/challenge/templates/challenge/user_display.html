@@ -10,7 +10,9 @@
 
 <h1>{{ profile_user }}</h1>
 
+{% autoescape off %}
 {{ profile_user.userprofile_set.all.0.content }}
+{% endautoescape %}
 
 <p>Entries this user has been in:</p>
 <table id="files">
