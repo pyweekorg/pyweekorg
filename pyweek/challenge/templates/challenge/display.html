@@ -6,7 +6,7 @@
 {% if screenie %}
 <div id="thumb" style="width: {{ screenie.thumb_width }}px">
 <p><strong>Latest Screenshot</strong></p>
-<a href="{{ screenie.get_content_url }}"><img src="{{ screenie.get_content_url }}-thumb.png"></a>
+<a href="{{ screenie.url }}"><img src="{{ screenie.url }}-thumb.png"></a>
 <p>{{ screenie.description }}</p>
 </div>
 {% endif %}

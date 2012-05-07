@@ -628,10 +628,10 @@ class File(models.Model):
         super(File, self).save()
 
     def filename(self):
-        return os.path.basename(self.get_content_filename())
+        return os.path.basename(self.content.name)
 
     def pretty_size(self):
-        size = self.get_content_size()
+        size = self.content.size
         unitSize= {'': 1, 'K': 1024.0, 'M': 1048576.0, 'G': 1073741824.0}
         if size < 1024:
             unit = ''
