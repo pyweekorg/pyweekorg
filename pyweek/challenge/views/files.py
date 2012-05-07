@@ -30,7 +30,7 @@ def entry_upload(request, entry_id):
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
     # for context
-    f = FileForm()
+    f = FileForm(request.POST, request.FILES)
     info = {
         'challenge': challenge,
         'entry': entry,
@@ -41,13 +41,12 @@ def entry_upload(request, entry_id):
     }
 
     # display the form
-    if not (request.POST or request.FILES) or not f.is_valid():
-        # XXX hard-code the is_screenshot checkbox
+    if not f.is_valid():
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
     # figure where to put the file
-    content_file = request.FILES['content_file']
+    content_file = f.cleaned_data['content']
     content_path = _upload_filepath(challenge, entry, request)
     fspath = os.path.join(MEDIA_ROOT, content_path)
 
@@ -130,7 +129,7 @@ def _upload_filepath(challenge, entry, request):
     if not os.path.exists(path):
         os.makedirs(path)
     return os.path.join(entrydir,
-         os.path.basename(request.FILES['content_file']['filename']))
+         os.path.basename(request.FILES['content']['filename']))
 
 def _save_upload(challenge, entry, user, content_path, request):
     data = dict(
@@ -149,7 +148,7 @@ def _save_upload(challenge, entry, user, content_path, request):
 
     # save off uploaded file
     f = open(fspath, 'wb')
-    f.write(request.FILES['content_file']['content'])
+    f.write(request.FILES['content']['content'])
     f.close()
 
     # create screenshot
