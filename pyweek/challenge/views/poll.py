@@ -6,7 +6,6 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from pyweek.challenge.models import Poll, Response, Option
-from django import forms
 
 instructions = {
     Poll.BEST_TEN: 'Select your ten preferred items from the list.',
@@ -60,15 +59,6 @@ def render(poll, request, force_display=False):
 
         s += '<p>There were %d respondents.</p>'%num
         return s
-
-class PollManipulator(forms.Manipulator):
-    def __init__(self, poll):
-        choices = [(option.id, option.text)
-            for option in poll.option_set.all()]
-        self.fields = (
-            formfields.RadioSelectField(field_name='choice',
-                choices=choices, is_required=True),
-        )
 
 def render_fields(poll, request):
     '''Figure the votes display for the current user.'''
@@ -168,7 +158,7 @@ def handle_votes(poll, current, request):
 def render_tally(poll, tally):
     # Render the results of voting
     l = ['<table>']
-    tally = map(lambda (choice, value): 
+    tally = map(lambda (choice, value):
                  (Option.objects.get(pk=choice), value), tally.items())
     if poll.is_ongoing:
         tally.sort(lambda a,b:cmp(a[0].text, b[0].text))
