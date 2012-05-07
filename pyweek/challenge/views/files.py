@@ -37,12 +37,12 @@ def entry_upload(request, entry_id):
         'files': entry.file_set.all(),
         'is_member': True,
         'is_owner': True,
+        'form': f,
     }
 
     # display the form
     if not (request.POST or request.FILES) or not f.is_valid():
         # XXX hard-code the is_screenshot checkbox
-        info['form'] = f
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
@@ -57,7 +57,7 @@ def entry_upload(request, entry_id):
             'File already exists with that name')
 
     # make sure user isn't sneeeky
-    is_final = bool(request.POST.get('is_final', False)),
+    is_final = bool(f.cleaned_data['is_final'])
     if is_final and not challenge.isFinalUploadOpen():
         errors.setdefault('is_final', []).append(
             'Final uploads are not allowed now')
@@ -66,7 +66,6 @@ def entry_upload(request, entry_id):
     # XXX make this better
     data = {}
     if errors:
-        info['form'] = f
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
@@ -75,7 +74,6 @@ def entry_upload(request, entry_id):
         # problem creating the thumbnail, so remove that file and tell the user
         # XXX need feedback with custom error "file is not an image"
         os.remove(fspath)
-        info['form'] = f
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 

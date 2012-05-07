@@ -175,7 +175,7 @@ def entry_display(request, entry_id):
     thumb = None
     if files: thumb = files[0]
 
-    # handle ratings
+    # handle adding the ratings form and accepting ratings submissions
     f = False
     if entry.may_rate(request.user, challenge) and challenge.isRatingOpen():
         errors = {}
