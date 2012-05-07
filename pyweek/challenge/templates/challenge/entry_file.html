@@ -26,11 +26,11 @@ produced to fit a 250 x 250 pixel box.</p>
 <form class="form" method="post" action="." enctype="multipart/form-data">
 <table cellspacing=0 cellpadding=0>
 
-<tr{% if form.content_file.errors %} class="form-error"{% endif %}>
- <td class="form-label"><label for="id_content_file">File:</label></td>
- <td>{{ form.content_file }}
-  {% if form.content_file.errors %}
-   <p class="form-error">{{ form.content_file.errors|join:", " }}</p>
+<tr{% if form.content.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_content">File:</label></td>
+ <td>{{ form.content}}
+  {% if form.content.errors %}
+   <p class="form-error">{{ form.content.errors|join:", " }}</p>
   {% endif %}
  </td>
 </tr>
