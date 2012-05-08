@@ -600,7 +600,9 @@ class File(models.Model):
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
     thumb_width = models.PositiveIntegerField()
-    content = models.FileField(upload_to='/tmp')
+    def upload_location(instance, filename):
+        return os.path.join(str(instance.challenge.number), str(instance.entry.name))
+    content = models.FileField(upload_to=upload_location)
     created = models.DateTimeField()
     description = models.CharField(max_length=255)
     is_final = models.BooleanField(default=False)
