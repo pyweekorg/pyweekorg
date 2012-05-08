@@ -12,7 +12,7 @@
 <td valign="top">{% autoescape off %}{{ description }}{% endautoescape %}</td>
 {% if thumb %}
 <td valign="top" width="{{ thumb.thumb_width }}px">
-<a href="{{ thumb.url }}"><img src="{{ thumb.url }}-thumb.png"></a>
+<a href="{{ thumb.content.url }}"><img src="{{ thumb.content.url }}-thumb.png"></a>
 <br>{{ thumb.description }}
 </td>
 {% endif %}

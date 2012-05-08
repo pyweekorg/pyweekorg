@@ -167,16 +167,14 @@ def file_delete(request, entry_id, filename):
         request.user.message_set.create(message="You're not allowed to upload files!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
-    if request.POST:
-        data = request.POST.copy()
-        if data.has_key('confirm'):
-            filepath = os.path.join(str(challenge_id), entry.name, filename)
+    if request.method == 'POST':
+        if request.POST.get('confirm', ''):
             try:
-                ob = entry.file_set.get(content__exact=filepath)
+                ob = entry.file_set.get(content__exact=filename)
                 ob.delete()
             except models.File.DoesNotExist:
                 pass
-            abspath = os.path.join(MEDIA_ROOT, filepath)
+            abspath = os.path.join(MEDIA_ROOT, filename)
             if os.path.exists(abspath):
                 os.remove(abspath)
             if os.path.exists(abspath + '-thumb.png'):
@@ -194,3 +192,4 @@ def file_delete(request, entry_id, filename):
             'url': '/e/%s/delete/%s'%(entry_id, filename),
             'message': 'Are you sure you wish to delete the file %s?'%filename,
         }, context_instance=RequestContext(request))
+
