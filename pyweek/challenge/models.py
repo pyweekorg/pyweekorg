@@ -601,7 +601,7 @@ class File(models.Model):
     user = models.ForeignKey(User)
     thumb_width = models.PositiveIntegerField(default=0)
     def upload_location(instance, filename):
-        return os.path.join(str(instance.challenge.number), str(instance.entry.name))
+        return os.path.join(str(instance.challenge.number), str(instance.entry.name), filename)
     content = models.FileField(upload_to=upload_location)
     created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
