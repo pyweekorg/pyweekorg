@@ -599,11 +599,11 @@ class File(models.Model):
     challenge = models.ForeignKey(Challenge)
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
-    thumb_width = models.PositiveIntegerField()
+    thumb_width = models.PositiveIntegerField(default=0)
     def upload_location(instance, filename):
         return os.path.join(str(instance.challenge.number), str(instance.entry.name))
     content = models.FileField(upload_to=upload_location)
-    created = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=255)
     is_final = models.BooleanField(default=False)
     is_screenshot = models.BooleanField(default=False)
