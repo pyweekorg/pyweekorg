@@ -16,14 +16,14 @@ safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
 
 def isUnusedEntryName(field_data):
     if models.Entry.objects.filter(name__exact=field_data):
-        raise validators.CriticalValidationError, ['"%s" already taken'%field_data]
+        raise validators.ValidationError('"%s" already taken'%field_data)
 def isUnusedEntryTitle(field_data):
     if models.Entry.objects.filter(title__exact=field_data):
-        raise validators.CriticalValidationError, ['"%s" already taken'%field_data]
+        raise validators.ValidationError('"%s" already taken'%field_data)
 def isCommaSeparatedUserList(field_data):
     for name in [e.strip() for e in field_data.split(',')]:
         if not models.User.objects.filter(username__exact=name):
-            raise validators.CriticalValidationError, ['No such user %s'%name]
+            raise validators.ValidationError('No such user %s'%name)
 
 class AddEntryForm(forms.Form):
     name = forms.CharField(max_length=15, validators=[validators.validate_slug, isUnusedEntryName], required=True)
