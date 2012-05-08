@@ -5,7 +5,9 @@
 <a name="comment-{{comment.id}}">By <a href="/u/{{ comment.user }}/">{{ comment.user }}</a>  on
 {{comment.created|date:"Y/m/d H:i"}}:</a>
 </p>
+{% autoescape off %}
 {{ comment.content }}
+{% endautoescape %}
 </div>
 {% endfor %}
 </div>
