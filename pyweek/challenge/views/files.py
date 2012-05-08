@@ -31,6 +31,11 @@ def entry_upload(request, entry_id):
 
     f = FileForm(request.POST, request.FILES)
 
+    # just display the form?
+    if not f.is_valid():
+        return render_to_response('challenge/entry_file.html', info,
+            context_instance=RequestContext(request))
+
     # make sure user isn't sneeeky
     is_final = bool(f.cleaned_data['is_final'])
     if is_final and not challenge.isFinalUploadOpen():
@@ -45,11 +50,6 @@ def entry_upload(request, entry_id):
         'is_owner': True,
         'form': f,
     }
-
-    # display the form
-    if not f.is_valid():
-        return render_to_response('challenge/entry_file.html', info,
-            context_instance=RequestContext(request))
 
     file = models.File(
         challenge=challenge,
