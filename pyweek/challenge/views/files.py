@@ -75,7 +75,8 @@ def entry_upload(request, entry_id):
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
-    request.user.message_set.create(message='File added!')
+    # XXX update for new messages
+    # request.user.message_set.create(message='File added!')
     return HttpResponseRedirect('/e/%s/'%entry_id)
 
 def oneshot_upload(request, entry_id):
@@ -193,10 +194,12 @@ def file_delete(request, entry_id, filename):
                 os.remove(abspath)
             if os.path.exists(abspath + '-thumb.png'):
                 os.remove(abspath + '-thumb.png')
-            request.user.message_set.create(message="File deleted")
+            # XXX update for new messages
+            # request.user.message_set.create(message="File deleted")
             return HttpResponseRedirect('/e/%s/'%entry_id)
         else:
-            request.user.message_set.create(message="Cancelled")
+            # XXX update for new messages
+            # request.user.message_set.create(message="Cancelled")
             return HttpResponseRedirect('/e/%s/'%entry_id)
 
     return render_to_response('confirm.html',

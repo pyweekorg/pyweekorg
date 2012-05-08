@@ -61,7 +61,8 @@ def profile_description(request):
             else:
                 profile.content = content
             profile.save()
-            request.user.message_set.create(message='Description saved!')
+            # XXX update for new messages
+            #request.user.message_set.create(message='Description saved!')
             return HttpResponseRedirect('/profile_description/')
     else:
         form = ProfileForm(data)

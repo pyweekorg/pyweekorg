@@ -35,7 +35,8 @@ def update_messages(request):
         #entry.activity = comment.created
         entry.reply_count = entry.diarycomment_set.count()
         entry.save()
-    request.user.message_set.create(message='messages updated')
+    # XXX update for new messages
+    #request.user.message_set.create(message='messages updated')
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
 
@@ -109,7 +110,7 @@ def messages(request):
         e = n + 5
         more_start = True
         more_end = True
-    
+
     pages = [
         dict(num=i+1, start=i*MESSAGES_PER_PAGE,
             current=start==i*MESSAGES_PER_PAGE)

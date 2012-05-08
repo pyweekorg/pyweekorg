@@ -203,7 +203,8 @@ def entry_display(request, entry_id):
                     rating.production = new_data['production']
                     rating.comment = html2text(new_data['comment'])
                     rating.save()
-                    request.user.message_set.create(message='Ratings saved!')
+                    # XXX update for new messages
+                    #request.user.message_set.create(message='Ratings saved!')
                     return HttpResponseRedirect("/e/%s/"%entry.name)
         else:
             data = {}
@@ -220,7 +221,8 @@ def entry_display(request, entry_id):
                 if not errors:
                     manipulator.do_html2python(new_data)
                     place = manipulator.save(new_data)
-                    request.user.message_set.create(message='Ratings saved!')
+                    # XXX update for new messages
+                    #request.user.message_set.create(message='Ratings saved!')
                     return HttpResponseRedirect("/e/%s/"%entry.name)
 
     rating_results = False
@@ -293,7 +295,8 @@ def entry_manage(request, entry_id):
                 new_users.append(models.User.objects.get(username__exact=user).id)
             entry.users = new_users
             entry.save()
-            request.user.message_set.create(message='Changes saved!')
+            # XXX update for new messages
+            #request.user.message_set.create(message='Changes saved!')
             return HttpResponseRedirect("/e/%s/"%entry_id)
     else:
         f = EntryForm({'name': entry.name, 'title': entry.title,

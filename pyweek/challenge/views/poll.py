@@ -78,11 +78,12 @@ def render_fields(poll, request):
                 r = Response(option=option, value=value,
                     user=request.user, poll=poll)
                 r.save()
-            if poll.is_ongoing:
-                request.user.message_set.create(message='Vote recorded. ' +
-                    '<a href="view">View current results</a>.')
-            else:
-                request.user.message_set.create(message='Vote recorded')
+            # XXX update for new messages
+            #if poll.is_ongoing:
+                #request.user.message_set.create(message='Vote recorded. ' +
+                    #'<a href="view">View current results</a>.')
+            #else:
+                #request.user.message_set.create(message='Vote recorded')
 
     l = []
     if message:

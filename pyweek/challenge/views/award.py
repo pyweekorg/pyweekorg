@@ -19,7 +19,7 @@ def view_all_awards(request):
     awards = models.Award.objects.all()
     return render_to_response('challenge/all_awards.html', dict(
         awards=awards,
-        ), context_instance=RequestContext(request)) 
+        ), context_instance=RequestContext(request))
 
 def view_award(request, award_id):
     award = get_object_or_404(models.Award, pk=award_id)
@@ -76,7 +76,7 @@ def upload_award(request, entry_id):
             if field.field_name.startswith('created_'):
                 field.is_required=False
         errors = manipulator.get_validation_errors(new_data)
-     
+
     if 'content_file' in request.FILES:
         # figure where to put the file
         content_file = request.FILES['content_file']
@@ -106,9 +106,12 @@ def upload_award(request, entry_id):
         award = _create_award(creator, content_path, request)
 
     if _give_award(challenge, creator, entry, award):
-        creator.message_set.create(message='Award given!')
-    else:
-        creator.message_set.create(message='This entry already has that award.')
+        pass
+        # XXX update for new messages
+        # creator.message_set.create(message='Award given!')
+    #else:
+        # XXX update for new messages
+        #creator.message_set.create(message='This entry already has that award.')
 
     return HttpResponseRedirect('/e/%s/'%entry_id)
 

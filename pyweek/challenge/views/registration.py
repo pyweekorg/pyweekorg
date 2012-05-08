@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
-from django import forms 
+from django import forms
 from django.core.mail import send_mail
 from django.contrib.auth.forms import AuthenticationForm
 #from django.models.auth import users
@@ -36,7 +36,8 @@ def register(request):
                 user = User.objects.create_user(f.cleaned_data['name'],
                     f.cleaned_data['email'], f.cleaned_data['password'])
                 auth.login(request, user)
-                user.message_set.create(message='Welcome to the Challenge!')
+                # XXX update for new messages
+                #user.message_set.create(message='Welcome to the Challenge!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         f = RegistrationForm()
@@ -59,7 +60,8 @@ def profile(request):
                 if f.cleaned_data['password']:
                     request.user.set_password(f.cleaned_data['password'])
                 request.user.save()
-                request.user.message_set.create(message='Changes saved!')
+                # XXX update for new messages
+                # request.user.message_set.create(message='Changes saved!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         errors = {}
@@ -87,7 +89,7 @@ def login_page(request, message=None, error=None):
             auth.login(request, user)
             return HttpResponseRedirect(redirect_to or '/')
         else:
-            # Return an 'invalid login' error message.    
+            # Return an 'invalid login' error message.
             error = "invalid login"
     request.session.set_test_cookie()
     info = {

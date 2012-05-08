@@ -101,7 +101,8 @@ def update_has_final(request):
         if n:
             entry.has_final = True
             entry.save()
-    request.user.message_set.create(message='has_final updated')
+    # XXX update for new messages
+    #request.user.message_set.create(message='has_final updated')
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
 
