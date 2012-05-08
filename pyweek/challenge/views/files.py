@@ -71,7 +71,7 @@ def entry_upload(request, entry_id):
         entry.has_final = True
         entry.save()
 
-    if data['is_screenshot']:
+    if file.is_screenshot:
         try:
             _make_thumbnail(file)
         except:
