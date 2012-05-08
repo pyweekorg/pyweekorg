@@ -45,14 +45,16 @@ def entry_upload(request, entry_id):
 
     # just display the form?
     if not f.is_valid():
+        f._errors['is_final'] = f.error_class(["Form is not valid!."])
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
     # make sure user isn't sneeeky
     is_final = bool(f.cleaned_data['is_final'])
     if is_final and not challenge.isFinalUploadOpen():
-        request.user.message_set.create(message="Final uploads are not allowed now.")
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        f._errors['is_final'] = f.error_class(["Final uploads are not allowed now."])
+        return render_to_response('challenge/entry_file.html', info,
+            context_instance=RequestContext(request))
 
     file = models.File(
         challenge=challenge,

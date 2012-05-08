@@ -24,6 +24,8 @@ produced to fit a 250 x 250 pixel box.</p>
 <fieldset>
 <legend>Upload a File</legend>
 <form class="form" method="post" action="." enctype="multipart/form-data">
+    {{ form.non_field_errors }}
+
 <table cellspacing=0 cellpadding=0>
 
 <tr{% if form.content.errors %} class="form-error"{% endif %}>
