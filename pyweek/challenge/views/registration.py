@@ -59,7 +59,7 @@ def profile(request):
                 if f.cleaned_data['password']:
                     request.user.set_password(f.cleaned_data['password'])
                 request.user.save()
-                message.success(request, 'Changes saved!')
+                messages.success(request, 'Changes saved!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         errors = {}

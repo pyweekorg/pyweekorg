@@ -107,9 +107,9 @@ def upload_award(request, entry_id):
         award = _create_award(creator, content_path, request)
 
     if _give_award(challenge, creator, entry, award):
-        message.success(request, 'Award given!')
+        messages.success(request, 'Award given!')
     else:
-        message.error(request, 'This entry already has that award.')
+        messages.error(request, 'This entry already has that award.')
 
     return HttpResponseRedirect('/e/%s/'%entry_id)
 

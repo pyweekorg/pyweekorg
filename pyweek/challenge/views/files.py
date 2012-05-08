@@ -180,13 +180,9 @@ def file_delete(request, entry_id, filename):
                 os.remove(abspath)
             if os.path.exists(abspath + '-thumb.png'):
                 os.remove(abspath + '-thumb.png')
-            # Updated: XXX update for new messages
-            # request.user.message_set.create(message="File deleted")
             messages.success(request, 'File deleted')
             return HttpResponseRedirect('/e/%s/'%entry_id)
         else:
-            # Updated: XXX update for new messages
-            # request.user.message_set.create(message="Cancelled")
             messages.success(request, 'Cancelled')
             return HttpResponseRedirect('/e/%s/'%entry_id)
 
