@@ -29,7 +29,10 @@ def entry_upload(request, entry_id):
         request.user.message_set.create(message="You're not allowed to upload files!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
-    f = FileForm(request.POST, request.FILES)
+    if request.POST and request.FILES:
+        f = FileForm(request.POST, request.FILES)
+    else:
+        f = FileForm()
 
     info = {
         'challenge': challenge,
