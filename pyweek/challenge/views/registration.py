@@ -25,14 +25,14 @@ def register(request):
         f = RegistrationForm(request.POST)
         if f.is_valid():
             if not f.cleaned_data['password']:
-                errors['password'] = ['This field is required.']
+                f.errors['password'] = ['This field is required.']
             if f.cleaned_data['password'] != f.cleaned_data['again']:
-                errors['again'] = ['Does not match password.']
+                f.errors['again'] = ['Does not match password.']
             if User.objects.filter(username__exact=f.cleaned_data['name']):
-                errors['name'] = ['Username already registered']
+                f.errors['name'] = ['Username already registered']
             if User.objects.filter(email__exact=f.cleaned_data['email']):
-                errors['email'] = ['Email address already registered']
-            if not errors:
+                f.errors['email'] = ['Email address already registered']
+            if not f.errors:
                 user = User.objects.create_user(f.cleaned_data['name'],
                     f.cleaned_data['email'], f.cleaned_data['password'])
                 auth.login(request, user)
@@ -54,7 +54,7 @@ def profile(request):
         if f.is_valid():
             if f.cleaned_data['password'] != f.cleaned_data['again']:
                 f.errors['again'] = ['Does not match password.']
-            if not errors:
+            if not f.errors:
                 request.user.username = f.cleaned_data['name']
                 request.user.email = f.cleaned_data['email']
                 if f.cleaned_data['password']:
