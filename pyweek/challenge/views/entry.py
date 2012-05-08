@@ -1,6 +1,7 @@
 import cgi, urllib, random, hashlib
 
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -152,8 +153,9 @@ def entry_add(request, challenge_id):
             entry.save()
             for u in new_users:
                 entry.users.add(u)
-            # XXX need to feedback
+            # Updated: XXX need to feedback
             # request.user.message_set.create(message='Entry created!')
+            messages.success(request, 'Entry created!')
             return HttpResponseRedirect("/e/%s/"%entry.name)
     else:
         f = AddEntryForm()
@@ -203,8 +205,9 @@ def entry_display(request, entry_id):
                     rating.production = new_data['production']
                     rating.comment = html2text(new_data['comment'])
                     rating.save()
-                    # XXX update for new messages
+                    # Updated: XXX update for new messages
                     #request.user.message_set.create(message='Ratings saved!')
+                    messages.info(request, 'Ratings saved!')
                     return HttpResponseRedirect("/e/%s/"%entry.name)
         else:
             data = {}
@@ -221,8 +224,9 @@ def entry_display(request, entry_id):
                 if not errors:
                     manipulator.do_html2python(new_data)
                     place = manipulator.save(new_data)
-                    # XXX update for new messages
+                    # Updated: XXX update for new messages
                     #request.user.message_set.create(message='Ratings saved!')
+                    messages.success(request, 'Ratings saved!')
                     return HttpResponseRedirect("/e/%s/"%entry.name)
 
     rating_results = False
@@ -295,8 +299,7 @@ def entry_manage(request, entry_id):
                 new_users.append(models.User.objects.get(username__exact=user).id)
             entry.users = new_users
             entry.save()
-            # XXX update for new messages
-            #request.user.message_set.create(message='Changes saved!')
+            message.success(request, 'Changes saved!')
             return HttpResponseRedirect("/e/%s/"%entry_id)
     else:
         f = EntryForm({'name': entry.name, 'title': entry.title,

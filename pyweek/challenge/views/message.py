@@ -3,6 +3,7 @@ import datetime
 import xml.sax.saxutils
 
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -35,8 +36,7 @@ def update_messages(request):
         #entry.activity = comment.created
         entry.reply_count = entry.diarycomment_set.count()
         entry.save()
-    # XXX update for new messages
-    #request.user.message_set.create(message='messages updated')
+    messages.success(request, 'Messages updated')
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
 
@@ -162,7 +162,7 @@ def message_add(request):
                 diary.created = datetime.datetime.now(models.UTC)
                 diary.save()
                 generate_diary_rss()
-#                request.user.message_set.create(message='Entry saved!')
+                messages.success(request, 'Entry saved!')
                 return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
         form = DiaryForm()
@@ -205,8 +205,7 @@ def entry_diary(request, entry_id):
                 diary.created = datetime.datetime.now(models.UTC)
                 diary.save()
                 generate_diary_rss()
-                # XXX new user message middleware
-                #request.user.message_set.create(message='Entry saved!')
+	        messages.success(request, 'Entry saved!')
                 return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
         form = DiaryForm()

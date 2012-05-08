@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.forms import AuthenticationForm
 #from django.models.auth import users
 from django.contrib.sites.models import Site
-from django.contrib import auth
+from django.contrib import auth, messages
 
 
 class RegistrationForm(forms.Form):
@@ -36,8 +36,7 @@ def register(request):
                 user = User.objects.create_user(f.cleaned_data['name'],
                     f.cleaned_data['email'], f.cleaned_data['password'])
                 auth.login(request, user)
-                # XXX update for new messages
-                #user.message_set.create(message='Welcome to the Challenge!')
+                messages.info(request, 'Welcome to the Challenge!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         f = RegistrationForm()
@@ -60,8 +59,7 @@ def profile(request):
                 if f.cleaned_data['password']:
                     request.user.set_password(f.cleaned_data['password'])
                 request.user.save()
-                # XXX update for new messages
-                # request.user.message_set.create(message='Changes saved!')
+                message.success(request, 'Changes saved!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         errors = {}

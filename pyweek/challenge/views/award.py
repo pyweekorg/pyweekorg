@@ -6,6 +6,7 @@ import StringIO
 from PIL import Image
 
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -106,12 +107,9 @@ def upload_award(request, entry_id):
         award = _create_award(creator, content_path, request)
 
     if _give_award(challenge, creator, entry, award):
-        pass
-        # XXX update for new messages
-        # creator.message_set.create(message='Award given!')
-    #else:
-        # XXX update for new messages
-        #creator.message_set.create(message='This entry already has that award.')
+        message.success(request, 'Award given!')
+    else:
+        message.error(request, 'This entry already has that award.')
 
     return HttpResponseRedirect('/e/%s/'%entry_id)
 

@@ -28,7 +28,7 @@ MEDIA_ROOT = '/home/pyweek/media/dl/'
 
 PAGES_DIR = '/home/pyweek/lib/pyweek/challenge/media/'
 
-if hostname == 'l-rjones':
+if hostname == 'l-rjones' or hostname == 'tempdevweb01':
     DEBUG = True
     TEMPLATE_DEBUG = DEBUG
 
@@ -102,7 +102,7 @@ SENTRY_DSN = open('/home/pyweek/sentry-dsn.txt', 'r').read().strip()
 
 INSTALLED_APPS = (
     'django.contrib.auth',
-    'raven.contrib.django',
+    #'raven.contrib.django',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

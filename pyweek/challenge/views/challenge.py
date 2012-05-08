@@ -5,6 +5,7 @@ import xml.sax.saxutils
 from PIL import Image
 
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -101,8 +102,9 @@ def update_has_final(request):
         if n:
             entry.has_final = True
             entry.save()
-    # XXX update for new messages
-    #request.user.message_set.create(message='has_final updated')
+        # Updated: XXX update for new messages
+        #request.user.message_set.create(message='has_final updated')
+        messages.success(request, 'has_final updated')
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
 

@@ -4,6 +4,7 @@ import sets
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from pyweek.challenge.models import Poll, Response, Option
 
@@ -78,12 +79,11 @@ def render_fields(poll, request):
                 r = Response(option=option, value=value,
                     user=request.user, poll=poll)
                 r.save()
-            # XXX update for new messages
-            #if poll.is_ongoing:
-                #request.user.message_set.create(message='Vote recorded. ' +
-                    #'<a href="view">View current results</a>.')
-            #else:
-                #request.user.message_set.create(message='Vote recorded')
+            if poll.is_ongoing:
+                messages.success(request, 'Vote recorded.' +
+                    '<a href="view">View current results</a>.')
+            else:
+                messages.success(request, 'Vote recorded')
 
     l = []
     if message:

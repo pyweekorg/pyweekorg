@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -53,7 +54,7 @@ def profile_description(request):
     if request.POST:
         form = ProfileForm(request.POST)
         if form.is_valid():
-            content = form.clean_data['content']
+            content = form.cleaned_data['content']
 
             # do the save
             if profile is None:
@@ -61,8 +62,7 @@ def profile_description(request):
             else:
                 profile.content = content
             profile.save()
-            # XXX update for new messages
-            #request.user.message_set.create(message='Description saved!')
+            messages.success(request, 'Description saved!')
             return HttpResponseRedirect('/profile_description/')
     else:
         form = ProfileForm(data)

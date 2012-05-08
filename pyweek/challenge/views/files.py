@@ -4,6 +4,7 @@ import datetime
 from PIL import Image
 
 from django import forms
+from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -75,8 +76,9 @@ def entry_upload(request, entry_id):
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
-    # XXX update for new messages
-    # request.user.message_set.create(message='File added!')
+        # Updated: XXX update for new messages
+        # request.user.message_set.create(message='File added!')
+        messages.success(request, 'File added!')
     return HttpResponseRedirect('/e/%s/'%entry_id)
 
 def oneshot_upload(request, entry_id):
@@ -194,12 +196,14 @@ def file_delete(request, entry_id, filename):
                 os.remove(abspath)
             if os.path.exists(abspath + '-thumb.png'):
                 os.remove(abspath + '-thumb.png')
-            # XXX update for new messages
+            # Updated: XXX update for new messages
             # request.user.message_set.create(message="File deleted")
+            messages.success(request, 'File deleted')
             return HttpResponseRedirect('/e/%s/'%entry_id)
         else:
-            # XXX update for new messages
+            # Updated: XXX update for new messages
             # request.user.message_set.create(message="Cancelled")
+            messages.success(request, 'Cancelled')
             return HttpResponseRedirect('/e/%s/'%entry_id)
 
     return render_to_response('confirm.html',
