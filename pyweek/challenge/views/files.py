@@ -57,7 +57,7 @@ def entry_upload(request, entry_id):
 
     # avoid dupes
     if os.path.exists(os.path.join(MEDIA_ROOT, str(challenge.number), entry.name,
-            request.FILES['content'].filename)):
+            request.FILES['content'].name)):
         f._errors['content'] = f.error_class(["File with that filename already exists."])
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
@@ -123,7 +123,7 @@ def oneshot_upload(request, entry_id):
 
     # avoid dupes
     if os.path.exists(os.path.join(MEDIA_ROOT, str(challenge.number), entry.name,
-            request.FILES['content'].filename)):
+            request.FILES['content_file'].name)):
         return HttpResponse('File with that filename already exists.')
 
     file = models.File(
