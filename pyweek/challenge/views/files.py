@@ -55,6 +55,13 @@ def entry_upload(request, entry_id):
         return render_to_response('challenge/entry_file.html', info,
             context_instance=RequestContext(request))
 
+    # avoid dupes
+    if os.path.exists(os.path.join(MEDIA_ROOT, str(challenge_id), entry.name,
+            request.FILES['content'].filename)):
+        f._errors['content'] = f.error_class(["File with that filename already exists."])
+        return render_to_response('challenge/entry_file.html', info,
+            context_instance=RequestContext(request))
+
     file = models.File(
         challenge=challenge,
         entry=entry,
@@ -113,6 +120,11 @@ def oneshot_upload(request, entry_id):
     is_final = bool(request.POST.get('is_final', False)),
     if is_final and not challenge.isFinalUploadOpen():
         return HttpResponse('Final uploads are not allowed now')
+
+    # avoid dupes
+    if os.path.exists(os.path.join(MEDIA_ROOT, str(challenge_id), entry.name,
+            request.FILES['content'].filename)):
+        return HttpResponse('File with that filename already exists.')
 
     file = models.File(
         challenge=challenge,
