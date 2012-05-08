@@ -31,6 +31,15 @@ def entry_upload(request, entry_id):
 
     f = FileForm(request.POST, request.FILES)
 
+    info = {
+        'challenge': challenge,
+        'entry': entry,
+        'files': entry.file_set.all(),
+        'is_member': True,
+        'is_owner': True,
+        'form': f,
+    }
+
     # just display the form?
     if not f.is_valid():
         return render_to_response('challenge/entry_file.html', info,
@@ -41,15 +50,6 @@ def entry_upload(request, entry_id):
     if is_final and not challenge.isFinalUploadOpen():
         request.user.message_set.create(message="Final uploads are not allowed now.")
         return HttpResponseRedirect('/e/%s/'%entry_id)
-
-    info = {
-        'challenge': challenge,
-        'entry': entry,
-        'files': entry.file_set.all(),
-        'is_member': True,
-        'is_owner': True,
-        'form': f,
-    }
 
     file = models.File(
         challenge=challenge,
