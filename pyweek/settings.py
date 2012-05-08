@@ -63,7 +63,7 @@ MEDIA_URL = 'http://media.pyweek.org/dl/'
 ADMIN_MEDIA_PREFIX = 'http://media.pyweek.org/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '7h+@gd=zdc=+2crk8s#1_$mh$l6&fn(8@n#g9@$g7p(==68=+5'
+SECRET_KEY = open('/home/pyweek/secret-key.txt', 'r').read().strip()
 
 # List of callables that know how to import templates from various sources.
 #TEMPLATE_LOADERS = (
@@ -76,6 +76,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )
 
@@ -91,14 +92,20 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
+    "django.contrib.messages.context_processors.messages",
 #    "django.core.context_processors.i18n",
     "pyweek.challenge.views.context.challenges",
 )
 
+# Set your DSN value
+SENTRY_DSN = open('/home/pyweek/sentry-dsn.txt', 'r').read().strip()
+
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'raven.contrib.django',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.admin',
     'pyweek.challenge',

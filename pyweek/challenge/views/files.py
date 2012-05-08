@@ -29,7 +29,6 @@ def entry_upload(request, entry_id):
         request.user.message_set.create(message="You're not allowed to upload files!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
-    # for context
     f = FileForm(request.POST, request.FILES)
     info = {
         'challenge': challenge,
