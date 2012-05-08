@@ -16,8 +16,8 @@ from stripogram import html2text
 class FileForm(forms.Form):
     content = forms.FileField()
     description = forms.CharField(max_length=255)
-    is_final = forms.BooleanField()
-    is_screenshot = forms.BooleanField()
+    is_final = forms.BooleanField(required=False)
+    is_screenshot = forms.BooleanField(required=False)
 
 def entry_upload(request, entry_id):
     if request.user.is_anonymous():
