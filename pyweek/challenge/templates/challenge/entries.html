@@ -36,7 +36,9 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
   ({{ file.pretty_size }}
   on {{ file.created|date:"Y/m/d" }}) <br>
  {% endfor %}
+{% autoescape off %}
 {{ entry.description }}
+{% endautoescape %}
 </td>
 {% if entry.thumb %}
 <td valign="top" align="right">
