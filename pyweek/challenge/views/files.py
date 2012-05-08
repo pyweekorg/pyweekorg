@@ -58,7 +58,7 @@ def entry_upload(request, entry_id):
     file = models.File(
         challenge=challenge,
         entry=entry,
-        user=user,
+        user=request.user,
         created=datetime.datetime.now(models.UTC),
         content=request.FILES['content'],
         description=html2text(f.cleaned_data['description']),
