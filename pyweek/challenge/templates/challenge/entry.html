@@ -148,7 +148,7 @@ in the entry's total.</i></p>
 </tr>
  {% for file in files %}
   <tr class="{% cycle even,odd %}"><td>
-  <a href="{{ file.url }}">{{ file.filename }}</a>
+  <a href="{{ file.content.url }}">{{ file.content.name }}</a>
   {% if file.is_final %}&mdash; <b>final</b>{% endif %}
   </td>
   <td style="whitespace: pre">
@@ -159,7 +159,7 @@ in the entry's total.</i></p>
   </tr>
   <tr class="{% cycle even,odd %}"><td colspan="{%if is_member%}3{%else%}4{%endif%}">{{ file.description }}</td>
 {% if is_member %}
-  <td><a class="delete" href="/e/{{entry.name}}/delete/{{file.filename}}">delete</a></td>
+  <td><a class="delete" href="/e/{{entry.name}}/delete/{{file.content.name}}">delete</a></td>
 {% endif %}
 </tr>
  {% endfor %}

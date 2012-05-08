@@ -138,9 +138,9 @@ def oneshot_upload(request, entry_id):
     return HttpResponse('File added!')
 
 def _make_thumbnail(file):
-    image = Image.open(file.path)
+    image = Image.open(file.content.path)
     image.thumbnail((150, 150), Image.ANTIALIAS)
-    image.save(file.path + '-thumb.png', "PNG")
+    image.save(file.content.path + '-thumb.png', "PNG")
     file.thumb_width = image.size[0]
     file.save()
 
