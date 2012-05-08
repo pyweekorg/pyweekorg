@@ -152,7 +152,8 @@ def entry_add(request, challenge_id):
             entry.save()
             for u in new_users:
                 entry.users.add(u)
-            request.user.message_set.create(message='Entry created!')
+            # XXX need to feedback
+            # request.user.message_set.create(message='Entry created!')
             return HttpResponseRedirect("/e/%s/"%entry.name)
     else:
         f = AddEntryForm()
