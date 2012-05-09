@@ -13,15 +13,16 @@
 <fieldset>
   <legend>Give a new award</legend>
   <form class="form" method="post" action="/e/{{ entry.name }}/upload_award" enctype="multipart/form-data">
+    {{ upload_form.non_field_errors }}
     <table cellspacing=0 cellpadding=0>
-      <tr{% if form.content.errors %} class="form-error"{% endif %}>
+      <tr{% if upload_form.content.errors %} class="form-error"{% endif %}>
         <td class="form-label" valign="top">
           <label for="id_content">Award image:</label>
         </td>
         <td>
-          {{ form.content }}
-          {% if form.content.errors %}
-            <p class="form-error">{{ form.content.errors|join:", "}}</p>
+          {{ upload_form.content }}
+          {% if upload_form.content.errors %}
+            <p class="form-error">{{ upload_form.content.errors|join:", "}}</p>
           {% else %}
             <p>Image must be PNG format and have dimensions of exactly 64x64</p>
 
@@ -33,14 +34,14 @@ of your award may have differeing sensibilities to yourself.</p>
         </td>
       </tr>
 
-      <tr{% if form.description.errors %} class="form-error"{% endif %}>
+      <tr{% if upload_form.description.errors %} class="form-error"{% endif %}>
         <td class="form-label">
           <label for="id_description">Award description:</label>
         </td>
         <td>
-          {{ form.description }}
-          {% if form.description.errors %}
-            <p class="form-error">{{ form.description.errors|join:", "}}</p>
+          {{ upload_form.description }}
+          {% if upload_form.description.errors %}
+            <p class="form-error">{{ upload_form.description.errors|join:", "}}</p>
           {% endif %}
         </td>
       </tr>
@@ -57,6 +58,7 @@ of your award may have differeing sensibilities to yourself.</p>
   <fieldset>
     <legend>Give an award you've given before</legend>
     <form class="form" method="post" action="/e/{{ entry.name }}/give_award">
+      {{ give_form.non_field_errors }}
       <table cellspacing=0 cellpadding=0>
         {% for award in awards %}
           <tr>

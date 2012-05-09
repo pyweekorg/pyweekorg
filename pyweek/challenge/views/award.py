@@ -51,6 +51,7 @@ def give_award(request, entry_id):
         challenge=challenge,
         entry=entry,
         awards=creator.award_set.all(),
+        upload_form=UploadAwardForm(),
     )
     errors = None
 
@@ -58,12 +59,13 @@ def give_award(request, entry_id):
     if request.method != 'POST':
         f = GiveAwardForm()
         f.fields['award'].queryset = creator.award_set.all()
+        info['give_form'] = f
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
     f = GiveAwardForm(request.POST)
     f.fields['award'].queryset = creator.award_set.all()
-    info['form'] = f
+    info['give_form'] = f
     if not f.is_valid():
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
@@ -96,18 +98,20 @@ def upload_award(request, entry_id):
         challenge=challenge,
         entry=entry,
         awards=creator.award_set.all(),
+        give_form=GiveAwardForm(),
     )
+    info['give_form'].fields['award'].queryset = creator.award_set.all()
     errors = None
 
     # Display form
     if request.method != 'POST':
         f = AwardForm()
-        info['form'] = f
+        info['upload_form'] = f
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
     f = AwardForm(request.POST, request.FILES)
-    info['form'] = f
+    info['upload_form'] = f
     if not f.is_valid():
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
