@@ -648,9 +648,9 @@ class File(models.Model):
 
 class Award(models.Model):
     creator = models.ForeignKey(User)
-    created = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
     def upload_location(instance, filename):
-        return os.path.join(str(instance.creator.name), filename)
+        return os.path.join('awards', str(instance.creator.user.id), filename)
     content = models.FileField(upload_to=upload_location)
     description = models.CharField(max_length=255)
 
@@ -679,7 +679,7 @@ class Award(models.Model):
 
 class EntryAward(models.Model):
     creator = models.ForeignKey(User)
-    created = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
     challenge = models.ForeignKey(Challenge)
     entry = models.ForeignKey(Entry)
     award = models.ForeignKey(Award)

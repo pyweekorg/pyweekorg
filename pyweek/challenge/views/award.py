@@ -105,14 +105,15 @@ def upload_award(request, entry_id):
 
     # Display form
     if request.method != 'POST':
-        f = UploadAwardForm()
-        info['upload_form'] = f
+        info['upload_form'] = UploadAwardForm()
+        messages.error(request, 'did nothing')
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
     f = UploadAwardForm(request.POST, request.FILES)
     info['upload_form'] = f
     if not f.is_valid():
+        messages.error(request, 'you missed something')
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
@@ -136,10 +137,8 @@ def upload_award(request, entry_id):
             context_instance=RequestContext(request))
 
     # Write award image to disk
-    award = models.Award(
-        creator=user,
+    award = models.Award(creator=user,
         content=request.FILES['content'],
-        created=datetime.datetime.now(models.UTC),
         description=html2text(f.cleaned_data['description']),
     )
     award.save()
@@ -156,12 +155,8 @@ def _give_award(challenge, user, entry, award):
     if models.EntryAward.objects.filter(award=award, entry=entry).count():
         return False
 
-    entryaward = models.EntryAward(
-        challenge=challenge,
-        creator=user,
-        entry=entry,
-        award=award,
-        created=datetime.datetime.now(models.UTC))
+    entryaward = models.EntryAward(challenge=challenge, creator=user,
+        entry=entry, award=award)
     entryaward.save()
 
     return True
