@@ -12,16 +12,16 @@
 
 <fieldset>
   <legend>Give a new award</legend>
-  <form class="form" method="post" action="." enctype="multipart/form-data">
+  <form class="form" method="post" action="/e/{{ entry.name }}/upload_award" enctype="multipart/form-data">
     <table cellspacing=0 cellpadding=0>
-      <tr{% if form.content_file.errors %} class="form-error"{% endif %}>
+      <tr{% if form.content.errors %} class="form-error"{% endif %}>
         <td class="form-label" valign="top">
-          <label for="id_content_file">Award image:</label>
+          <label for="id_content">Award image:</label>
         </td>
         <td>
-          {{ form.content_file }}
-          {% if form.content_file.errors %}
-            <p class="form-error">{{ form.content_file.errors|join:", "}}</p>
+          {{ form.content }}
+          {% if form.content.errors %}
+            <p class="form-error">{{ form.content.errors|join:", "}}</p>
           {% else %}
             <p>Image must be PNG format and have dimensions of exactly 64x64</p>
 
@@ -56,7 +56,7 @@ of your award may have differeing sensibilities to yourself.</p>
 {% if awards %}
   <fieldset>
     <legend>Give an award you've given before</legend>
-    <form class="form" method="post" action=".">
+    <form class="form" method="post" action="/e/{{ entry.name }}/give_award">
       <table cellspacing=0 cellpadding=0>
         {% for award in awards %}
           <tr>

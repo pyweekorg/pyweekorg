@@ -31,6 +31,55 @@ def view_award(request, award_id):
         entries=entries,
         ), context_instance=RequestContext(request))
 
+class GiveAwardForm(forms.Form):
+    award = form.ModelChoiceField()
+    description = form.CharField(max_length=255)
+
+def give_award(request, entry_id):
+    creator = request.user
+
+    if creator.is_anonymous():
+        return HttpResponseRedirect('/login/')
+    entry = get_object_or_404(models.Entry, pk=entry_id)
+    challenge = entry.challenge
+
+    is_member = creator in entry.users.all()
+    if is_member:
+        messages.error(request, 'You cannot give an award to your own entry!')
+        return HttpResponseRedirect('/e/%s/'%entry_id)
+
+    info = dict(
+        challenge=challenge,
+        entry=entry,
+        awards=creator.award_set.all(),
+    )
+    errors = None
+
+    # Display form
+    if request.method != 'POST':
+        f = GiveAwardForm()
+        f.award.queryset = creator.award_set.all()
+        return render_to_response('challenge/upload_award.html', info,
+            context_instance=RequestContext(request))
+
+    f = GiveAwardForm(request.POST)
+    f.award.queryset = creator.award_set.all()
+    info['form'] = f
+    if not f.is_valid():
+        return render_to_response('challenge/upload_award.html', info,
+            context_instance=RequestContext(request))
+
+    if _give_award(challenge, creator, entry, f.cleaned_data['award']):
+        messages.success(request, 'Award given!')
+    else:
+        messages.error(request, 'This entry already has that award.')
+
+    return HttpResponseRedirect('/e/%s/'%entry_id)
+
+class UploadAwardForm(forms.Form):
+    content = form.FileField()
+    description = form.CharField(max_length=255)
+
 def upload_award(request, entry_id):
     creator = request.user
 
@@ -44,7 +93,6 @@ def upload_award(request, entry_id):
         messages.error(request, 'You cannot give an award to your own entry!')
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
-
     info = dict(
         challenge=challenge,
         entry=entry,
@@ -53,57 +101,45 @@ def upload_award(request, entry_id):
     errors = None
 
     # Display form
-    if not (request.POST or request.FILES):
-        manipulator = models.Award.AddManipulator()
-        for field in manipulator.fields:
-            if field.field_name.startswith('created_'):
-                field.is_required=False
-        info['form'] = forms.FormWrapper(manipulator, {}, {})
+    if request.method != 'POST':
+        f = AwardForm()
+        info['form'] = f
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
-    new_data = dict(
-        challenge=challenge.number,
-        entry=entry_id,
-        creator=creator.id,
+    f = AwardForm(request.POST, request.FILES)
+    info['form'] = f
+    if not f.is_valid():
+        return render_to_response('challenge/upload_award.html', info,
+            context_instance=RequestContext(request))
+
+    error = ''
+
+    # make sure the filename is unique
+#    if os.path.exists(fspath):
+#        error = 'You have already uploaded an award image with that filename.'
+
+    # check dimensions of image
+    ok = False
+    try:
+        image = Image.open(request.FILES['content'])
+        if image.size == (64, 64):
+            ok = True
+    except:
+        pass
+    if not ok:
+        messages.error(request, 'The image could not be read or is not 64x64')
+        return render_to_response('challenge/upload_award.html', info,
+            context_instance=RequestContext(request))
+
+    # Write award image to disk
+    award = models.Award(
+        creator=user,
+        content=request.FILES['content'],
         created=datetime.datetime.now(models.UTC),
-        content_file=request.FILES.get('content_file', None),
-        description=request.POST.get('description', ''),
+        description=html2text(f.cleaned_data['description']),
     )
-    if 'award' not in request.POST:
-        manipulator = models.Award.AddManipulator()
-        for field in manipulator.fields:
-            if field.field_name.startswith('created_'):
-                field.is_required=False
-        errors = manipulator.get_validation_errors(new_data)
-
-    if 'content_file' in request.FILES:
-        # figure where to put the file
-        content_file = request.FILES['content_file']
-        content_path = _upload_filepath(creator, content_file)
-        fspath = os.path.join(MEDIA_ROOT, content_path)
-
-        # make sure the filename is unique
-        if os.path.exists(fspath):
-            errors.setdefault('content_file', []).append(
-                'You have already uploaded an award image with that filename')
-
-        # Check dimensions of image
-        if not _award_image_ok(content_file['content']):
-            errors.setdefault('content_file', []).append(
-                'The image could not be read or is not 64x64')
-
-    # errors back to the user if any
-    if errors:
-        info['form'] = forms.FormWrapper(manipulator, new_data, errors)
-        info['errors'] = errors
-        return render_to_response('challenge/upload_award.html', info,
-            context_instance=RequestContext(request))
-
-    if 'award' in request.POST:
-        award = models.Award.objects.get(pk=request.POST['award'])
-    else:
-        award = _create_award(creator, content_path, request)
+    award.save()
 
     if _give_award(challenge, creator, entry, award):
         messages.success(request, 'Award given!')
@@ -111,40 +147,6 @@ def upload_award(request, entry_id):
         messages.error(request, 'This entry already has that award.')
 
     return HttpResponseRedirect('/e/%s/'%entry_id)
-
-def _upload_filepath(user, content_file):
-    rel_path = os.path.join('awards', str(user.id))
-    path = os.path.join(MEDIA_ROOT, rel_path)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return os.path.join(rel_path, os.path.basename(content_file['filename']))
-
-def _award_image_ok(content):
-    file = StringIO.StringIO(content)
-    try:
-        image = Image.open(file)
-        if image.size == (64, 64):
-            return True
-    except:
-        pass
-    return False
-
-def _create_award(user, content_path, request):
-    fspath = os.path.join(MEDIA_ROOT, content_path)
-
-    # Write award image to disk
-    f = open(fspath, 'wb')
-    f.write(request.FILES['content_file']['content'])
-    f.close()
-
-    award = models.Award(
-        creator=user,
-        content=content_path,
-        created=datetime.datetime.now(models.UTC),
-        description=html2text(request.POST.get('description', ''))
-    )
-    award.save()
-    return award
 
 def _give_award(challenge, user, entry, award):
     # Don't do anything if award has already been given.

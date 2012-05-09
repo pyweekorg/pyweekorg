@@ -59,7 +59,8 @@ urlpatterns += patterns('pyweek.challenge.views.registration',
 )
 
 urlpatterns += patterns('pyweek.challenge.views.award',
-    (r'^e/([\w-]+)/give_award/$', 'upload_award'),
+    (r'^e/([\w-]+)/upload_award/$', 'upload_award'),
+    (r'^e/([\w-]+)/give_award/$', 'give_award'),
     (r'^a/(\d+)/$', 'view_award'),
     (r'^all_awards/$', 'view_all_awards'),
 )

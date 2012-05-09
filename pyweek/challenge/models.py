@@ -649,7 +649,9 @@ class File(models.Model):
 class Award(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField()
-    content = models.FileField(upload_to='/tmp')
+    def upload_location(instance, filename):
+        return os.path.join(str(instance.creator.name), filename)
+    content = models.FileField(upload_to=upload_location)
     description = models.CharField(max_length=255)
 
     class Meta:
