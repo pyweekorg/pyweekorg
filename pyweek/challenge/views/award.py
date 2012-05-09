@@ -132,7 +132,7 @@ def upload_award(request, entry_id):
             context_instance=RequestContext(request))
 
     # Write award image to disk
-    award = models.Award(creator=user,
+    award = models.Award(creator=creator,
         content=request.FILES['content'],
         description=html2text(f.cleaned_data['description']),
     )
