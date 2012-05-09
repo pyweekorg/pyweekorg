@@ -32,8 +32,7 @@ def view_award(request, award_id):
         ), context_instance=RequestContext(request))
 
 class GiveAwardForm(forms.Form):
-    award = form.ModelChoiceField()
-    description = form.CharField(max_length=255)
+    award = forms.ModelChoiceField()
 
 def give_award(request, entry_id):
     creator = request.user
@@ -77,8 +76,8 @@ def give_award(request, entry_id):
     return HttpResponseRedirect('/e/%s/'%entry_id)
 
 class UploadAwardForm(forms.Form):
-    content = form.FileField()
-    description = form.CharField(max_length=255)
+    content = forms.FileField()
+    description = forms.CharField(max_length=255)
 
 def upload_award(request, entry_id):
     creator = request.user
