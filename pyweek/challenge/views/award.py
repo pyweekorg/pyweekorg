@@ -111,7 +111,6 @@ def upload_award(request, entry_id):
 
     # Display form
     if not f.is_valid():
-        messages.error(request, 'did nothing')
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
