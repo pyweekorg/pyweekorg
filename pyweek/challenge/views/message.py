@@ -79,7 +79,7 @@ def extract_entries(entries):
         diary_entries.append(d)
     return diary_entries
 
-def messages(request):
+def list_messages(request):
     try:
         start = int(request.GET.get('start', 0))
     except:

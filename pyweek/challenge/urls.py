@@ -17,7 +17,7 @@ urlpatterns = patterns('pyweek.challenge.views.challenge',
 )
 
 urlpatterns += patterns('pyweek.challenge.views.message',
-    (r'^messages/$', 'messages'),
+    (r'^messages/$', 'list_messages'),
     (r'^message_add/$', 'message_add'),
     (r'^d/(\d+)/$', 'diary_display'),
     (r'^d/(\d+)/edit/$', 'diary_edit'),
