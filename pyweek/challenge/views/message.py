@@ -181,7 +181,7 @@ def entry_diary(request, entry_id):
     entry = get_object_or_404(models.Entry, pk=entry_id)
     is_member = request.user in entry.users.all()
     if not is_member:
-        request.user.message_set.create(message="You're not allowed to add diary entries!")
+        message.error(request, "You're not allowed to add diary entries!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
     challenge = entry.challenge
 
@@ -309,7 +309,7 @@ def diary_display(request, diary_id):
                 diary.last_comment = comment
                 diary.reply_count = diary.reply_count + 1
                 diary.save()
-                #request.user.message_set.create(message='Comment added!')
+                messages.success(request, 'Comment added!')
                 return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
                     comment.id))
     else:
@@ -336,7 +336,7 @@ def diary_edit(request, diary_id):
         return HttpResponseRedirect('/login/?next=/d/%s/edit/'%diary_id)
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     if request.user != diary.user:
-        request.user.message_set.create(message="You can't edit this entry!")
+        messages.error(request, "You can't edit this entry!")
         return HttpResponseRedirect('/d/%s/'%diary_id)
 
     data = {'content': diary.content, 'title': diary.title}
@@ -351,7 +351,7 @@ def diary_edit(request, diary_id):
             diary.title = form.cleaned_data['title']
             diary.edited = datetime.datetime.now(models.UTC)
             diary.save()
-            #request.user.message_set.create(message='Edit saved!')
+            messages.success(request, 'Edit saved!')
             return HttpResponseRedirect('/d/%s/edit/'%diary_id)
     else:
         form = DiaryForm(data)
@@ -369,13 +369,13 @@ def diary_delete(request, diary_id):
         return HttpResponseRedirect('/login/')
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     if request.user != diary.user:
-        request.user.message_set.create(message="You can't delete this entry!")
+        messages.error(request, "You can't delete this entry!")
         return HttpResponseRedirect('/d/%s/'%diary_id)
 
     if request.POST and 'delete' in request.POST:
         diary.delete()
         generate_diary_rss()
-        #request.user.message_set.create(message="Diary entry deleted!")
+        messages.success(request, "Diary entry deleted!")
         return HttpResponseRedirect('/e/%s/'%diary.entry_id)
     else:
         return HttpResponseRedirect('/d/%s/'%diary_id)

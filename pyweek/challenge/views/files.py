@@ -28,7 +28,7 @@ def entry_upload(request, entry_id):
 
     is_member = request.user in entry.users.all()
     if not is_member or not entry.isUploadOpen():
-        request.user.message_set.create(message="You're not allowed to upload files!")
+        messages.error(request, "You're not allowed to upload files!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
     if request.method == 'POST':
@@ -165,7 +165,7 @@ def file_delete(request, entry_id, filename):
 
     is_member = request.user in entry.users.all()
     if not is_member:
-        request.user.message_set.create(message="You're not allowed to upload files!")
+        messages.error(request, "You're not allowed to delete files!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
     if request.method == 'POST':

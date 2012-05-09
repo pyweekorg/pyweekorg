@@ -254,7 +254,7 @@ def entry_ratings(request, entry_id):
     super = not anon and request.user.is_superuser
     if not (challenge.isAllDone() or super):
         if not request.user.is_anonymous():
-            request.user.message_set.create(message="You're not allowed to view ratings yet!")
+             messages.error(request, "You're not allowed to view ratings yet!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
     user_list = entry.users.all()
     is_member = request.user in list(user_list)
@@ -279,7 +279,7 @@ def entry_manage(request, entry_id):
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
     if request.user != entry.user:
-        request.user.message_set.create(message="You're not allowed to manage this entry!")
+        messages.error(request, "You're not allowed to manage this entry!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
     if request.POST:

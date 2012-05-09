@@ -41,8 +41,7 @@ def upload_award(request, entry_id):
 
     is_member = creator in entry.users.all()
     if is_member:
-        creator.message_set.create(
-            message='You cannot give an award to your own entry!')
+        messages.error(request, 'You cannot give an award to your own entry!')
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
 
