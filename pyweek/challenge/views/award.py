@@ -103,21 +103,17 @@ def upload_award(request, entry_id):
     info['give_form'].fields['award'].queryset = creator.award_set.all()
     errors = None
 
+    if request.method == 'POST':
+        f = UploadAwardForm(request.POST, request.FILES)
+    else:
+        f = UploadAwardForm()
+    info['upload_form'] = f
+
     # Display form
-    if request.method != 'POST':
-        info['upload_form'] = UploadAwardForm()
+    if not f.is_valid():
         messages.error(request, 'did nothing')
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
-
-    f = UploadAwardForm(request.POST, request.FILES)
-    info['upload_form'] = f
-    if not f.is_valid():
-        messages.error(request, 'you missed something')
-        return render_to_response('challenge/upload_award.html', info,
-            context_instance=RequestContext(request))
-
-    error = ''
 
     # make sure the filename is unique
 #    if os.path.exists(fspath):

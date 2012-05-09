@@ -12,7 +12,7 @@
 
 <fieldset>
   <legend>Give a new award</legend>
-  <form class="form" method="post" action="/e/{{ entry.name }}/upload_award" enctype="multipart/form-data">
+  <form class="form" method="POST" action="/e/{{ entry.name }}/upload_award" enctype="multipart/form-data">
     {{ upload_form.non_field_errors }}
     <table cellspacing=0 cellpadding=0>
       <tr{% if upload_form.content.errors %} class="form-error"{% endif %}>
@@ -57,7 +57,7 @@ of your award may have differeing sensibilities to yourself.</p>
 {% if awards %}
   <fieldset>
     <legend>Give an award you've given before</legend>
-    <form class="form" method="post" action="/e/{{ entry.name }}/give_award">
+    <form class="form" method="POST" action="/e/{{ entry.name }}/give_award">
       {{ give_form.non_field_errors }}
       <table cellspacing=0 cellpadding=0>
         {% for award in awards %}
