@@ -42,7 +42,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
 </td>
 {% if entry.thumb %}
 <td valign="top" align="right">
-<a href="{{ entry.thumb.url }}"><img border="0" width="150" src="{{ entry.thumb.url }}-thumb.png"></a>
+<a href="{{ entry.thumb.content.url }}"><img border="0" width="150" src="{{ entry.thumb.content.url }}-thumb.png"></a>
 </td>
 {% endif %}
 </tr>
