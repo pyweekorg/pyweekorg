@@ -105,12 +105,12 @@ def upload_award(request, entry_id):
 
     # Display form
     if request.method != 'POST':
-        f = AwardForm()
+        f = UploadAwardForm()
         info['upload_form'] = f
         return render_to_response('challenge/upload_award.html', info,
             context_instance=RequestContext(request))
 
-    f = AwardForm(request.POST, request.FILES)
+    f = UploadAwardForm(request.POST, request.FILES)
     info['upload_form'] = f
     if not f.is_valid():
         return render_to_response('challenge/upload_award.html', info,
