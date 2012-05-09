@@ -33,8 +33,10 @@ def register(request):
             if User.objects.filter(email__exact=f.cleaned_data['email']):
                 f.errors['email'] = ['Email address already registered']
             if not f.errors:
-                user = User.objects.create_user(f.cleaned_data['name'],
+                User.objects.create_user(f.cleaned_data['name'],
                     f.cleaned_data['email'], f.cleaned_data['password'])
+                user = auth.authenticate(username=f.cleaned_data['name'],
+                    password=f.cleaned_data['password'])
                 auth.login(request, user)
                 messages.info(request, 'Welcome to the Challenge!')
                 return HttpResponseRedirect(redirect_to or '/')
