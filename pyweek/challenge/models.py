@@ -650,7 +650,7 @@ class Award(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
     def upload_location(instance, filename):
-        return os.path.join('awards', str(instance.creator.user.id), filename)
+        return os.path.join('awards', str(instance.creator.id), filename)
     content = models.FileField(upload_to=upload_location)
     description = models.CharField(max_length=255)
 
