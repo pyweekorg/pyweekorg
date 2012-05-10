@@ -102,7 +102,7 @@ SENTRY_DSN = open('/home/pyweek/sentry-dsn.txt', 'r').read().strip()
 
 INSTALLED_APPS = (
     'django.contrib.auth',
-    'raven.contrib.django',
+    #'raven.contrib.django',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

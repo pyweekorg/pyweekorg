@@ -80,7 +80,6 @@ def entry_list(request, challenge_id):
             'name': entry.name,
             'title': entry.title,
             'description': description,
-            'description': description,
             'files': files,
             'sortname': random.random(),
             'may_rate': False,
