@@ -96,6 +96,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 SENTRY_DSN = open('/home/pyweek/sentry-dsn.txt', 'r').read().strip()
 
 STATIC_ROOT = '/home/pyweek/static/'
+STATIC_URL = 'http://pyweek.org/static/'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
