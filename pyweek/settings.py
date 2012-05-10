@@ -100,8 +100,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # Set your DSN value
 SENTRY_DSN = open('/home/pyweek/sentry-dsn.txt', 'r').read().strip()
 
+STATIC_ROOT = '/home/pyweek/static/'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'django.contrib.staticfiles',
     'raven.contrib.django',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
