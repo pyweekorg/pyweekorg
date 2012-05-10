@@ -3,6 +3,7 @@ import os
 from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
+from django.contrib import admin
 
 from stripogram import html2text
 import datetime
@@ -111,15 +112,12 @@ class Challenge(models.Model):
     class Meta:
         ordering = ['start']
 
-    class Admin:
-        list_display = ('title', 'start', 'end', 'is_rego_open')
-
-    #def __repr__(self):
-        #return '<Challenge %d: %r>' % (self.number, self.title)
-    #def __str__(self):
-        #return 'Challenge %d: %r' % (self.number, self.title)
-    #def __unicode__(self):
-        #return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
+    def __repr__(self):
+        return '<Challenge %d: %r>' % (self.number, self.title)
+    def __str__(self):
+        return 'Challenge %d: %r' % (self.number, self.title)
+    def __unicode__(self):
+        return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
 
     def start_utc(self, UTC=UTC):
         return datetime.datetime(self.start.year, self.start.month,
@@ -371,6 +369,8 @@ class Challenge(models.Model):
     def teamWinners(self):
         return [e for e in Entry.objects.filter(winner=self.number) if e.is_team()]
 
+class ChallengeAdmin(admin.ModelAdmin):
+    fields = ['title', 'start', 'end', 'is_rego_open']
 
 class Entry(models.Model):
     name = models.CharField(max_length=15, primary_key=True,
@@ -389,16 +389,13 @@ class Entry(models.Model):
         ordering = ['-challenge', 'name']
         verbose_name_plural = "entries"
         unique_together = (("challenge", "name"), ("challenge", "title"))
-
-    class Admin:
-        list_display = ('name', 'title', 'game', 'user', 'is_team',
-            'challenge', 'is_upload_open')
-    #def __repr__(self):
-        #return '<Entry %r>' % (self.name, )
-    #def __str__(self):
-        #return 'Entry "%s"' % (self.name, )
-    #def __unicode__(self):
-        #return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
+    
+    def __repr__(self):
+        return '<Entry %r>' % (self.name, )
+    def __str__(self):
+        return 'Entry "%s"' % (self.name, )
+    def __unicode__(self):
+        return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
 
     def is_team(self):
         return len(self.users.all()) > 1
@@ -462,6 +459,10 @@ class Entry(models.Model):
         info['respondents'] = n
         return info
 
+class EntryAdmin(admin.ModelAdmin):
+    fields = ['name', 'title', 'game', 'user', 'users',
+              'challenge', 'is_upload_open']
+
 RATING_CHOICES = ((1, 'Not at all'), (2,'Below average'),
     (3,'About average'), (4,'Above average'), (5,'Exceptional'))
 class Rating(models.Model):
@@ -480,22 +481,22 @@ class Rating(models.Model):
         ordering = ['-created']
         unique_together = (("entry", "user"),)
 
-    class Admin:
-        list_display = ('entry', 'user', 'created', 'disqualify', 'fun',
-            'innovation', 'production')
-
-    #def __repr__(self):
-        #return '%r rating %r'%(self.user, self.entry)
-    #def __str__(self):
-        #return '%s rating %s'%(self.user, self.entry)
-    #def __unicode__(self):
-        #return u'%s rating %s'%(self.user.name.decode('utf8', 'replace'),
-            #self.entry)
+    def __repr__(self):
+        return '%r rating %r'%(self.user, self.entry)
+    def __str__(self):
+        return '%s rating %s'%(self.user, self.entry)
+    def __unicode__(self):
+        return u'%s rating %s'%(self.user.name.decode('utf8', 'replace'),
+            self.entry)
 
     def save(self, UTC=UTC):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(Rating, self).save()
+
+class RatingAdmin(admin.ModelAdmin):
+    fields = ['entry', 'user', 'created', 'disqualify', 'fun',
+              'innovation', 'production']
 
 class RatingTally(models.Model):
     challenge = models.ForeignKey(Challenge)      # convenience
@@ -513,16 +514,16 @@ class RatingTally(models.Model):
         ordering = ['challenge', 'individual', '-overall']
         verbose_name_plural = "RatingTallies"
 
-    class Admin:
-        list_display = ('entry', 'individual', 'overall', 'disqualify', 'fun',
-            'innovation', 'production', 'respondents')
+    def __repr__(self):
+        return '%r rating tally'%(self.entry, )
+    def __str__(self):
+        return '%s rating tally'%(self.entry, )
+    def __unicode__(self):
+        return u'%s rating tally'%(self.entry,)
 
-    #def __repr__(self):
-        #return '%r rating tally'%(self.entry, )
-    #def __str__(self):
-        #return '%s rating tally'%(self.entry, )
-    #def __unicode__(self):
-        #return u'%s rating tally'%(self.entry,)
+class RatingTallyAdmin(admin.ModelAdmin):
+    fields = ['entry', 'individual', 'overall', 'disqualify', 'fun',
+              'innovation', 'production', 'respondents']
 
 class DiaryEntry(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)      # convenience
@@ -544,16 +545,14 @@ class DiaryEntry(models.Model):
         ordering = ['-created', 'title']
         verbose_name_plural = "DiaryEntries"
 
-    class Admin:
-        list_display = ('user', 'created', 'title')
-
-    #def __repr__(self):
-        #return '%r by %r'%(self.title, self.user)
-    #def __str__(self):
-        #return '%s by %s'%(self.title, self.user)
-    #def __unicode__(self):
-        #return u'%s by %s'%(self.title.decode('utf8', 'replace'),
-            #self.user.name.decode('utf8', 'replace'))
+    
+    def __repr__(self):
+        return '%r by %r'%(self.title, self.user)
+    def __str__(self):
+        return '%s by %s'%(self.title, self.user)
+    def __unicode__(self):
+        return u'%s by %s'%(self.title.decode('utf8', 'replace'),
+            self.user.name.decode('utf8', 'replace'))
 
     def summary(self):
         ''' summary text - remove HTML and truncate '''
@@ -569,6 +568,9 @@ class DiaryEntry(models.Model):
             self.activity = datetime.datetime.now(UTC)
         super(DiaryEntry, self).save()
 
+class DiaryEntryAdmin(admin.ModelAdmin):
+    fields = ['user', 'created', 'title']
+
 class DiaryComment(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)
     diary_entry = models.ForeignKey(DiaryEntry)
@@ -581,19 +583,19 @@ class DiaryComment(models.Model):
         get_latest_by = 'created'
         ordering = ['created']
 
-    class Admin:
-        list_display = ('user', 'created', 'diary_entry')
-
-    #def __repr__(self):
-        #return 'diary_comment-%r'%self.id
-    #__str__ = __repr__
-    #def __unicode__(self):
-        #return u'diary_comment-%r'%self.id
+    def __repr__(self):
+        return 'diary_comment-%r'%self.id
+    __str__ = __repr__
+    def __unicode__(self):
+        return u'diary_comment-%r'%self.id
 
     def save(self, UTC=UTC):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(DiaryComment, self).save()
+
+class DiaryCommentAdmin(admin.ModelAdmin):
+    fields = ['user', 'created', 'diary_entry']
 
 class File(models.Model):
     challenge = models.ForeignKey(Challenge)
@@ -612,17 +614,14 @@ class File(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    class Admin:
-        list_display = ('user', 'created', 'filename', 'is_final',
-                'is_screenshot')
-
-    #def __repr__(self):
-        #return 'file for %r (%r)'%(self.entry, self.description)
-    #def __str__(self):
-        #return 'file for %s (%s)'%(self.entry, self.description)
-    #def __unicode__(self):
-        #return u'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
-            #self.description.decode('utf8', 'replace'))
+   
+    def __repr__(self):
+       return 'file for %r (%r)'%(self.entry, self.description)
+    def __str__(self):
+       return 'file for %s (%s)'%(self.entry, self.description)
+    def __unicode__(self):
+        return u'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
+            self.description.decode('utf8', 'replace'))
 
     def save(self, UTC=UTC):
         if self.created == None:
@@ -646,6 +645,10 @@ class File(models.Model):
         sizeInUnit = size/unitSize[unit]
         return '%0.2f %sbytes'%(sizeInUnit, unit)
 
+class FileAdmin(admin.ModelAdmin):
+    fields = ['user', 'created', 'filename', 'is_final',
+              'is_screenshot']
+
 class Award(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
@@ -658,16 +661,13 @@ class Award(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    class Admin:
-        list_display = ('creator', 'created', 'filename', 'description')
-
-    #def __repr__(self):
-        #return 'award from %r (%r)'%(self.creator, self.description)
-    #def __str__(self):
-        #return 'award from %s (%s)'%(self.creator, self.description)
-    #def __unicode__(self):
-        #return u'award from %s (%s)'%(self.creator.name.decode('utf8', 'replace'),
-            #self.description.decode('utf8', 'replace'))
+    def __repr__(self):
+        return 'award from %r (%r)'%(self.creator, self.description)
+    def __str__(self):
+        return 'award from %s (%s)'%(self.creator, self.description)
+    def __unicode__(self):
+        return u'award from %s (%s)'%(self.creator.name.decode('utf8', 'replace'),
+            self.description.decode('utf8', 'replace'))
 
     def filename(self):
         return os.path.basename(self.get_content_filename())
@@ -676,6 +676,10 @@ class Award(models.Model):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(Award, self).save()
+
+class AwardAdmin(admin.ModelAdmin):
+    fields = ['creator', 'description']
+
 
 class EntryAward(models.Model):
     creator = models.ForeignKey(User)
@@ -688,15 +692,13 @@ class EntryAward(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    class Admin:
-        list_display = ('creator', 'entry', 'created', 'description')
-
-    #def __repr__(self):
-        #return '%r to %r' % (self.award, self.entry)
-    #def __str__(self):
-        #return '%s to %s' % (self.award, self.entry)
-    #def __unicode__(self):
-        #return u'%s to %s' % (self.award, self.entry)
+    
+    def __repr__(self):
+        return '%r to %r' % (self.award, self.entry)
+    def __str__(self):
+        return '%s to %s' % (self.award, self.entry)
+    def __unicode__(self):
+        return u'%s to %s' % (self.award, self.entry)
 
     def content(self):
         return self.award.content
@@ -708,6 +710,9 @@ class EntryAward(models.Model):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(EntryAward, self).save()
+
+class EntryAwardAdmin(admin.ModelAdmin):
+    fields = ['creator', 'entry', 'award']
 
 class Checksum(models.Model):
     entry = models.ForeignKey(Entry)
@@ -725,10 +730,7 @@ class Checksum(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    class Admin:
-        list_display = ('user', 'created', 'md5', 'is_final',
-                'is_screenshot')
-
+    
     #def __repr__(self):
         #return 'MD5 hash %r' % (self.md5)
     #def __str__(self):
@@ -738,6 +740,10 @@ class Checksum(models.Model):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(Checksum, self).save()
+
+class ChecksumAdmin(admin.ModelAdmin):
+    fields = ['user', 'created', 'md5', 'is_final',
+              'is_screenshot']
 
 BEST_TEN = 0
 SELECT_MANY = 1
@@ -769,11 +775,7 @@ class Poll(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    class Admin:
-        list_display = ('challenge', 'title', 'created', 'is_open',
-                'is_hidden', 'is_ongoing', 'type')
-
-    #def __repr__(self):
+        #def __repr__(self):
         #return '<Poll %r>' % (self.title, )
     #def __str__(self):
         #return 'Poll %s' % (self.title, )
@@ -875,6 +877,9 @@ class Poll(models.Model):
         choice = Option.objects.get(pk=l[-1][1])
         return choice.text
 
+class PollAdmin(admin.ModelAdmin):
+    field = ['challenge', 'title', 'created', 'is_open',
+             'is_hidden', 'is_ongoing', 'type']
 
 class Option(models.Model):
     poll = models.ForeignKey(Poll) #, edit_inline=models.TABULAR, num_in_admin=5, num_extra_on_change=5)
@@ -884,15 +889,15 @@ class Option(models.Model):
         ordering = ['id']
         unique_together = (("poll", "text"),)
 
-    class Admin:
-        list_display = ('poll', 'text')
+    def __repr__(self):
+        return '<Poll %r Option %r>' % (self.poll, self.text)
+    def __str__(self):
+        return 'Poll %s Option "%s"' % (self.poll, self.text)
+    def __unicode__(self):
+        return u'Poll %s Option "%s"' % (self.poll, self.text.decode('utf8', 'replace'))
 
-    #def __repr__(self):
-        #return '<Poll %r Option %r>' % (self.poll, self.text)
-    #def __str__(self):
-        #return 'Poll %s Option "%s"' % (self.poll, self.text)
-    #def __unicode__(self):
-        #return u'Poll %s Option "%s"' % (self.poll, self.text.decode('utf8', 'replace'))
+class OptionAdmin(admin.ModelAdmin):
+    fields = ['poll', 'text']
 
 class Response(models.Model):
     poll = models.ForeignKey(Poll)
@@ -905,23 +910,33 @@ class Response(models.Model):
         get_latest_by = 'created'
         unique_together = (("option", "user"),)
 
-    class Admin:
-        list_display = ('poll', 'option', 'user', 'created', 'value')
-
-    #def __repr__(self):
-        #if self.value:
-            #return '%r chose %r (%r)'%(self.user, self.option,
-                #self.value)
-        #else:
-            #return '%r chose %r'%(self.user, self.option)
-    #__unicode__ = __str__ = __repr__
+    def __repr__(self):
+        if self.value:
+            return '%r chose %r (%r)'%(self.user, self.option,
+                self.value)
+        else:
+            return '%r chose %r'%(self.user, self.option)
+    __unicode__ = __str__ = __repr__
 
     def save(self, UTC=UTC):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(Response, self).save()
 
+class ResponseAdmin(admin.ModelAdmin):
+    fields = ['poll', 'option', 'user', 'created', 'value']
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
     content = models.TextField()
 
+admin.site.register(Challenge, ChallengeAdmin)
+admin.site.register(Entry, EntryAdmin)
+admin.site.register(RatingTally, RatingTallyAdmin)
+admin.site.register(DiaryEntry, DiaryEntryAdmin)
+admin.site.register(EntryAward, EntryAwardAdmin)
+admin.site.register(Award, AwardAdmin)
+admin.site.register(Checksum, ChecksumAdmin)
+admin.site.register(Poll, PollAdmin)
+admin.site.register(Option, OptionAdmin)
+admin.site.register(Response, ResponseAdmin)

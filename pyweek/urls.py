@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import *
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
-#     (r'^admin/', include('django.contrib.admin.urls')),
+     url(r'^admin/', include(admin.site.urls)),
      (r'', include('pyweek.challenge.urls')),
 )
