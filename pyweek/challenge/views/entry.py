@@ -166,9 +166,9 @@ def entry_add(request, challenge_id):
         }, context_instance=RequestContext(request))
 
 class RatingForm(forms.Form):
-    fun = forms.PositiveIntegerField(choices=models.RATING_CHOICES)
-    innovation = forms.PositiveIntegerField(choices=models.RATING_CHOICES)
-    production = forms.PositiveIntegerField(choices=models.RATING_CHOICES)
+    fun = forms.IntegerField(widget=forms.Select, choices=models.RATING_CHOICES)
+    innovation = forms.IntegerField(widget=forms.Select, choices=models.RATING_CHOICES)
+    production = forms.IntegerField(widget=forms.Select, choices=models.RATING_CHOICES)
     nonworking = forms.BooleanField(required=False)
     disqualify = forms.BooleanField(required=False)
     comment = forms.TextField()
