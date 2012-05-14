@@ -32,7 +32,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
 <tr><td class="entry-description" valign="top">
  {% for file in entry.files %}
   {% if file.is_final %}
-   <a href="{{ file.content.url }}">{{ file.content.filename }}</a>
+   <a href="{{ file.content.url }}">{{ file.content.name }}</a>
    &mdash; {{ file.description }}
    ({{ file.pretty_size }}
    on {{ file.created|date:"Y/m/d" }}) <br>
