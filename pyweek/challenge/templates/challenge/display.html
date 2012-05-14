@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ challenge.pageTitle }}{% endblock %}
+{% block title %}{% autoescape off %}{{{ challenge.pageTitle }}{% endautoescape %}{% endblock %}
 
 {% block content %}
 {% if screenie %}
@@ -11,7 +11,7 @@
 </div>
 {% endif %}
 
-<h1>{{ challenge.pageTitle }}</h1>
+<h1>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %}</h1>
 
 {% include "motd.html" %}
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ challenge.pageTitle }} &mdash; results{% endblock %}
+{% block title %}{% autoescape off %}{{{ challenge.pageTitle }}{% endautoescape %} &mdash; results{% endblock %}
 
 {% block leftbar %}
  <ul>
@@ -14,7 +14,7 @@
 
 
 {% block content %}
-<h1>{{ challenge.pageTitle }} &mdash; results</h1>
+<h1>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results</h1>
 
 <table id="diary-board" style="width: auto">
 <tr><th style="text-align: center" colspan="8">Individual Entries</th></tr>
