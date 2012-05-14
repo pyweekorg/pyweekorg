@@ -389,7 +389,7 @@ class Entry(models.Model):
         ordering = ['-challenge', 'name']
         verbose_name_plural = "entries"
         unique_together = (("challenge", "name"), ("challenge", "title"))
-    
+
     def __repr__(self):
         return '<Entry %r>' % (self.name, )
     def __str__(self):
@@ -474,7 +474,7 @@ class Rating(models.Model):
     nonworking = models.BooleanField()
     disqualify = models.BooleanField()
     comment = models.TextField()
-    created = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         get_latest_by = 'created'
@@ -545,7 +545,7 @@ class DiaryEntry(models.Model):
         ordering = ['-created', 'title']
         verbose_name_plural = "DiaryEntries"
 
-    
+
     def __repr__(self):
         return '%r by %r'%(self.title, self.user)
     def __str__(self):
@@ -614,7 +614,7 @@ class File(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-   
+
     def __repr__(self):
        return 'file for %r (%r)'%(self.entry, self.description)
     def __str__(self):
@@ -692,7 +692,7 @@ class EntryAward(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    
+
     def __repr__(self):
         return '%r to %r' % (self.award, self.entry)
     def __str__(self):
@@ -730,7 +730,7 @@ class Checksum(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    
+
     #def __repr__(self):
         #return 'MD5 hash %r' % (self.md5)
     #def __str__(self):

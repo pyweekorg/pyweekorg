@@ -136,7 +136,7 @@ def entry_add(request, challenge_id):
             messages.error(request, 'Entry registration closed')
         return HttpResponseRedirect("/%s/"%challenge_id)
 
-    if request.POST:
+    if request.method == 'POST':
         f = AddEntryForm(request.POST)
         if f.is_valid():
             new_users = []
@@ -165,6 +165,13 @@ def entry_add(request, challenge_id):
             'is_owner': True,
         }, context_instance=RequestContext(request))
 
+class RatingForm(forms.Form):
+    fun = forms.PositiveIntegerField(choices=models.RATING_CHOICES)
+    innovation = forms.PositiveIntegerField(choices=models.RATING_CHOICES)
+    production = forms.PositiveIntegerField(choices=models.RATING_CHOICES)
+    nonworking = forms.BooleanField(required=False)
+    disqualify = forms.BooleanField(required=False)
+    comment = forms.TextField()
 
 def entry_display(request, entry_id):
     entry = get_object_or_404(models.Entry, pk=entry_id)
@@ -176,51 +183,54 @@ def entry_display(request, entry_id):
     if files: thumb = files[0]
 
     # handle adding the ratings form and accepting ratings submissions
-    f = False
+    f = None
     if entry.may_rate(request.user, challenge) and challenge.isRatingOpen():
         errors = {}
-        l = entry.rating_set.filter(user__id__exact=request.user.id)
-        if len(l):
-            # fields for rating editing
-            rating = l[0]
-            data = rating.__dict__
-            manipulator = models.Rating.ChangeManipulator(rating.id)
-            for field in manipulator.fields:
-                if field.field_name.startswith('created_'):
-                    field.is_required=False
-            if request.POST:
-                new_data = request.POST.copy()
-                new_data['entry'] = entry_id
-                new_data['user'] = str(request.user.id)
-                errors = manipulator.get_validation_errors(new_data)
-                if not errors:
-                    manipulator.do_html2python(new_data)
-                    rating.disqualify = new_data['disqualify']
-                    rating.nonworking = new_data['nonworking']
-                    rating.fun = new_data['fun']
-                    rating.innovation = new_data['innovation']
-                    rating.production = new_data['production']
-                    rating.comment = html2text(new_data['comment'])
-                    rating.save()
-                    messages.info(request, 'Ratings saved!')
-                    return HttpResponseRedirect("/e/%s/"%entry.name)
+
+        # get existing scores
+        rating = None
+        for rating in entry.rating_set.filter(user__id__exact=request.user.id):
+            break
+
+        # fields for rating editing
+        if request.method == 'POST':
+            f = RatingForm(request.POST)
+            if f.is_valid():
+                if rating is not None:
+                    # edit existing
+                    rating.disqualify = f.cleaned_data['disqualify']
+                    rating.nonworking = f.cleaned_data['nonworking']
+                    rating.fun = f.cleaned_data['fun']
+                    rating.innovation = f.cleaned_data['innovation']
+                    rating.production = f.cleaned_data['production']
+                    rating.comment = html2text(f.cleaned_data['comment'])
+                else:
+                    # create new
+                    rating = models.Rating(
+                        entry=entry,
+                        user=request.user,
+                        disqualify=f.cleaned_data['disqualify'],
+                        nonworking=f.cleaned_data['nonworking'],
+                        fun=f.cleaned_data['fun'],
+                        innovation=f.cleaned_data['innovation'],
+                        production=f.cleaned_data['production'],
+                        comment=html2text(f.cleaned_data['comment']),
+                    )
+                rating.save()
+                messages.info(request, 'Ratings saved!')
+                return HttpResponseRedirect("/e/%s/"%entry.name)
+        elif rating is not None:
+            data = dict(
+                disqualify=rating.disqualify,
+                nonworking=rating.nonworking,
+                fun=rating.fun,
+                innovation=rating.innovation,
+                production=rating.production,
+                comment=rating.comment
+            )
+            f = RatingForm(data)
         else:
-            data = {}
-            # fields for rating entry
-            manipulator = models.Rating.AddManipulator()
-            for field in manipulator.fields:
-                if field.field_name.startswith('created_'):
-                    field.is_required=False
-            if request.POST:
-                new_data = request.POST.copy()
-                new_data['entry'] = entry_id
-                new_data['user'] = str(request.user.id)
-                errors = manipulator.get_validation_errors(new_data)
-                if not errors:
-                    manipulator.do_html2python(new_data)
-                    place = manipulator.save(new_data)
-                    messages.success(request, 'Ratings saved!')
-                    return HttpResponseRedirect("/e/%s/"%entry.name)
+            f = RatingForm()
 
     rating_results = False
     if challenge.isAllDone() and entry.has_final:
