@@ -148,7 +148,7 @@ in the entry's total.</i></p>
 </tr>
  {% for file in files %}
   <tr class="{% cycle even,odd %}"><td>
-  <a href="{{ file.content.url }}">{{ file.content.name }}</a>
+  <a href="{{ file.content.url }}">{{ file.filename }}</a>
   {% if file.is_final %}&mdash; <b>final</b>{% endif %}
   </td>
   <td style="whitespace: pre">
