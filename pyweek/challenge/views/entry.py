@@ -171,7 +171,7 @@ class RatingForm(forms.Form):
     production = forms.IntegerField(widget=forms.Select( choices=models.RATING_CHOICES))
     nonworking = forms.BooleanField(required=False)
     disqualify = forms.BooleanField(required=False)
-    comment = forms.TextField()
+    comment = forms.CharField(required=True)
 
 def entry_display(request, entry_id):
     entry = get_object_or_404(models.Entry, pk=entry_id)
