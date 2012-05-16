@@ -5,6 +5,7 @@
 {% block content %}
 <h1>PyWeek{{ challenge.number}} - {{ poll.title }}</h1>
 
+{% autoescape off %}
 {{ poll.description }}
 
 {% if poll.is_open %}
@@ -12,6 +13,7 @@
 {% endif %}
 
 {{ fields }}
+{% endautoescape %}
 
 {% endblock %}
 
