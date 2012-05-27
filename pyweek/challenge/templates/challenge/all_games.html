@@ -11,7 +11,7 @@
  <td valign="top"><a href="/e/{{ entry.entry_id }}/">{{ entry.game_name }}</a></td>
  <td valign="top"><a href="/{{ entry.challenge_num }}/">{{ entry.challenge_num }}</a></td>
  <td valign="top">{{ entry.rating }}</td>
- <td valign="top">{{ entry.team }}</td>
+ <td valign="top">{% autoescape off %}{{ entry.team }}{% endautoescape %}</td>
 </tr>
 {% endfor %}
 </table>
