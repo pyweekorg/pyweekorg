@@ -4,6 +4,8 @@ from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models.signals import pre_save
+
 
 from stripogram import html2text
 import datetime
@@ -368,6 +370,24 @@ class Challenge(models.Model):
 
     def teamWinners(self):
         return [e for e in Entry.objects.filter(winner=self.number) if e.is_team()]
+
+
+def challenge_save(sender, instance, **kwargs):
+    """Generate an instance number.
+
+    This should be done at the database level, but would require a PostgreSQL
+    SEQUENCE to be explicitly set up, which is much more difficult in Django. 
+
+    """
+    if instance.number is None:
+        try:
+            instance.number = sender.objects.order_by('-number')[0].number + 1
+        except IndexError:
+            instance.number = 1
+
+pre_save.connect(challenge_save, sender=Challenge) 
+
+
 
 class Entry(models.Model):
     SHORT_TITLE_LEN = 14
