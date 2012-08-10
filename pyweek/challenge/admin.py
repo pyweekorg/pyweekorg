@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from challenge import models
+from pyweek.challenge import models
 
 
 class OptionAdmin(admin.ModelAdmin):
