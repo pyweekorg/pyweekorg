@@ -3,7 +3,6 @@ import os
 from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
-from django.contrib import admin
 
 from stripogram import html2text
 import datetime
@@ -369,9 +368,6 @@ class Challenge(models.Model):
     def teamWinners(self):
         return [e for e in Entry.objects.filter(winner=self.number) if e.is_team()]
 
-class ChallengeAdmin(admin.ModelAdmin):
-    fields = ['title', 'start', 'end', 'is_rego_open']
-
 class Entry(models.Model):
     name = models.CharField(max_length=15, primary_key=True,
         validators=[validators.validate_slug])
@@ -459,12 +455,9 @@ class Entry(models.Model):
         info['respondents'] = n
         return info
 
-class EntryAdmin(admin.ModelAdmin):
-    fields = ['name', 'title', 'game', 'user', 'users',
-              'challenge', 'is_upload_open']
-
 RATING_CHOICES = ((1, 'Not at all'), (2,'Below average'),
     (3,'About average'), (4,'Above average'), (5,'Exceptional'))
+
 class Rating(models.Model):
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
@@ -494,10 +487,6 @@ class Rating(models.Model):
             self.created = datetime.datetime.now(UTC)
         super(Rating, self).save()
 
-class RatingAdmin(admin.ModelAdmin):
-    fields = ['entry', 'user', 'created', 'disqualify', 'fun',
-              'innovation', 'production']
-
 class RatingTally(models.Model):
     challenge = models.ForeignKey(Challenge)      # convenience
     entry = models.ForeignKey(Entry)
@@ -520,10 +509,6 @@ class RatingTally(models.Model):
         return '%s rating tally'%(self.entry, )
     def __unicode__(self):
         return u'%s rating tally'%(self.entry,)
-
-class RatingTallyAdmin(admin.ModelAdmin):
-    fields = ['entry', 'individual', 'overall', 'disqualify', 'fun',
-              'innovation', 'production', 'respondents']
 
 class DiaryEntry(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)      # convenience
@@ -568,9 +553,6 @@ class DiaryEntry(models.Model):
             self.activity = datetime.datetime.now(UTC)
         super(DiaryEntry, self).save()
 
-class DiaryEntryAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'title']
-
 class DiaryComment(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)
     diary_entry = models.ForeignKey(DiaryEntry)
@@ -593,9 +575,6 @@ class DiaryComment(models.Model):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(DiaryComment, self).save()
-
-class DiaryCommentAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'diary_entry']
 
 class File(models.Model):
     challenge = models.ForeignKey(Challenge)
@@ -645,10 +624,6 @@ class File(models.Model):
         sizeInUnit = size/unitSize[unit]
         return '%0.2f %sbytes'%(sizeInUnit, unit)
 
-class FileAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'filename', 'is_final',
-              'is_screenshot']
-
 class Award(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
@@ -676,9 +651,6 @@ class Award(models.Model):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(Award, self).save()
-
-class AwardAdmin(admin.ModelAdmin):
-    fields = ['creator', 'description']
 
 
 class EntryAward(models.Model):
@@ -711,9 +683,6 @@ class EntryAward(models.Model):
             self.created = datetime.datetime.now(UTC)
         super(EntryAward, self).save()
 
-class EntryAwardAdmin(admin.ModelAdmin):
-    fields = ['creator', 'entry', 'award']
-
 class Checksum(models.Model):
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
@@ -740,10 +709,6 @@ class Checksum(models.Model):
         if self.created == None:
             self.created = datetime.datetime.now(UTC)
         super(Checksum, self).save()
-
-class ChecksumAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'md5', 'is_final',
-              'is_screenshot']
 
 BEST_TEN = 0
 SELECT_MANY = 1
@@ -877,10 +842,6 @@ class Poll(models.Model):
         choice = Option.objects.get(pk=l[-1][1])
         return choice.text
 
-class PollAdmin(admin.ModelAdmin):
-    field = ['challenge', 'title', 'created', 'is_open',
-             'is_hidden', 'is_ongoing', 'type']
-
 class Option(models.Model):
     poll = models.ForeignKey(Poll) #, edit_inline=models.TABULAR, num_in_admin=5, num_extra_on_change=5)
     text = models.CharField(max_length=100)  #, core=True)
@@ -895,9 +856,6 @@ class Option(models.Model):
         return 'Poll %s Option "%s"' % (self.poll, self.text)
     def __unicode__(self):
         return u'Poll %s Option "%s"' % (self.poll, self.text.decode('utf8', 'replace'))
-
-class OptionAdmin(admin.ModelAdmin):
-    fields = ['poll', 'text']
 
 class Response(models.Model):
     poll = models.ForeignKey(Poll)
@@ -923,20 +881,7 @@ class Response(models.Model):
             self.created = datetime.datetime.now(UTC)
         super(Response, self).save()
 
-class ResponseAdmin(admin.ModelAdmin):
-    fields = ['poll', 'option', 'user', 'created', 'value']
-
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
     content = models.TextField()
 
-admin.site.register(Challenge, ChallengeAdmin)
-admin.site.register(Entry, EntryAdmin)
-admin.site.register(RatingTally, RatingTallyAdmin)
-admin.site.register(DiaryEntry, DiaryEntryAdmin)
-admin.site.register(EntryAward, EntryAwardAdmin)
-admin.site.register(Award, AwardAdmin)
-admin.site.register(Checksum, ChecksumAdmin)
-admin.site.register(Poll, PollAdmin)
-admin.site.register(Option, OptionAdmin)
-admin.site.register(Response, ResponseAdmin)
