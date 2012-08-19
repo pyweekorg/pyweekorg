@@ -153,32 +153,36 @@ def message_add(request):
     content = title = ''
 
     if is_super:
-        form = StickyDiaryForm(request.POST)
+        cls = StickyDiaryForm
     else:
-        form = DiaryForm(request.POST)
+        cls = DiaryForm
 
-    if request.POST and form.is_valid():
-        content = form.cleaned_data['content']
+    if request.POST:
+        form = cls(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
 
-        previewed = True
-        # do the save
-        diary = models.DiaryEntry()
-        diary.content = content
-        diary.user = request.user
-        diary.actor = request.user
-        diary.title = form.cleaned_data['title']
-        diary.created = datetime.datetime.now(models.UTC)
-        diary.save()
-        generate_diary_rss()
-        messages.success(request, 'Entry saved!')
-        return HttpResponseRedirect('/d/%s/'%diary.id)
+            previewed = True
+            # do the save
+            diary = models.DiaryEntry()
+            diary.content = content
+            diary.user = request.user
+            diary.actor = request.user
+            diary.title = form.cleaned_data['title']
+            diary.created = datetime.datetime.now(models.UTC)
+            diary.save()
+            generate_diary_rss()
+            messages.success(request, 'Entry saved!')
+            return HttpResponseRedirect('/d/%s/'%diary.id)
+    else:
+        form = cls()
 
     return render_to_response('message_add.html',
         {
             'previewed': previewed,
             'content': content,
             'title': title,
-            'form': form,
+            'form': cls,
         }, context_instance=RequestContext(request))
 
 def entry_diary(request, entry_id):
