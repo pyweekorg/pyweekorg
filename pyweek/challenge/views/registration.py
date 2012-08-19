@@ -81,7 +81,6 @@ def login_page(request, message=None, error=None):
     else:
         f = AuthenticationForm()
     if not (message or error) and request.POST and f.is_valid():
-        request.session.delete_test_cookie()
         username = f.cleaned_data['username']
         password = f.cleaned_data['password']
         user = auth.authenticate(username=username, password=password)
@@ -91,7 +90,6 @@ def login_page(request, message=None, error=None):
         else:
             # Return an 'invalid login' error message.
             error = "invalid login"
-    request.session.set_test_cookie()
     info = {
         'form': f,
         'next': redirect_to,
