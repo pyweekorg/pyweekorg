@@ -530,7 +530,6 @@ class DiaryEntry(models.Model):
         ordering = ['-created', 'title']
         verbose_name_plural = "DiaryEntries"
 
-
     def __repr__(self):
         return '%r by %r'%(self.title, self.user)
     def __str__(self):

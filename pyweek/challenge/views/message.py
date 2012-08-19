@@ -141,31 +141,37 @@ class DiaryForm(forms.Form):
         return self._html_output(u'<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
              u'%s', '', u' %s', False)
 
+class StickyDiaryForm(DiaryForm):
+    sticky = forms.BooleanField(required=False)
+
 def message_add(request):
-    if request.user.is_anonymous():
+    is_anon = request.user.is_anonymous()
+    if is_anon:
         return HttpResponseRedirect('/login/')
+    is_super = not is_anon and request.user.is_superuser
     previewed = False
     content = title = ''
-    if request.POST:
-        form = DiaryForm(request.POST)
-        if form.is_valid():
-            content = form.cleaned_data['content']
 
-            previewed = True
-            if 1: #request.POST.has_key('save'):
-                # do the save
-                diary = models.DiaryEntry()
-                diary.content = content
-                diary.user = request.user
-                diary.actor = request.user
-                diary.title = form.cleaned_data['title']
-                diary.created = datetime.datetime.now(models.UTC)
-                diary.save()
-                generate_diary_rss()
-                messages.success(request, 'Entry saved!')
-                return HttpResponseRedirect('/d/%s/'%diary.id)
+    if is_super:
+        form = StickyDiaryForm(request.POST)
     else:
-        form = DiaryForm()
+        form = DiaryForm(request.POST)
+
+    if request.POST and form.is_valid():
+        content = form.cleaned_data['content']
+
+        previewed = True
+        # do the save
+        diary = models.DiaryEntry()
+        diary.content = content
+        diary.user = request.user
+        diary.actor = request.user
+        diary.title = form.cleaned_data['title']
+        diary.created = datetime.datetime.now(models.UTC)
+        diary.save()
+        generate_diary_rss()
+        messages.success(request, 'Entry saved!')
+        return HttpResponseRedirect('/d/%s/'%diary.id)
 
     return render_to_response('message_add.html',
         {
@@ -176,7 +182,8 @@ def message_add(request):
         }, context_instance=RequestContext(request))
 
 def entry_diary(request, entry_id):
-    if request.user.is_anonymous():
+    is_anon = request.user.is_anonymous()
+    if is_anon:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
     is_member = request.user in entry.users.all()
@@ -185,30 +192,34 @@ def entry_diary(request, entry_id):
         return HttpResponseRedirect('/e/%s/'%entry_id)
     challenge = entry.challenge
 
+    is_super = not is_anon and request.user.is_superuser
+
     previewed = False
     content = title = ''
-    if request.POST:
-        form = DiaryForm(request.POST)
-        if form.is_valid():
-            content = form.cleaned_data['content']
-
-            previewed = True
-            if 1: #request.POST.has_key('save'):
-                # do the save
-                diary = models.DiaryEntry()
-                diary.entry = entry
-                diary.challenge = challenge
-                diary.content = content
-                diary.user = request.user
-                diary.actor = request.user
-                diary.title = form.cleaned_data['title']
-                diary.created = datetime.datetime.now(models.UTC)
-                diary.save()
-                generate_diary_rss()
-	        messages.success(request, 'Entry saved!')
-                return HttpResponseRedirect('/d/%s/'%diary.id)
+    if is_super:
+        form = StickyDiaryForm(request.POST)
     else:
-        form = DiaryForm()
+        form = DiaryForm(request.POST)
+
+    if request.POST and form.is_valid():
+        content = form.cleaned_data['content']
+
+        previewed = True
+        # do the save
+        diary = models.DiaryEntry()
+        diary.entry = entry
+        diary.challenge = challenge
+        diary.content = content
+        diary.user = request.user
+        diary.actor = request.user
+        diary.title = form.cleaned_data['title']
+        diary.created = datetime.datetime.now(models.UTC)
+        if is_super:
+            diary.sticky = form.cleaned_data.get('sticky', False)
+        diary.save()
+        generate_diary_rss()
+        messages.success(request, 'Entry saved!')
+        return HttpResponseRedirect('/d/%s/'%diary.id)
 
     return render_to_response('challenge/add_diary.html',
         {
@@ -291,30 +302,25 @@ def diary_display(request, diary_id):
     challenge = diary.challenge
     is_member = entry and request.user in entry.users.all()
 
-    previewed = False
-    content = ''
-    if request.POST:
-        previewed = True
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            content = form.cleaned_data['content']
+    is_anon = request.user.is_anonymous()
 
-            if 1: # request.POST.has_key('save'):
-                # do the save
-                comment = models.DiaryComment(content=content,
-                    challenge=challenge, user=request.user, diary_entry=diary)
-                comment.save()
-                diary.activity = datetime.datetime.now(models.UTC)
-                diary.actor = request.user
-                diary.last_comment = comment
-                diary.reply_count = diary.reply_count + 1
-                diary.save()
-                messages.success(request, 'Comment added!')
-                return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
-                    comment.id))
-    else:
-        form = CommentForm()
-        content = diary.content
+    previewed = False
+    form = CommentForm(request.POST)
+    if request.POST and form.is_valid():
+        previewed = True
+
+        # do the save
+        comment = models.DiaryComment(content=form.cleaned_data['content'],
+            challenge=challenge, user=request.user, diary_entry=diary)
+        comment.save()
+        diary.activity = datetime.datetime.now(models.UTC)
+        diary.actor = request.user
+        diary.last_comment = comment
+        diary.reply_count = diary.reply_count + 1
+        diary.save()
+        messages.success(request, 'Comment added!')
+        return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
+            comment.id))
 
     return render_to_response('challenge/diary.html',
         {
@@ -323,7 +329,7 @@ def diary_display(request, diary_id):
             'diary': diary,
             'is_user': not request.user.is_anonymous(),
             'previewed': previewed,
-            'content': content,
+            'content': diary.content,
             'form': form,
             'comments': diary.diarycomment_set.all(),
             'is_member': is_member,
@@ -332,17 +338,23 @@ def diary_display(request, diary_id):
 
 
 def diary_edit(request, diary_id):
-    if request.user.is_anonymous():
+    is_anon = request.user.is_anonymous()
+    if is_anon:
         return HttpResponseRedirect('/login/?next=/d/%s/edit/'%diary_id)
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     if request.user != diary.user:
         messages.error(request, "You can't edit this entry!")
         return HttpResponseRedirect('/d/%s/'%diary_id)
 
+    is_super = not is_anon and request.user.is_superuser
+
     data = {'content': diary.content, 'title': diary.title}
 
     if request.POST:
-        form = DiaryForm(request.POST)
+        if is_super:
+            form = StickyDiaryForm(request.POST)
+        else:
+            form = DiaryForm(request.POST)
         if form.is_valid():
             content = form.cleaned_data['content']
 
@@ -350,6 +362,8 @@ def diary_edit(request, diary_id):
             diary.content = content
             diary.title = form.cleaned_data['title']
             diary.edited = datetime.datetime.now(models.UTC)
+            if is_super:
+                diary.sticky = form.cleaned_data.get('sticky', False)
             diary.save()
             messages.success(request, 'Edit saved!')
             return HttpResponseRedirect('/d/%s/edit/'%diary_id)
@@ -361,6 +375,7 @@ def diary_edit(request, diary_id):
             'challenge': diary.challenge,
             'entry': diary.entry,
             'form': form,
+            'is_super': is_super,
         }, context_instance=RequestContext(request))
 
 
