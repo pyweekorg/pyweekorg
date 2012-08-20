@@ -359,6 +359,8 @@ def diary_edit(request, diary_id):
     is_super = not is_anon and request.user.is_superuser
 
     data = {'content': diary.content, 'title': diary.title}
+    if is_super:
+        data['sticky'] = diary.sticky
 
     if is_super:
         cls = StickyDiaryForm
