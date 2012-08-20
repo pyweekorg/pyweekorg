@@ -66,7 +66,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 STATIC_ROOT = '/home/pyweek/static/'
 STATIC_URL = 'http://pyweek.org/static/'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
@@ -76,7 +76,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'pyweek.challenge',
     'django_wysiwyg',
-)
+]
 
 try:
     import raven
