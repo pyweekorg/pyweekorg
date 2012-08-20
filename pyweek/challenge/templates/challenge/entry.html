@@ -50,6 +50,17 @@ detail</a>)<br >
 <strong>Respondents</strong>: {{ rating.respondents|floatformat }}<br >
 {% endif %}
 
+<script>
+$(function () {
+    $('#ratings_detail').hide();
+    $('#id_nonworking_0').click(function () {
+        $('#ratings_detail').hide();
+    });
+    $('#id_nonworking_1').click(function () {
+        $('#ratings_detail').show();
+    });
+});
+</script>
 
 {% if form %}
 <fieldset id="ratings">
@@ -59,67 +70,71 @@ to compare games.</p>
 <form class="form" method="post" action=".">
 <table cellspacing=0 cellpadding=0>
 
-<tr{% if form.fun.errors %} class="form-error"{% endif %}>
- <td class="form-label"><label for="id_fun">Fun:</label></td>
- <td>{{ form.fun }}
-  {% if form.fun.errors %}
-   <p class="form-error">{{ form.fun.errors|join:", " }}</p>
-  {% endif %}
-  <p class="form-help">Consider: was this game fun to play. Would you want
-  to come back and play it again?</p>
- </td>
-</tr>
-
-<tr{% if form.innovation.errors %} class="form-error"{% endif %}>
- <td class="form-label"><label for="id_innovation">Innovation:</label></td>
- <td>{{ form.innovation }}
-  {% if form.innovation.errors %}
-   <p class="form-error">{{ form.innovation.errors|join:", " }}</p>
-  {% endif %}
-  <p class="form-help">Consider: did this game break new ground in terms of
-  gameplay, genre or approach?</p>
- </td>
-</tr>
-
-<tr{% if form.production.errors %} class="form-error"{% endif %}>
- <td class="form-label"><label for="id_production">Production:</label></td>
- <td>{{ form.production }}
-  {% if form.production.errors %}
-   <p class="form-error">{{ form.production.errors|join:", " }}</p>
-  {% endif %}
-  <p class="form-help">Consider: did the game have nice graphics? Did it
-  include sound and music? Were these elements appropriate and balanced?</p>
- </td>
-</tr>
-
 <tr{% if form.nonworking.errors %} class="form-error"{% endif %}>
  <td class="form-label"><label for="id_nonworking">Entry Did Not Work:</label></td>
- <td>{{ form.nonworking }}
+ <td id="ratings_nonworking">{{ form.nonworking }}
   {% if form.nonworking.errors %}
    <p class="form-error">{{ form.nonworking.errors|join:", " }}</p>
   {% endif %}
   <p class="form-help">The entry did not work for you.
   Please explain what happened, including how you ran the game and what
-  resulted from that (include a traceback if you got one).<br>
-<i>If you choose this option then the ratings above will not be counted
-in the entry's total.</i></p>
+  resulted from that (include a traceback if you got one).</p>
  </td>
 </tr>
 
-<tr{% if form.disqualify.errors %} class="form-error"{% endif %}>
- <td class="form-label"><label for="id_disqualify">Disqualify Entry:</label></td>
- <td>{{ form.disqualify }}
-  {% if form.disqualify.errors %}
-   <p class="form-error">{{ form.disqualify.errors|join:", " }}</p>
-  {% endif %}
-  <p class="form-help">The entry clearly cheated or otherwise broke the rules
-  of the challenge. You must explain your reasoning in the comments below.
-<br>
-  <i>If you choose this option then the ratings you assign will still be
-   counted in the entry's total.</i></p>
- </td>
-</tr>
+</table>
+<table cellspacing=0 cellpadding=0 id="ratings_detail">
 
+ <tr{% if form.fun.errors %} class="form-error"{% endif %}>
+  <td class="form-label"><label for="id_fun">Fun:</label></td>
+  <td>{{ form.fun }}
+   {% if form.fun.errors %}
+    <p class="form-error">{{ form.fun.errors|join:", " }}</p>
+   {% endif %}
+   <p class="form-help">Consider: was this game fun to play. Would you want
+   to come back and play it again?</p>
+  </td>
+ </tr>
+
+ <tr{% if form.innovation.errors %} class="form-error"{% endif %}>
+  <td class="form-label"><label for="id_innovation">Innovation:</label></td>
+  <td>{{ form.innovation }}
+   {% if form.innovation.errors %}
+    <p class="form-error">{{ form.innovation.errors|join:", " }}</p>
+   {% endif %}
+   <p class="form-help">Consider: did this game break new ground in terms of
+   gameplay, genre or approach?</p>
+  </td>
+ </tr>
+
+ <tr{% if form.production.errors %} class="form-error"{% endif %}>
+  <td class="form-label"><label for="id_production">Production:</label></td>
+  <td>{{ form.production }}
+   {% if form.production.errors %}
+    <p class="form-error">{{ form.production.errors|join:", " }}</p>
+   {% endif %}
+   <p class="form-help">Consider: did the game have nice graphics? Did it
+   include sound and music? Were these elements appropriate and balanced?</p>
+  </td>
+ </tr>
+
+ <tr{% if form.disqualify.errors %} class="form-error"{% endif %}>
+  <td class="form-label"><label for="id_disqualify">Disqualify Entry:</label></td>
+  <td>{{ form.disqualify }}
+   {% if form.disqualify.errors %}
+    <p class="form-error">{{ form.disqualify.errors|join:", " }}</p>
+   {% endif %}
+   <p class="form-help">The entry clearly cheated or otherwise broke the rules
+   of the challenge. You must explain your reasoning in the comments below.
+ <br>
+   <i>If you choose this option then the ratings you assign will still be
+    counted in the entry's total.</i></p>
+  </td>
+ </tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
 <tr{% if form.comment.errors %} class="form-error"{% endif %}>
  <td class="form-label"><label for="id_comment">Comments:</label></td>
  <td>{{ form.comment }}
@@ -171,3 +186,4 @@ in the entry's total.</i></p>
 {% endblock %}
 
 {% block leftbar %}{% include "entry_nav.html" %}{% endblock %}
+

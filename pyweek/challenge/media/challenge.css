@@ -88,8 +88,13 @@ form.form {
     padding: 5px;
 }
 
-form label { 
+form label {
     font-weight: bold;
+}
+
+.form-label {
+    text-align: right;
+    vertical-align: top;
 }
 
 ul.errorlist {
@@ -324,6 +329,10 @@ dl#entry-list dd {
    display: block;
    width: 570px;
    overflow: auto;
+}
+
+#ratings_nonworking ul {
+  list-style-type: none;
 }
 
 .small {

@@ -171,7 +171,7 @@ def message_add(request):
             diary.title = form.cleaned_data['title']
             if is_super:
                 diary.sticky = form.cleaned_data.get('sticky', False)
-            diary.created = datetime.datetime.now(models.UTC)
+            diary.created = datetime.datetime.utcnow()
             diary.save()
             generate_diary_rss()
             messages.success(request, 'Entry saved!')
@@ -221,7 +221,7 @@ def entry_diary(request, entry_id):
             diary.user = request.user
             diary.actor = request.user
             diary.title = form.cleaned_data['title']
-            diary.created = datetime.datetime.now(models.UTC)
+            diary.created = datetime.datetime.utcnow()
             if is_super:
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.save()
@@ -323,7 +323,7 @@ def diary_display(request, diary_id):
         comment = models.DiaryComment(content=form.cleaned_data['content'],
             challenge=challenge, user=request.user, diary_entry=diary)
         comment.save()
-        diary.activity = datetime.datetime.now(models.UTC)
+        diary.activity = datetime.datetime.utcnow()
         diary.actor = request.user
         diary.last_comment = comment
         diary.reply_count = diary.reply_count + 1
@@ -375,7 +375,7 @@ def diary_edit(request, diary_id):
             # do the save
             diary.content = content
             diary.title = form.cleaned_data['title']
-            diary.edited = datetime.datetime.now(models.UTC)
+            diary.edited = datetime.datetime.utcnow()
             if is_super:
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.save()

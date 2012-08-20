@@ -67,7 +67,7 @@ def entry_upload(request, entry_id):
         challenge=challenge,
         entry=entry,
         user=request.user,
-        created=datetime.datetime.now(models.UTC),
+        created=datetime.datetime.utcnow(),
         content=request.FILES['content'],
         description=html2text(f.cleaned_data['description']),
         is_final=f.cleaned_data['is_final'],

@@ -6,8 +6,8 @@
     <link rel="alternate" type="application/rss+xml"
        title="PyWeek Diaries RSS feed"
        href="http://media.pyweek.org/rss/diaries.rss">
-    <script src="/js/challenge.js" type="text/javascript"></script>
-    <script src="/js/jquery.js" type="text/javascript"></script>
+    <script src="http://media.pyweek.org/static/js/challenge.js" type="text/javascript"></script>
+    <script src="http://media.pyweek.org/static/js/jquery.min.js" type="text/javascript"></script>
     {% block links %}
     {% endblock %}
     <title>{% block title %}{% endblock %}</title>
@@ -89,7 +89,7 @@
         {% endfor %}
 
       {% else %}
-       <A href="http://pyweek.org/profile/">Your Account</A>
+       <A href="/profile/">Your Account</A>
        <ul>
 
        {% if challenge %}
@@ -105,7 +105,7 @@
         {% endfor %}
        {% endif %}
         <li>&nbsp;</li>
-        <li><A href="http://pyweek.org/logout/">Logout</A></li>
+        <li><A href="/logout/">Logout</A></li>
 
       {% endif %}
 
@@ -113,10 +113,10 @@
     </li>
 
     <li class="headlink">
-      <a href="http://pyweek.org/s/rules">About</a>
+      <a href="/s/rules">About</a>
       <ul>
-       <li><a href="http://pyweek.org/s/rules">Rules</a></li>
-       <li><a href="http://pyweek.org/s/help">Help</a></li>
+       <li><a href="/s/rules">Rules</a></li>
+       <li><a href="/s/help">Help</a></li>
       </ul>
     </li>
   </ul>

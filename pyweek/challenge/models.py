@@ -118,15 +118,15 @@ class Challenge(models.Model):
     def __unicode__(self):
         return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
 
-    def start_utc(self, UTC=UTC):
+    def start_utc(self):
         return datetime.datetime(self.start.year, self.start.month,
-            self.start.day, 0, 0, 0, 0, UTC)
-    def end_utc(self, UTC=UTC):
+            self.start.day, 0, 0, 0, 0)
+    def end_utc(self):
         return datetime.datetime(self.end.year, self.end.month, self.end.day,
-            0, 0, 0, 0, UTC)
+            0, 0, 0, 0)
 
-    def countdown(self, UTC=UTC):
-        now = datetime.datetime.now(UTC)
+    def countdown(self):
+        now = datetime.datetime.utcnow()
         sd = self.start_utc()
         ed = self.end_utc()
         if now < sd:
@@ -142,8 +142,8 @@ class Challenge(models.Model):
             return 'challenge finished'
         return '%s: %s'%(event, pretty_time_diff(diff))
 
-    def summary(self, UTC=UTC):
-        now = datetime.datetime.now(UTC)
+    def summary(self):
+        now = datetime.datetime.utcnow()
         sv = self.start_utc() - datetime.timedelta(7)
         sd = self.start_utc()
         ed = self.end_utc()
@@ -190,46 +190,46 @@ class Challenge(models.Model):
         else:
             return 'PyWeek &mdash; %s'%self.title
 
-    def isCompComing(self, UTC=UTC):
+    def isCompComing(self):
         if self.is_rego_open: return True
         rego_date = self.start_utc() - datetime.timedelta(30)
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         return now < rego_date
 
-    def isRegoOpen(self, UTC=UTC):
+    def isRegoOpen(self):
         if self.is_rego_open: return True
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         sd = self.start_utc()
         ed = self.end_utc()
         rego_date = sd - datetime.timedelta(30)
         end_rego_date = ed - datetime.timedelta(1)
         return rego_date <= now <= end_rego_date
 
-    def isVotingOpen(self, UTC=UTC):
+    def isVotingOpen(self):
         if not self.theme_poll:
             return False
         sd = self.start_utc() - datetime.timedelta(7)
         ed = self.start_utc()
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         return sd <= now < ed
 
-    def isCompStarted(self, UTC=UTC):
+    def isCompStarted(self):
         sd = self.start_utc()
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         return now >= sd
 
-    def isCompRunning(self, UTC=UTC):
+    def isCompRunning(self):
         sd = self.start_utc()
         ed = self.end_utc()
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         return sd <= now <= ed
 
-    def isCompFinished(self, UTC=UTC):
+    def isCompFinished(self):
         ed = self.end_utc()
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         return now > ed
 
-    def isUploadOpen(self, UTC=UTC):
+    def isUploadOpen(self):
         '''File upload is allowed in the following time range:
 
         from the start date to 24 hours after the end date
@@ -237,46 +237,46 @@ class Challenge(models.Model):
         '''
         sd = self.start_utc()
         ed = self.end_utc() + datetime.timedelta(1)
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         end_date = ed + datetime.timedelta(13)
         ret = sd <= now <= ed or now > end_date
         return ret
 
-    def isFinalUploadOpen(self, UTC=UTC):
+    def isFinalUploadOpen(self):
         '''FINAL file upload is allowed in the following time range:
 
         from the start date to 24 hours after the end date
         '''
         sd = self.start_utc()
         ed = self.end_utc() + datetime.timedelta(15)
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         ret = sd <= now <= ed
         return ret
 
-    def isGraceUploadTime(self, UTC=UTC):
+    def isGraceUploadTime(self):
         '''FINAL file upload during the 24 hours after the end date
         '''
         sd = self.end_utc()
         ed = self.end_utc() + datetime.timedelta(1)
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         return sd <= now <= ed
 
-    def isRatingOpen(self, UTC=UTC):
+    def isRatingOpen(self):
         ed = self.end_utc() + datetime.timedelta(1)
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         end_date = self.end_utc() + datetime.timedelta(14)
         return ed < now <= end_date
 
-    def isAllDone(self, UTC=UTC):
+    def isAllDone(self):
         ed = self.end_utc()
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         end_date = ed + datetime.timedelta(14)
         return now > end_date
 
-    def timetableHTML(self, UTC=UTC):
+    def timetableHTML(self):
         ''' Generate HTML rows for a timodels.Modelble display. '''
         l = []
-        now = datetime.datetime.now(UTC)
+        now = datetime.datetime.utcnow()
         def add(this, next, event):
             style = None
             if this <= now < next or (this <= now and next is None):
@@ -467,7 +467,7 @@ class Rating(models.Model):
     nonworking = models.BooleanField()
     disqualify = models.BooleanField()
     comment = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField()
 
     class Meta:
         get_latest_by = 'created'
@@ -482,9 +482,9 @@ class Rating(models.Model):
         return u'%s rating %s'%(self.user.name.decode('utf8', 'replace'),
             self.entry)
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(Rating, self).save()
 
 class RatingTally(models.Model):
@@ -545,11 +545,11 @@ class DiaryEntry(models.Model):
             text = text[:252] + '...'
         return text
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         if self.activity == None:
-            self.activity = datetime.datetime.now(UTC)
+            self.activity = datetime.datetime.utcnow()
         super(DiaryEntry, self).save()
 
 class DiaryComment(models.Model):
@@ -570,9 +570,9 @@ class DiaryComment(models.Model):
     def __unicode__(self):
         return u'diary_comment-%r'%self.id
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(DiaryComment, self).save()
 
 class File(models.Model):
@@ -583,7 +583,7 @@ class File(models.Model):
     def upload_location(instance, filename):
         return os.path.join(str(instance.challenge.number), str(instance.entry.name), filename)
     content = models.FileField(upload_to=upload_location)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField()
     description = models.CharField(max_length=255)
     is_final = models.BooleanField(default=False)
     is_screenshot = models.BooleanField(default=False)
@@ -601,9 +601,9 @@ class File(models.Model):
         return u'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
             self.description.decode('utf8', 'replace'))
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(File, self).save()
 
     def filename(self):
@@ -625,7 +625,7 @@ class File(models.Model):
 
 class Award(models.Model):
     creator = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField()
     def upload_location(instance, filename):
         return os.path.join('awards', str(instance.creator.id), filename)
     content = models.FileField(upload_to=upload_location)
@@ -646,15 +646,15 @@ class Award(models.Model):
     def filename(self):
         return os.path.basename(self.get_content_filename())
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(Award, self).save()
 
 
 class EntryAward(models.Model):
     creator = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField()
     challenge = models.ForeignKey(Challenge)
     entry = models.ForeignKey(Entry)
     award = models.ForeignKey(Award)
@@ -677,9 +677,9 @@ class EntryAward(models.Model):
     def description(self):
         return self.award.description
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(EntryAward, self).save()
 
 class Checksum(models.Model):
@@ -704,9 +704,9 @@ class Checksum(models.Model):
     #def __str__(self):
         #return 'MD5 hash %r' % (self.md5)
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(Checksum, self).save()
 
 BEST_TEN = 0
@@ -746,9 +746,9 @@ class Poll(models.Model):
     #def __str__(self):
         #return 'Poll %s' % (self.title.encode('utf8', 'replace'), )
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(Poll, self).save()
 
     def tally(self):
@@ -875,9 +875,9 @@ class Response(models.Model):
             return '%r chose %r'%(self.user, self.option)
     __unicode__ = __str__ = __repr__
 
-    def save(self, UTC=UTC):
+    def save(self):
         if self.created == None:
-            self.created = datetime.datetime.now(UTC)
+            self.created = datetime.datetime.utcnow()
         super(Response, self).save()
 
 class UserProfile(models.Model):

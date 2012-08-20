@@ -46,7 +46,7 @@ class EntryAdmin(admin.ModelAdmin):
               'challenge', 'is_upload_open']
 
 class ChallengeAdmin(admin.ModelAdmin):
-    fields = ['title', 'start', 'end', 'is_rego_open']
+    fields = ['number', 'title', 'start', 'end', 'is_rego_open']
 
 
 admin.site.register(models.Challenge, ChallengeAdmin)

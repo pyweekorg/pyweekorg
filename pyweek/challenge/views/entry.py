@@ -169,7 +169,10 @@ class RatingForm(forms.Form):
     fun = forms.IntegerField(widget=forms.Select( choices=models.RATING_CHOICES))
     innovation = forms.IntegerField(widget=forms.Select( choices=models.RATING_CHOICES))
     production = forms.IntegerField(widget=forms.Select( choices=models.RATING_CHOICES))
-    nonworking = forms.BooleanField(required=False)
+    nonworking = forms.TypedChoiceField(coerce=lambda x: x =='True',
+        choices=((False, 'No'), (True, 'Yes')),
+        widget=forms.RadioSelect)
+    #forms.BooleanField(required=False)
     disqualify = forms.BooleanField(required=False)
     comment = forms.CharField(widget=forms.Textarea, required=True)
 
