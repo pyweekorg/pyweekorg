@@ -95,6 +95,8 @@ form label {
 .form-label {
     text-align: right;
     vertical-align: top;
+    width: 12em;
+    padding-right: 2px;
 }
 
 ul.errorlist {
