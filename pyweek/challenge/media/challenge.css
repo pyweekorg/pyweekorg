@@ -99,6 +99,16 @@ form label {
     padding-right: 2px;
 }
 
+#ratings_nonworking ul {
+    padding-left: 2px;
+}
+
+#ratings_nonworking li {
+    display: block;
+    list-style: none;
+    float: left;
+}
+
 ul.errorlist {
     background: rgb(255,214,214);
     margin: 0px;
