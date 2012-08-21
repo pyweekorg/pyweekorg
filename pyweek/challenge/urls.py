@@ -65,10 +65,3 @@ urlpatterns += patterns('pyweek.challenge.views.award',
     (r'^all_awards/$', 'view_all_awards'),
 )
 
-urlpatterns += patterns('django.views.static',
-    (r'^js/(?P<path>.*)$', 'serve',
-        {'document_root': '/home/pyweek/lib/pyweek/challenge/media/js'}),
-    (r'(^favicon\.ico$)', 'serve',
-        {'document_root': '/home/pyweek/lib/pyweek/challenge/media/'}),
-)
-

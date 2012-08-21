@@ -66,7 +66,7 @@ of your award may have differeing sensibilities to yourself.</p>
               <input type="radio" name="award" value="{{award.id}}" />
             </td>
             <td>
-              <img src="http://media.pyweek.org/dl/{{award.content}}" /><br/>
+                <img src="{{ MEDIA_URL }}dl/{{award.content}}" /><br/>
               <strong>{{award.description}}</strong>
             </td>
           </tr>

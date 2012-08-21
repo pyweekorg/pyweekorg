@@ -11,7 +11,7 @@
 <tr><td class="form-label"><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
 <tr><td class="form-label"><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
 <tr><td></td><td>
-<p class="form-help">By logging in you are agreeing to the PyWeek <a href="http://media.pyweek.org/static/conditions.html">conditions of use</a>.</p>
+        <p class="form-help">By logging in you are agreeing to the PyWeek <a href="{{ STATIC_URL }}conditions.html">conditions of use</a>.</p>
 <input type="submit" value="login">
 </td></tr>
 </table>

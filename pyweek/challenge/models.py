@@ -461,9 +461,9 @@ RATING_CHOICES = ((1, 'Not at all'), (2,'Below average'),
 class Rating(models.Model):
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
-    fun = models.PositiveIntegerField(choices=RATING_CHOICES)
-    innovation = models.PositiveIntegerField(choices=RATING_CHOICES)
-    production = models.PositiveIntegerField(choices=RATING_CHOICES)
+    fun = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
+    innovation = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
+    production = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
     nonworking = models.BooleanField()
     disqualify = models.BooleanField()
     comment = models.TextField()

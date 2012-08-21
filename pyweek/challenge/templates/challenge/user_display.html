@@ -32,7 +32,7 @@
   {% for entryaward in received_awards %}
     <div class="award">
       <a href="/a/{{entryaward.award.id}}">
-        <img src="http://media.pyweek.org/dl/{{entryaward.award.content}}">
+          <img src="{{ MEDIA_URL }}dl/{{entryaward.award.content}}">
       </a>
       <br/>
       <strong>{{entryaward.description|escape}}</strong>
@@ -49,7 +49,7 @@
   {% for award in given_awards %}
     <div class="award">
       <a href="/a/{{award.id}}">
-        <img src="http://media.pyweek.org/dl/{{award.content}}">
+          <img src="{{ MEDIA_URL }}dl/{{award.content}}">
       </a>
       <br/>
       <strong>{{award.description|escape}}</strong><br/>

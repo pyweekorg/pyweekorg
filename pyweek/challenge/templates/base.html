@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /> 
-    <link rel="stylesheet" href="http://media.pyweek.org/static/challenge.css" type="text/css">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <link rel="stylesheet" href="{{ STATIC_URL }}challenge.css" type="text/css">
     <link rel="alternate" type="application/rss+xml"
        title="PyWeek Diaries RSS feed"
-       href="http://media.pyweek.org/rss/diaries.rss">
-    <script src="http://media.pyweek.org/static/js/challenge.js" type="text/javascript"></script>
-    <script src="http://media.pyweek.org/static/js/jquery.min.js" type="text/javascript"></script>
+       href="{{ MEDIA_URL }}rss/diaries.rss">
+       <script src="{{ STATIC_URL }}js/challenge.js" type="text/javascript"></script>
+       <script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>
     {% block links %}
     {% endblock %}
     <title>{% block title %}{% endblock %}</title>
@@ -18,7 +18,7 @@
 <body>
 <div id="header">
  <div id="logo">
-    <A href="/"><IMG border="0" src="http://media.pyweek.org/static/pyweek.png"></A></span>
+     <a href="/"><img border="0" src="{{ STATIC_URL }}pyweek.png"></a></span>
  </div>
  <div id="menu">
   <ul id="cssdropdown">
@@ -26,7 +26,6 @@
   </ul>
 
   <ul id="cssdropdown">
-
     <li class="headlink">
          {% if not latest.isCompStarted %}
             <A href="/{{ latest.number }}/">Next Challenge</A>
@@ -67,7 +66,7 @@
           {% for one in all reversed %}
              <li><a title="{{ one.title|escape }}" href="/{{ one.number }}/">{{ one.start|date:"F Y" }}</a></li>
           {% endfor %}
-          <li><a href="http://media.pyweek.org/static/pygame.draw-0606.html">June 2006 (mini)</a></li>
+          <li><a href="{{ STATIC_URL }}pygame.draw-0606.html">June 2006 (mini)</a></li>
           <li><a href="http://www.mechanicalcat.net/tech/PyWeek/1">August 2005</a></li>
       </ul>
 
@@ -149,7 +148,7 @@
 
 <div id="footer">
 Contact &lt;richard@pyweek.org&gt; with any enquiries.
-Site <A href="http://media.pyweek.org/static/conditions.html">conditions of use</A>.
+Site <A href="{{ STATIC_URL }}conditions.html">conditions of use</A>.
 Hosting thanks to <A href="http://tummy.com/">tummy.com</A>.<BR>
 Site developed in <A href="http://www.python.org/">Python</A>
 using <A href="http://www.djangoproject.com/">Django</A> and
