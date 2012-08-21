@@ -13,7 +13,7 @@ body {
 	padding: 0px;
 	font: 13px sans-serif;
 	color: #212121;
-	background: #ccc;
+	background: #eee;
 }
 
 h1 {
@@ -24,19 +24,27 @@ h1 {
 
 #header {
 	width: 750px;
-	height: 80px;
+	height: 150px;
 	margin: 0px auto;
-        padding-top: 3px;
-	background: url(img02.jpg) no-repeat left top;
+    padding-top: 3px;
+	background: #ccc;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 #header a {
 	text-decoration: none;
-	color: #FFFFFF;
+	color: black;
 }
 
 #logo {
 	float: left;
+	padding-top: 20px;
+	padding-bottom: 20px;
 	padding-left: 20px;
 }
 
@@ -57,8 +65,8 @@ h1 {
 #content {
 	float: left;
 	width: 730px;
-        padding: 10px;
-        background: white;
+    padding: 10px;
+    background: white;
 }
 
 #footer {
@@ -81,7 +89,17 @@ h1 {
     clear: both;
     border: thin solid #B399FF;
     background: #AADDFF;
-    padding: 1em;
+    padding: 20px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+#motd p:first-child {
+    margin-top: 0px;
+}
+#motd p:last-child {
+    margin-bottom: 0px;
 }
 
 form.form {
@@ -220,8 +238,7 @@ table#diary-board th:first-child {
 }
 table#diary-board td {
     border-left: thin solid gray;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding: 2px;
 }
 table#diary-board td:first-child {
     border-left: none;
@@ -277,6 +294,8 @@ table#timetable th {
 table#timetable td {
     padding-right: 1em;
     padding-left: 1em;
+    padding-bottom: 2px;
+    padding-top: 2px;
     border-left: thin solid gray;
     border-top: thin solid gray;
 }
@@ -309,7 +328,7 @@ b.delete, a.delete[href] {
     color: red;
     cursor: pointer;
     padding-left:12px;
-    background:url(http://media.pyweek.org/media/img/admin/icon_deletelink.gif) 0 .25em no-repeat;
+    background:url(http://media.pyweek.org/static/admin/img/icon_deletelink.gif) 0 .25em no-repeat;
     text-decoration:none;
 }
 
@@ -318,7 +337,7 @@ a.add[href] {
     color: green;
     cursor: pointer;
     padding-left:12px;
-    background:url(http://media.pyweek.org/media/img/admin/icon_addlink.gif) 0 .25em no-repeat;
+    background:url(http://media.pyweek.org/static/admin/img/icon_addlink.gif) 0 .25em no-repeat;
     text-decoration:none;
 }
 
@@ -327,7 +346,7 @@ a.edit[href] {
     color: blue;
     cursor: pointer;
     padding-left:12px;
-    background:url(http://media.pyweek.org/media/img/admin/icon_changelink.gif) 0 .25em no-repeat;
+    background:url(http://media.pyweek.org/static/admin/img/icon_changelink.gif) 0 .25em no-repeat;
     text-decoration:none;
 }
 
@@ -380,8 +399,18 @@ dl#entry-list dd {
 #cssdropdown li.headlink {
     width: 150px;
     float: left;
-    background-color: #dab74d;
+    background-color: #ccc;
     text-align: center;
+}
+#cssdropdown li.headlink li {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+#cssdropdown li.headlink li:first-child {
+    margin-top: 0px;
+}
+#cssdropdown li.headlink li:last-child {
+    margin-bottom: 0px;
 }
 #cssdropdown li.headlink > a { display: block; padding: 5px; }
 #cssdropdown li.headlink > span { display: block; padding: 5px; }
@@ -390,8 +419,8 @@ dl#entry-list dd {
     text-align: center;
     width: 750px;
     float: left;
-    background-color: #dab74d;
-    color: white;
+    background-color: #ccc;
+    /* color: white; */
 }
 
 /* Child lists and links */
@@ -402,14 +431,17 @@ dl#entry-list dd {
     width: 140px;
     /* margin: 0px -1px;
     border: 1px #dab74d solid; */
-    background-color: #dab74d;
-    color: white;
+    background-color: #ccc;
+    /* color: white; */
 }
 #cssdropdown li.headlink:hover ul {
     display: block;
     position:absolute;
 }
-#cssdropdown a:hover { text-decoration: none; color: #659dd7;}
+#cssdropdown a:hover {
+    text-decoration: none;
+    color: #659dd7;
+}
 
 
 /*
