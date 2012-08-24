@@ -315,22 +315,25 @@ def diary_display(request, diary_id):
     is_anon = request.user.is_anonymous()
 
     previewed = False
-    form = CommentForm(request.POST)
-    if request.POST and form.is_valid():
-        previewed = True
+    if request.POST:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            previewed = True
 
-        # do the save
-        comment = models.DiaryComment(content=form.cleaned_data['content'],
-            challenge=challenge, user=request.user, diary_entry=diary)
-        comment.save()
-        diary.activity = datetime.datetime.utcnow()
-        diary.actor = request.user
-        diary.last_comment = comment
-        diary.reply_count = diary.reply_count + 1
-        diary.save()
-        messages.success(request, 'Comment added!')
-        return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
-            comment.id))
+            # do the save
+            comment = models.DiaryComment(content=form.cleaned_data['content'],
+                challenge=challenge, user=request.user, diary_entry=diary)
+            comment.save()
+            diary.activity = datetime.datetime.utcnow()
+            diary.actor = request.user
+            diary.last_comment = comment
+            diary.reply_count = diary.reply_count + 1
+            diary.save()
+            messages.success(request, 'Comment added!')
+            return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
+                comment.id))
+    else:
+        form = CommentForm()
 
     return render_to_response('challenge/diary.html',
         {
