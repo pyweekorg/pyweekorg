@@ -22,7 +22,9 @@
  </div>
  <div id="menu">
   <ul id="cssdropdown">
-    <li class="headsummary">{{ latest.summary }}</li>
+      <li class="headsummary">
+      {% autoescape off %}{{ latest.summary }}{% endautoescape %}
+      </li>
   </ul>
 
   <ul id="cssdropdown">
