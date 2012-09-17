@@ -50,19 +50,29 @@ detail</a>)<br >
 <strong>Respondents</strong>: {{ rating.respondents|floatformat }}<br >
 {% endif %}
 
+{% if form %}
+
 <script>
 $(function () {
-    $('#ratings_detail').hide();
-    $('#id_nonworking_0').click(function () {
-        $('#ratings_detail').hide();
-    });
-    $('#id_nonworking_1').click(function () {
-        $('#ratings_detail').show();
-    });
+
+    function show_ratings_detail() {
+        var value = $('input:radio[name=nonworking]:checked').val();
+        if (value != "False") {
+            $('#ratings_detail').hide();
+        } else {
+            $('#ratings_detail').show();
+        }
+        if (value == "True") {
+            $('#notworking_help').show();
+        } else {
+            $('#notworking_help').hide();
+        }
+    }
+
+    show_ratings_detail();
+    $('input:radio[name=nonworking]').change(show_ratings_detail);
 });
 </script>
-
-{% if form %}
 <fieldset id="ratings">
 <legend>Entry Rating</legend>
 <p>When rating each game, please consider it on its own merits. Don't try
@@ -71,20 +81,19 @@ to compare games.</p>
 <table cellspacing=0 cellpadding=0>
 
 <tr{% if form.nonworking.errors %} class="form-error"{% endif %}>
- <td class="form-label"><label for="id_nonworking">Entry Did Not Work:</label></td>
+ <td class="form-label"><label for="id_nonworking">Did the entry work?</label></td>
  <td id="ratings_nonworking">{{ form.nonworking }}
   {% if form.nonworking.errors %}
    <p class="form-error">{{ form.nonworking.errors|join:", " }}</p>
   {% endif %}
-  <p class="form-help" style="clear: left;">The entry did not work for you.
-  Please explain what happened, including how you ran the game and what
-  resulted from that (include a traceback if you got one).</p>
  </td>
 </tr>
 
 </table>
-<table cellspacing=0 cellpadding=0 id="ratings_detail">
-
+<p id="notworking_help" style="clear: left;">
+Please explain what happened, including how you ran the game and what
+resulted from that (include a traceback if you got one).</p>
+<table cellspacing=0 cellpadding=0 id="ratings_detail" style="margin-top: 1em">
  <tr{% if form.fun.errors %} class="form-error"{% endif %}>
   <td class="form-label"><label for="id_fun">Fun:</label></td>
   <td>{{ form.fun }}
