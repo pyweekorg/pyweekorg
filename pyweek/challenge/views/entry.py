@@ -126,7 +126,7 @@ def entry_description(entry):
     else:
         description += 'This is a solo entry by <a href="/u/%s">%s</a>.' % (
             q(entry.user.username.encode('utf8')), e(entry.user.username.encode('utf8')))
-    return description.decode('utf8')
+    return description
 
 def entry_add(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
