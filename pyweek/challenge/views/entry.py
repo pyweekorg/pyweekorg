@@ -120,12 +120,12 @@ def entry_description(entry):
     e = cgi.escape
     q = urllib.quote
     if entry.is_team():
-        users = ', '.join(['<a href="/u/%s">%s</a>' % (q(u.encode('utf8')),
-            e(u.encode('utf8'))) for u in entry.users.all()])
+        users = ', '.join(['<a href="/u/%s">%s</a>' % (q(u.username.encode('utf8')),
+            e(u.username.encode('utf8'))) for u in entry.users.all()])
         description += 'This is a team entry consisting of %s.' % users
     else:
         description += 'This is a solo entry by <a href="/u/%s">%s</a>.' % (
-            q(entry.user.encode('utf8')), e(entry.user.encode('utf8')))
+            q(entry.user.username.encode('utf8')), e(entry.user.username.encode('utf8')))
     return description.decode('utf8')
 
 def entry_add(request, challenge_id):
