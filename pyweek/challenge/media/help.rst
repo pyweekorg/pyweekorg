@@ -106,7 +106,7 @@ after the finish to upload your file(s). You may upload as many files
 as necessary, including screenshots.
 
 The server will become heavily loaded at deadline times. Given that there
-is an entire 24-hour period in which to upload your files after the 
+is an entire 24-hour period in which to upload your files after the
 challenge finishes there will be no leniency for failure to upload.
 
 
@@ -201,9 +201,9 @@ Richard__ speaks:
   challenges. I had a few problems with the format of that challenge:
 
   1. Being over 48 hours meant that you had to focus on the game for most, if
-     not all of the 48 hours. This can be difficult for some of us to 
+     not all of the 48 hours. This can be difficult for some of us to
      organise. Spreading the development over a week is much easier.
-  2. I wanted to be able to collaborate with friends and LD48 is a solo-only 
+  2. I wanted to be able to collaborate with friends and LD48 is a solo-only
      challenge.
   3. There's lots of public-domain or Creative Commons artwork and audio out
      there that people shouldn't be prevented from using. Also, I suck at both
@@ -220,23 +220,12 @@ PyWeek number 1 was conceived in about May or June 2005 and run in August 2005.
 It's run by Richard. Lucio Torre has helped out by updating the site code
 from pre-magic-removal to post-magic-removal versions of Django.
 
-The participation in PyWeek has been increasing gradually since the start:
+The participation in PyWeek has been pretty steady since the start, with ups and downs depending on how widely the challenge is promoted (or whether I manage to schedule it particularly badly):
 
 .. image:: participation-graph.png
-
-.. :: =========== ========= ======== ========
-      Challenge   Entries   People   Finished
-      =========== ========= ======== ========
-      1           112       160      26
-      2           78        130      36
-      3           82        143      30
-      4           102       191      53
-      5           111       220      50
-      =========== ========= ======== ========
 
 The first challenge was announced about 3 months out, and a bunch of
 people registered that didn't return for the challenge, hence the low
 number of finished entries. Since then registration has only been opened
 to new users one month from the start date. This appears to have reduced
 the number of unused registrations.
-
