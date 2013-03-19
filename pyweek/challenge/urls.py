@@ -26,7 +26,7 @@ urlpatterns += patterns('pyweek.challenge.views.message',
 )
 
 urlpatterns += patterns('pyweek.challenge.views.user',
-    (r'^u/([\w\. \-\[\]]+)/$', 'user_display'),
+    url(r'^u/([\w\. \-\[\]]+)/$', 'user_display', name='user_display'),
     (r'^profile_description/$', 'profile_description'),
 )
 
