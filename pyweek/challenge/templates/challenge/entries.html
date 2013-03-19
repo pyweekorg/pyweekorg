@@ -39,7 +39,18 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
   {% endif %}
  {% endfor %}
 {% autoescape off %}
-{{ entry.description }}
+{% with entry.entry as e %}
+  {% if e.description %}
+   {{ e.description|safe }}<br>
+  {% endif %}
+  {% if e.is_team %}
+   {% for user in e.users.all %}
+    <a href="{% url 'user_display' user.username %}">{{ user.username }}</a>
+   {% endfor %}
+  {% else %}
+   <a href="{% url 'user_display' e.user.username %}">{{ e.user.username }}</a>
+  {% endif %}
+{% endwith %}
 {% endautoescape %}
 </td>
 {% if entry.thumb %}

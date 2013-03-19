@@ -74,12 +74,13 @@ def entry_list(request, challenge_id):
         if shots: thumb = shots[0]
 
         # generate entry description
-        description = entry_description(entry)
+        # description = entry_description(entry)
 
         info = {
+            'entry': entry,
             'name': entry.name,
             'title': entry.title,
-            'description': description,
+            # 'description': description,
             'files': files,
             'sortname': random.random(),
             'may_rate': False,
