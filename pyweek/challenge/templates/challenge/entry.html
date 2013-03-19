@@ -9,7 +9,20 @@
 <h1>PyWeek - {{ entry.title|escape }}</h1>
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%"><tr>
-<td valign="top">{% autoescape off %}{{ description }}{% endautoescape %}</td>
+<td valign="top">
+{% with entry.entry as e %}
+  {% if e.description %}
+   {{ e.description|safe }}<br>
+  {% endif %}
+  {% if e.is_team %}
+   {% for user in e.users.all %}
+    <a href="{% url 'user_display' user.username %}">{{ user.username }}</a>
+   {% endfor %}
+  {% else %}
+   <a href="{% url 'user_display' e.user.username %}">{{ e.user.username }}</a>
+  {% endif %}
+{% endwith %}
+</td>
 {% if thumb %}
 <td valign="top" width="{{ thumb.thumb_width }}px">
 <a href="{{ thumb.content.url }}"><img src="{{ thumb.content.url }}-thumb.png"></a>

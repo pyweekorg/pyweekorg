@@ -73,9 +73,6 @@ def entry_list(request, challenge_id):
         thumb = None
         if shots: thumb = shots[0]
 
-        # generate entry description
-        # description = entry_description(entry)
-
         info = {
             'entry': entry,
             'name': entry.name,
@@ -113,21 +110,6 @@ def entry_list(request, challenge_id):
             'all_done': all_done,
         }, context_instance=RequestContext(request))
 
-def entry_description(entry):
-    if entry.description:
-        description = entry.description + '<br>'
-    else:
-        description = ''
-    e = cgi.escape
-    q = urllib.quote
-    if entry.is_team():
-        users = ', '.join(['<a href="/u/%s">%s</a>' % (q(u.username.encode('utf8')),
-            e(u.username.encode('utf8'))) for u in entry.users.all()])
-        description += 'This is a team entry consisting of %s.' % users
-    else:
-        description += 'This is a solo entry by <a href="/u/%s">%s</a>.' % (
-            q(entry.user.username.encode('utf8')), e(entry.user.username.encode('utf8')))
-    return description
 
 def entry_add(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
@@ -246,7 +228,6 @@ def entry_display(request, entry_id):
     return render_to_response('challenge/entry.html', {
             'challenge': challenge,
             'entry': entry,
-            'description': entry_description(entry),
             'files': entry.file_set.all(),
             'thumb': thumb,
             'diary_entries': entry.diaryentry_set.all(),
