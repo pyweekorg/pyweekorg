@@ -4,6 +4,7 @@ import xml.sax.saxutils
 
 from django import forms
 from django.contrib import messages
+from django.contrib.syndication.views import Feed
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -173,7 +174,6 @@ def message_add(request):
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.created = datetime.datetime.utcnow()
             diary.save()
-            generate_diary_rss()
             messages.success(request, 'Entry saved!')
             return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
@@ -225,7 +225,6 @@ def entry_diary(request, entry_id):
             if is_super:
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.save()
-            generate_diary_rss()
             messages.success(request, 'Entry saved!')
             return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
@@ -244,60 +243,25 @@ def entry_diary(request, entry_id):
             'is_owner': entry.user == request.user,
         }, context_instance=RequestContext(request))
 
-feed_template = u'''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<rss version="2.0">
- <channel>
-  <title>PyWeek Diary Entries</title>
-  <link>http://pyweek.org/</link>
-  <description>The latest 40 entries from diaries at the
-  PyWeek challenge</description>
-  <managingEditor>richard@pyweek.org (Richard Jones)</managingEditor>
-  <language>en</language>
-  %(items)s
- </channel>
-</rss>
-'''
+class DiaryFeed(Feed):
+    title = "PyWeek Diary Entries"
+    link = "/"
+    description = "The latest 40 entries from diaries at the PyWeek challenge."
 
-item_template = u'''
-  <item>
-   <title>%(title)s</title>
-   <pubDate>%(date)s</pubDate>
-   <link>%(url)s</link>
-   <guid>%(url)s</guid>
-   <description>%(content)s&lt;br&gt;-- %(author)s</description>
-  </item>
-'''
+    def items(self):
+        return models.DiaryEntry.objects.order_by('-created')[:40]
 
-def unicode_god_damnit(s):
-    if isinstance(s, str):
-        try:
-            s = s.decode('utf8')
-        except UnicodeDecodeError:
-            s = s.decode('ascii', 'replace')
-    return s
+    def item_title(self, item):
+        return item.title
 
-def generate_diary_rss():
-    l = []
-    e = xml.sax.saxutils.escape
-    for diary in models.DiaryEntry.objects.\
-            filter(is_pyggy=False).order_by('-created')[:40]:
-        entry = diary.entry
-        title = cgi.escape(unicode_god_damnit(diary.title))
-        if entry:
-            s = unicode_god_damnit(entry.title)
-            author = cgi.escape('%s of <a href="http://pyweek.org/e/%s/">%s</a>'%(
-                diary.user, entry.name, e(s)))
-        else:
-            author = cgi.escape(str(diary.user))
-        url = 'http://pyweek.org/d/%s/'%diary.id
-        date = diary.created.strftime("%a, %d %b %Y %H:%M:%S -0600")
-        content = cgi.escape(unicode_god_damnit(diary.content))
-        l.append(item_template%locals())
-    items = '\n'.join(l)
-    f = open(settings.DIARY_RSS_FILE_NEW, 'w')
-    f.write((feed_template%locals()).encode('utf8'))
-    f.close()
-    os.rename(settings.DIARY_RSS_FILE_NEW, settings.DIARY_RSS_FILE)
+    def item_author_name(self, item):
+        return str(item.user)
+
+    def item_description(self, item):
+        return item.content
+
+    def item_pubdate(self, item):
+        return item.created
 
 class CommentForm(forms.Form):
     content = SafeHTMLField(required=True)
@@ -406,7 +370,6 @@ def diary_delete(request, diary_id):
 
     if request.POST and 'delete' in request.POST:
         diary.delete()
-        generate_diary_rss()
         messages.success(request, "Diary entry deleted!")
         return HttpResponseRedirect('/e/%s/'%diary.entry_id)
     else:

@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<p style="margin-top: 0px;"><a class="add" href="/message_add/">Post new message</a></p>
+<p style="margin-top: 0px; text-align: right;"><span style="float:left;"><a class="add" href="/message_add/">Post new message</a></span> <a class="button" href="{% url diary_feed %}">Atom Feed</a></p>
 
 <table id="diary-board">
 <tr><th>Message</th><!-- th>Team</th --><th>Rep</th><th>Last Post</th></tr>
@@ -72,6 +72,4 @@ style="font-size: 75%">({{ entry.date }})</span></td>
 {% endif %}
 </td></tr>
 </table>
-
 {% endblock %}
-

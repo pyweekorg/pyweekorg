@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 #from django.conf.settings import DEBUG
+from pyweek.challenge.views.message import DiaryFeed
 
 urlpatterns = patterns('pyweek.challenge.views.challenge',
     (r'^/?$', 'index'),
@@ -23,6 +24,7 @@ urlpatterns += patterns('pyweek.challenge.views.message',
     (r'^d/(\d+)/edit/$', 'diary_edit'),
     (r'^d/(\d+)/delete/$', 'diary_delete'),
     (r'^e/([\w-]+)/diary/$', 'entry_diary'),
+    url(r'^d/feed/$', DiaryFeed(), name='diary_feed'),
 )
 
 urlpatterns += patterns('pyweek.challenge.views.user',

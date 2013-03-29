@@ -3,6 +3,7 @@ import os
 from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from stripogram import html2text
 import datetime
@@ -551,6 +552,9 @@ class DiaryEntry(models.Model):
         if self.activity == None:
             self.activity = datetime.datetime.utcnow()
         super(DiaryEntry, self).save()
+
+    def get_absolute_url(self):
+        return reverse("pyweek.challenge.views.message.diary_display", args=[self.id])
 
 class DiaryComment(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)

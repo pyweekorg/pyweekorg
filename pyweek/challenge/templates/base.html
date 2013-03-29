@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}challenge.css" type="text/css">
     <link rel="alternate" type="application/rss+xml"
        title="PyWeek Diaries RSS feed"
-       href="{{ MEDIA_URL }}rss/diaries.rss">
+       href="{% url diary_feed %}">
        <script src="{{ STATIC_URL }}js/challenge.js" type="text/javascript"></script>
        <script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>
     {% block links %}
