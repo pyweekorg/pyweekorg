@@ -7,7 +7,7 @@
 <h1>The &ldquo;{{award.description}}&rdquo; Award</h1>
 
 
-<img src="http://media.pyweek.org/dl/{{award.content}}" /><br/>
+<img src="{{ MEDIA_URL }}{{award.content}}" /><br/>
 <em>Presented by <a href="/u/{{award.creator}}">{{award.creator}}</a></em> to:
 <p>
 <table>

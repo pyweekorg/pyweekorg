@@ -36,7 +36,7 @@
 {% for award in awards %}
   <div class="award">
     <a href="/a/{{award.award.id}}">
-      <img src="http://media.pyweek.org/dl/{{award.content}}">
+      <img src="{{ MEDIA_URL }}{{award.content}}">
     </a>
     <br>
     <strong>{{award.description|escape}}</strong><br>

@@ -32,11 +32,11 @@
   {% for entryaward in received_awards %}
     <div class="award">
       <a href="/a/{{entryaward.award.id}}">
-          <img src="{{ MEDIA_URL }}dl/{{entryaward.award.content}}">
+          <img src="{{ MEDIA_URL }}{{entryaward.award.content}}">
       </a>
       <br/>
       <strong>{{entryaward.description|escape}}</strong>
-      <em>Presented 
+      <em>Presented
         by <a href="/u/{{entryaward.creator}}">{{entryaward.creator}}</a>
         for <a href="/e/{{entryaward.entry.name}}">{{entryaward.entry.title|escape}}</a>
        </em>
