@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<p style="margin-top: 0px; text-align: right;"><span style="float:left;"><a class="add" href="/message_add/">Post new message</a></span> <a class="button" href="{% url diary_feed %}">Atom Feed</a></p>
+<p style="margin-top: 0px; text-align: right;"><span style="float:left;"><a class="add" href="/message_add/">Post new message</a></span> <a class="button" href="{% url "diary_feed" %}">Atom Feed</a></p>
 
 <table id="diary-board">
 <tr><th>Message</th><!-- th>Team</th --><th>Rep</th><th>Last Post</th></tr>
@@ -56,7 +56,7 @@ style="font-size: 75%">({{ entry.date }})</span></td>
 {% if prev %}
 <a class="button" href="/messages/?start={{ prev }}">&lt;&lt; Previous</a>
 {% endif %}
-</td><td align="center">Page: 
+</td><td align="center">Page:
 {% if more_start %}<a class="button" href="/messages/?start=0">first</a> ...{% endif %}
 {% for page in pages %}
 {% if page.current %}
