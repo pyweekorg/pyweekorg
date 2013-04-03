@@ -49,7 +49,7 @@
   {% for award in given_awards %}
     <div class="award">
       <a href="/a/{{award.id}}">
-          <img src="{{ MEDIA_URL }}dl/{{award.content}}">
+          <img src="{{ MEDIA_URL }}{{award.content}}">
       </a>
       <br/>
       <strong>{{award.description|escape}}</strong><br/>
