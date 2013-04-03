@@ -16,7 +16,7 @@
 <a href="/e/{{ entry.name }}/">{{ entry.title }}</a> ({{ entry.name }})
 </th></tr>
 <tr><td valign="top">
-{{ entry.description }}
+{{ entry.description|safe }}
 </td>
 {% if entry.thumb %}
 <td valign="top" align="right">
