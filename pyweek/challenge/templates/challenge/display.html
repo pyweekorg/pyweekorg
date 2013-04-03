@@ -51,7 +51,7 @@ to 00:00 UTC {{ challenge.end }}.</p>
   {% for entryaward in recent_entryawards %}
     <div class="award">
       <a href="/a/{{entryaward.award.id}}">
-        <img src="http://media.pyweek.org/dl/{{entryaward.content}}">
+        <img src="{{ MEDIA_URL }}{{entryaward.content}}">
       </a>
       <br>
       <strong>{{entryaward.description|escape}}</strong><br>
