@@ -743,12 +743,22 @@ class Poll(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-        #def __repr__(self):
-        #return '<Poll %r>' % (self.title, )
-    #def __str__(self):
-        #return 'Poll %s' % (self.title, )
-    #def __str__(self):
-        #return 'Poll %s' % (self.title.encode('utf8', 'replace'), )
+    def __repr__(self):
+        if self.challenge:
+            return '<Poll %r challenge %r>' % (self.title, self.challenge)
+        else:
+            return '<Poll %r>' % (self.title, )
+    def __str__(self):
+        if self.challenge:
+            return '<Poll %s challenge %s>' % (self.title, self.challenge)
+        else:
+            return '<Poll %s>' % (self.title, )
+    def __unicode__(self):
+        if self.challenge:
+            return u'<Poll %s challenge %s>' % (self.title.decode('utf8',
+                'replace'), self.challenge)
+        else:
+            return u'<Poll %s>' % (self.title.decode('utf8', 'replace'), )
 
     def save(self):
         if self.created == None:
