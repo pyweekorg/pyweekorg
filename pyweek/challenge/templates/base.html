@@ -44,7 +44,7 @@
              {% if not latest.isCompFinished %}
               <li><a href="/{{ latest.number }}/entry_add/">Register Entry</a></li>
              {% endif %}
-             {% if latest.theme_poll %}
+             {% if latest.theme_poll and not latest.theme_poll.is_hidden %}
               {% if latest.theme_poll.is_open %}
                <li><a href="/p/{{ latest.theme_poll.id }}/">Vote for the Theme</a></li>
               {% else %}
