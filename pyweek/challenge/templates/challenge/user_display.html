@@ -15,7 +15,7 @@
 {% endautoescape %}
 
 {% if user.is_staff %}
-<form action="/u/{{ profile_user.name }}/delete_spam" method="POST">
+<form action="/u/{{ profile_user.username }}/delete_spam" method="POST">
   <input type="submit" value="Delete Spammer">
   <input type="checkbox" name="confirm">
 </form>

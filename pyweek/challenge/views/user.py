@@ -39,9 +39,11 @@ def user_display(request, user_id):
             'received_awards': received_awards,
         }, context_instance=RequestContext(request))
 
+
 class ProfileForm(forms.Form):
     content = SafeHTMLField(label='Text to appear on your profile page',
-        help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
+        help_text='Basic HTML tags allowed: %s' % (', '.join(safeTags)))
+
 
 def profile_description(request):
     if request.user.is_anonymous():
@@ -62,7 +64,8 @@ def profile_description(request):
 
             # do the save
             if profile is None:
-                profile = models.UserProfile(content=content, user=request.user)
+                profile = models.UserProfile(content=content,
+                    user=request.user)
             else:
                 profile.content = content
             profile.save()
