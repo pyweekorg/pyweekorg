@@ -14,6 +14,13 @@
 {{ profile_user.userprofile_set.all.0.content }}
 {% endautoescape %}
 
+{% if user.is_staff %}
+<form action="/u/{{ profile_user.name }}/delete_spam" method="POST">
+  <input type="submit" value="Delete Spammer">
+  <input type="checkbox" name="confirm">
+</form>
+{% endif %}
+
 <p>Entries this user has been in:</p>
 <table id="files">
 <tr><th>PyWeek</th><th>Name</th><th>Team?</th><th>Rating</th></tr>

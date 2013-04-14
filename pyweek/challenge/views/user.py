@@ -2,20 +2,24 @@ from django import forms
 from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from pyweek.challenge import models
 
-from stripogram import html2text, html2safehtml
+from stripogram import html2safehtml
+import collections
 
 safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
     ul ol li span div'''.split()
 
+
 class SafeHTMLField(forms.CharField):
     widget = forms.Textarea
+
     def clean(self, value):
         if '<' in value:
             value = html2safehtml(value, safeTags)
-        if not value: raise forms.ValidationError(['This field is required'])
+        if not value:
+            raise forms.ValidationError(['This field is required'])
         return value
 
 
@@ -71,3 +75,43 @@ def profile_description(request):
             'form': form,
         }, context_instance=RequestContext(request))
 
+
+def delete_spammer(request, user_id):
+    if not request.POST or 'confirm' not in request.POST:
+        return user_display(request, user_id)
+
+    user = models.User.objects.get(username__exact=user_id)
+    comments = list(models.DiaryComment.objects.filter(user=user))
+    d = collections.defaultdict(list)
+    for comment in comments:
+        d[comment.diary_entry].append(comment)
+
+    user.password = 'X'
+    user.save()
+
+    last = None
+    for diary_entry, comments in d.items():
+        # print 'ENTRY', diary_entry
+        for comment in diary_entry.diarycomment_set.all():
+            # print '...', comment, comment.user
+            if comment.user != user:
+                last = comment
+        if last is None:
+            # print '===', last
+            diary_entry.actor = diary_entry.user
+            diary_entry.last_comment = None
+            diary_entry.activity = diary_entry.created
+            diary_entry.reply_count = 0
+        else:
+            # print '<<<', last
+            diary_entry.last_comment = last
+            diary_entry.activity = last.created
+            diary_entry.actor = last.user
+            diary_entry.reply_count -= len(comments)
+        diary_entry.save()
+        for comment in comments:
+            # print '---', comment
+            comment.delete()
+
+    messages.success(request, 'Spammer deleted!')
+    return HttpResponseRedirect('/u/%s/' % user_id)
