@@ -83,6 +83,9 @@ def delete_spammer(request, user_id):
     if not request.POST or 'confirm' not in request.POST:
         return user_display(request, user_id)
 
+    if not request.user.is_staff:
+        return user_display(request, user_id)
+
     user = models.User.objects.get(username__exact=user_id)
     comments = list(models.DiaryComment.objects.filter(user=user))
     d = collections.defaultdict(list)
