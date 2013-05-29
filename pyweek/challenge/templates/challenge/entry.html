@@ -45,15 +45,18 @@
 {% endfor %}
 
 <p style="clear:left">
-  <a href="/e/{{entry.name}}/give_award/">Give this entry an award<a>
+  <a href="/e/{{entry.name}}/give_award/">Give this entry an award</a>
 </p>
 
 {% if rating %}
-<strong>Ratings</strong> (<a href="/e/{{ entry.name }}/ratings/">show
-detail</a>)<br >
+<p><strong>Ratings</strong> (<a href="/e/{{ entry.name }}/ratings/">show
+detail</a>)</p>
+<p style="margin-left: 1em;">
+<strong>Overall</strong>: {{ rating.overall|floatformat }}<br >
 <strong>Fun</strong>: {{ rating.fun|floatformat }}<br >
 <strong>Production</strong>: {{ rating.production|floatformat }}<br >
 <strong>Innovation</strong>: {{ rating.innovation|floatformat }}<br >
+</p>
 {% if rating.nonworking %}
 <strong>{{ rating.dnwp }} respondents marked the game as not working.</strong><br >
 {% endif %}
