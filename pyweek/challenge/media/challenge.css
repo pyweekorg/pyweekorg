@@ -247,6 +247,11 @@ table#diary-board tr.odd td {
     background: #e0e0e0;
 }
 
+table#top-entries {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
 #pagination {
        background-color: #F3F3F3;
        margin-top:1em;

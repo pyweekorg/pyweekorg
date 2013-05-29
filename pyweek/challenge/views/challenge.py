@@ -161,5 +161,13 @@ def challenge_ratings(request, challenge_id):
             'polls': challenge.poll_set.filter(is_hidden__exact=False),
             'all_done': all_done,
             'individual_ratings': individual,
+            'individual_overall': individual[:3],
+            'individual_fun': sorted(individual, key=lambda x: x.fun, reverse=True)[:3],
+            'individual_inno': sorted(individual, key=lambda x: x.innovation, reverse=True)[:3],
+            'individual_prod': sorted(individual, key=lambda x: x.production, reverse=True)[:3],
             'team_ratings': team,
+            'team_overall': team[:3],
+            'team_fun': sorted(team, key=lambda x: x.fun, reverse=True)[:3],
+            'team_inno': sorted(team, key=lambda x: x.innovation, reverse=True)[:3],
+            'team_prod': sorted(team, key=lambda x: x.production, reverse=True)[:3],
         }, context_instance=RequestContext(request))

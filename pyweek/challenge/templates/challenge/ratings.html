@@ -2,32 +2,102 @@
 
 {% block title %}{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results{% endblock %}
 
-{% block leftbar %}
- <ul>
- <li><strong>Polls:</strong></li>
- {% for poll in polls %}
-  <li><a href="/p/{{ poll.id }}">{{ poll.title|escape }}</a></li>
-  {% if not poll.is_open %}-- closed{% endif %}
- {% endfor %}
- </ul>
-{% endblock %}
-
-
 {% block content %}
 <h1>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results</h1>
 
+<table id="top-entries">
+  <tr>
+  <td colspan="4">
+    <strong>Top Individual Entries</strong>
+  </td>
+  </tr>
+  <tr>
+  <td>
+    <p><strong>Overall</strong></p>
+    <p>
+    {% for rating in individual_overall %}
+    ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  <td>
+    <p><strong>Fun</strong></p>
+    <p>
+    {% for rating in individual_fun %}
+    ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  <td>
+    <p><strong>Innovation</strong></p>
+    <p>
+    {% for rating in individual_inno %}
+    ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  <td>
+    <p><strong>Production</strong></p>
+    <p>
+    {% for rating in individual_prod %}
+    ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  </tr>
+  <tr>
+  <td colspan="4">
+    <strong>Top Team Entries</strong>
+  </td>
+  </tr>
+  <tr>
+  <td>
+    <p><strong>Overall</strong></p>
+    <p>
+    {% for rating in team_overall %}
+    ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  <td>
+    <p><strong>Fun</strong></p>
+    <p>
+    {% for rating in team_fun %}
+    ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  <td>
+    <p><strong>Innovation</strong></p>
+    <p>
+    {% for rating in team_inno %}
+    ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  <td>
+    <p><strong>Production</strong></p>
+    <p>
+    {% for rating in team_prod %}
+    ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+    </p>
+  </td>
+  </tr>
+</table>
+
 <table id="diary-board" style="width: auto">
 <tr><th style="text-align: center" colspan="8">Individual Entries</th></tr>
-<tr><th>Entry</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Avg</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
+<tr><th>Entry</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in individual_ratings %}
  <tr class="{% cycle even,odd %}">
   <td>
    <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a>
   </td>
+  <td>{{ rating.overall|floatformat:2 }}</td>
   <td>{{ rating.fun }}</td>
   <td>{{ rating.innovation }}</td>
   <td>{{ rating.production }}</td>
-  <td>{{ rating.overall }}</td>
   <td>{{ rating.respondents }}</td>
   <td>{{ rating.nonworking }}%</td>
   <td>{{ rating.disqualify }}%</td>
@@ -35,16 +105,16 @@
 {% endfor %}
 
 <tr><th style="border-top: thin solid gray; text-align: center" colspan="8">Team Entries</th></tr>
-<tr><th>Entry</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Avg</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
+<tr><th>Entry</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in team_ratings %}
  <tr class="{% cycle even,odd %}">
   <td>
    <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a>
   </td>
+  <td>{{ rating.overall|floatformat:2 }}</td>
   <td>{{ rating.fun }}</td>
   <td>{{ rating.innovation }}</td>
   <td>{{ rating.production }}</td>
-  <td>{{ rating.overall }}</td>
   <td>{{ rating.respondents }}</td>
   <td>{{ rating.nonworking }}%</td>
   <td>{{ rating.disqualify }}%</td>
@@ -55,6 +125,8 @@
 
 <p>The column headings are:</p>
 <dl>
+<dt>Overall (average score)</dt>
+<dd>This is the score used to rank the entries and is the average of the scores (Fun, Inno, Prod).</dd>
 <dt>Fun</dt>
 <dd>Was this game fun to play. Would you want to come back and play it again?
 </dd>
@@ -65,8 +137,6 @@
 <dt>Prod (production)</dt>
 <dd>Did the game have nice graphics? Did it
   include sound and music? Were these elements appropriate and balanced?</dd>
-<dt>Avg (average score)</dt>
-<dd>This is the score used to rank the entries and is the average of the above three scores.</dd>
 <dt>Ents</dt>
 <dd>The number of participants (users) who rated this entry.</dd>
 <dt>DNW</dt>
@@ -74,6 +144,16 @@
 <dt>DQ</dt>
 <dd>The percentage of total participants (users from finishing entries) who thought the entry broke the challenge <a href="{{ STATIC_URL }}rules.html">rules</a>. </dd>
 </dl>
+
+<h3>Polls</h3>
+<ul>
+{% for poll in polls %}
+<li>
+ <a href="/p/{{ poll.id }}">{{ poll.title|escape }}</a>
+ {% if not poll.is_open %}-- closed{% endif %}
+</li>
+{% endfor %}
+</ul>
 
 
 {% endblock %}
