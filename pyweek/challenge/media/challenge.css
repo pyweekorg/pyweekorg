@@ -255,6 +255,11 @@ table#top-entries td {
 	vertical-align: top;
 	padding-bottom: 0.5em;
 }
+table#top-entries th {
+	text-align: left;
+	font-weight: bold;
+	padding-bottom: 0.5em;
+}
 
 #pagination {
        background-color: #F3F3F3;
