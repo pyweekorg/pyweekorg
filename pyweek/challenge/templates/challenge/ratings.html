@@ -6,70 +6,68 @@
 <h1>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results</h1>
 
 <table id="top-entries">
-  <tbody>
-    <tr>
-      <th colspan="4">Top Individual Entries</th>
-    </tr>
-    <tr>
-      <th>Overall</th>
-      <th>Fun</th>
-      <th>Innovation</th>
-      <th>Production</th>
-    </tr>
-    <tr>
-      <td>
-        {% for rating in individual_overall %}
-          ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for rating in individual_fun %}
-          ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for rating in individual_inno %}
-        ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for rating in individual_prod %}
-        ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-    </tr>
-    <tr>
-      <th colspan="4" style="padding-top: 1em;">Top Team Entries</th>
-    </tr>
-    <tr>
-      <th>Overall</th>
-      <th>Fun</th>
-      <th>Innovation</th>
-      <th>Production</th>
-    </tr>
-    <tr>
-      <td>
-        {% for rating in team_overall %}
-        ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for rating in team_fun %}
-        ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for rating in team_inno %}
-        ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-      <td>
-        {% for rating in team_prod %}
-        ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
-        {% endfor %}
-      </td>
-    </tr>
-  </tbody>
+<tr>
+  <th colspan="4">Top Individual Entries</th>
+</tr>
+<tr>
+  <th>Overall</th>
+  <th>Fun</th>
+  <th>Innovation</th>
+  <th>Production</th>
+</tr>
+<tr>
+  <td>
+    {% for rating in individual_overall %}
+      ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+  <td>
+    {% for rating in individual_fun %}
+      ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+  <td>
+    {% for rating in individual_inno %}
+    ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+  <td>
+    {% for rating in individual_prod %}
+    ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+</tr>
+<tr>
+  <th colspan="4" style="padding-top: 1em;">Top Team Entries</th>
+</tr>
+<tr>
+  <th>Overall</th>
+  <th>Fun</th>
+  <th>Innovation</th>
+  <th>Production</th>
+</tr>
+<tr>
+  <td>
+    {% for rating in team_overall %}
+    ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+  <td>
+    {% for rating in team_fun %}
+    ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+  <td>
+    {% for rating in team_inno %}
+    ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+  <td>
+    {% for rating in team_prod %}
+    ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    {% endfor %}
+  </td>
+</tr>
 </table>
 
 <table id="diary-board" style="width: auto">
