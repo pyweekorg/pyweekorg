@@ -249,7 +249,11 @@ table#diary-board tr.odd td {
 
 table#top-entries {
     width: 100%;
-    margin-bottom: 1em;
+    margin-bottom: 1.5em;
+}
+table#top-entries td {
+	vertical-align: top;
+	padding-bottom: 0.5em;
 }
 
 #pagination {
