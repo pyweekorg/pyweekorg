@@ -18,22 +18,22 @@
 <tr>
   <td>
     {% for rating in individual_overall %}
-      ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.overall|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br />
     {% endfor %}
   </td>
   <td>
     {% for rating in individual_fun %}
-      ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.fun|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in individual_inno %}
-    ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.innovation|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in individual_prod %}
-    ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.production|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
 </tr>
@@ -49,22 +49,22 @@
 <tr>
   <td>
     {% for rating in team_overall %}
-    ({{ rating.overall|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.overall|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in team_fun %}
-    ({{ rating.fun|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.fun|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in team_inno %}
-    ({{ rating.innovation|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.innovation|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in team_prod %}
-    ({{ rating.production|floatformat:2  }}) <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.production|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
     {% endfor %}
   </td>
 </tr>

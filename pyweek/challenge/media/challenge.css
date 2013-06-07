@@ -128,6 +128,25 @@ form label {
     float: left;
 }
 
+span.prize {
+    display: block-inline;
+    padding-left: 24px;
+    padding-right: 4px;
+    font-family: fixed;
+    background-repeat: no-repeat;
+    background-position: left top;
+    line-height: 18px;
+}
+span.gold {
+    background-image: url('gold.png');
+}
+span.silver {
+    background-image: url('silver.png');
+}
+span.bronze {
+    background-image: url('bronze.png');
+}
+
 ul.errorlist {
     background: rgb(255,214,214);
     margin: 0px;

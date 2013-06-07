@@ -370,6 +370,8 @@ class Challenge(models.Model):
         return [e for e in Entry.objects.filter(winner=self.number) if e.is_team()]
 
 class Entry(models.Model):
+    SHORT_TITLE_LEN = 14
+
     name = models.CharField(max_length=15, primary_key=True,
         validators=[validators.validate_slug])
     title = models.CharField(max_length=100)
@@ -393,6 +395,12 @@ class Entry(models.Model):
         return 'Entry "%s"' % (self.name, )
     def __unicode__(self):
         return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
+
+    @property
+    def short_title(self):
+        if len(self.title) <= Entry.SHORT_TITLE_LEN:
+            return self.title
+        return u"%s..." % self.title[:Entry.SHORT_TITLE_LEN]
 
     def is_team(self):
         return len(self.users.all()) > 1
