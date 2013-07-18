@@ -132,6 +132,7 @@ span.prize {
     display: block-inline;
     padding-left: 24px;
     padding-right: 4px;
+	padding-bottom: 16px;
     font-family: fixed;
     background-repeat: no-repeat;
     background-position: left top;
