@@ -272,7 +272,11 @@ def entry_manage(request, entry_id):
     if request.user.is_anonymous():
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
-    if request.user != entry.user:
+
+    user_list = entry.users.all()
+    is_member = request.user in list(user_list)
+
+    if not is_member:
         messages.error(request, "You're not allowed to manage this entry!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
