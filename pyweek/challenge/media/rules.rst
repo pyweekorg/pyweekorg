@@ -34,7 +34,7 @@ post diary entries (diaries are supplied as part of the challenge).
 By signing up to the challenge, you are agreeing to abide by
 the system `conditions of use`__.
 
-__ conditions.html
+__ http://media.pyweek.org/static/conditions.html
 
 
 2. Entries are to be written "from scratch"
@@ -214,13 +214,13 @@ __ http://media.pyweek.org/static/help.html
 
 Any online documentation may be used. This encompasses anything that might
 be viewed in a web browser and found by Google by any of the challenge
-entrants. Mailing lists and bulletin boards count. 
+entrants. Mailing lists and bulletin boards count.
 
 If online documentation includes code snippets, that's ok, just don't
-cut-n-paste the code directly into your game. 
+cut-n-paste the code directly into your game.
 
 If the online documentation is only code (ie. it's a web CVS viewer, or
-similar) then it's not OK. 
+similar) then it's not OK.
 
 Any existing code you've written should be considered out-of-bounds for the
 duration of the challenge.
