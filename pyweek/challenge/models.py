@@ -203,7 +203,7 @@ class Challenge(models.Model):
         sd = self.start_utc()
         ed = self.end_utc()
         rego_date = sd - datetime.timedelta(30)
-        end_rego_date = ed - datetime.timedelta(1)
+        end_rego_date = ed  # - datetime.timedelta(1)
         return rego_date <= now <= end_rego_date
 
     def isVotingOpen(self):
