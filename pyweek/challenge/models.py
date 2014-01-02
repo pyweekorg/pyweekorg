@@ -545,7 +545,7 @@ class DiaryEntry(models.Model):
         return '%s by %s'%(self.title, self.user)
     def __unicode__(self):
         return u'%s by %s'%(self.title.decode('utf8', 'replace'),
-            self.user.name.decode('utf8', 'replace'))
+            self.user.username.decode('utf8', 'replace'))
 
     def summary(self):
         ''' summary text - remove HTML and truncate '''
