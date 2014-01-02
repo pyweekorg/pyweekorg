@@ -4,49 +4,65 @@ from pyweek.challenge import models
 
 
 class OptionAdmin(admin.ModelAdmin):
-    fields = ['poll', 'text']
+    list_display = ['poll', 'text']
+
 
 class ResponseAdmin(admin.ModelAdmin):
-    fields = ['poll', 'option', 'user', 'created', 'value']
+    list_display = ['poll', 'option', 'user', 'created', 'value']
+
 
 class PollAdmin(admin.ModelAdmin):
     field = ['challenge', 'title', 'created', 'is_open',
              'is_hidden', 'is_ongoing', 'type']
 
+
 class ChecksumAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'md5', 'is_final',
-              'is_screenshot']
+    list_display = ['user', 'created', 'md5', 'is_final',
+                    'is_screenshot']
+
 
 class EntryAwardAdmin(admin.ModelAdmin):
-    fields = ['creator', 'entry', 'award']
+    list_display = ['creator', 'entry', 'award']
+
 
 class AwardAdmin(admin.ModelAdmin):
-    fields = ['creator', 'description']
+    list_display = ['creator', 'description']
+
 
 class FileAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'filename', 'is_final',
-              'is_screenshot']
+    list_display = ['user', 'created', 'filename', 'is_final',
+                    'is_screenshot']
+
 
 class DiaryCommentAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'diary_entry']
+    list_display = ['user', 'created', 'diary_entry']
+
 
 class DiaryEntryAdmin(admin.ModelAdmin):
-    fields = ['user', 'created', 'title']
+    list_display = ['title', 'user', 'created']
+    search_fields = ['user', 'title']
+    list_filter = ['sticky']
+
 
 class RatingTallyAdmin(admin.ModelAdmin):
-    fields = ['entry', 'individual', 'overall', 'disqualify', 'fun',
-              'innovation', 'production', 'respondents']
+    list_display = ['entry', 'individual', 'overall', 'disqualify', 'fun',
+                    'innovation', 'production', 'respondents']
+
 
 class RatingAdmin(admin.ModelAdmin):
-    fields = ['entry', 'user', 'created', 'disqualify', 'fun',
-              'innovation', 'production']
+    list_display = ['entry', 'user', 'created', 'disqualify', 'fun',
+                    'innovation', 'production']
+
 
 class EntryAdmin(admin.ModelAdmin):
-    fields = ['name', 'title', 'game', 'user', 'users',
-              'challenge', 'is_upload_open']
+    list_display = ['name', 'title', 'game', 'user', 'users',
+                    'challenge', 'is_upload_open']
+    search_fields = ['name', 'title']
+    list_filter = ['challenge']
+
 
 class ChallengeAdmin(admin.ModelAdmin):
-    fields = ['number', 'title', 'start', 'end', 'is_rego_open']
+    list_display = ['number', 'title', 'start', 'end', 'is_rego_open']
 
 
 admin.site.register(models.Challenge, ChallengeAdmin)
@@ -59,4 +75,3 @@ admin.site.register(models.Checksum, ChecksumAdmin)
 admin.site.register(models.Poll, PollAdmin)
 admin.site.register(models.Option, OptionAdmin)
 admin.site.register(models.Response, ResponseAdmin)
-
