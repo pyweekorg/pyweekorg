@@ -9,6 +9,8 @@ MANAGERS = ADMINS
 
 DATABASES = {}
 
+ALLOWED_HOSTS = ['.pyweek.org']
+
 # Absolute path to the directory that holds uploaded files and its URL
 MEDIA_ROOT = ''     # must be set per deployment
 MEDIA_URL = '/media/'
