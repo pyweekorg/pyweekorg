@@ -2,3 +2,6 @@ syntax: glob
 
 *.pyc
 *.orig
+dev_media
+dev_settings.py
+development
