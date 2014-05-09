@@ -28,14 +28,18 @@ MESSAGES_PER_PAGE = 30
 
 def update_messages(request):
     for entry in models.DiaryEntry.objects.filter(is_pyggy=False):
-        #try:
-            #comment = entry.diarycomment_set.latest()
-        #except models.DiaryComment.DoesNotExist:
-            #continue
-        #entry.actor = comment.user
-        #entry.last_comment = comment
-        #entry.activity = comment.created
-        entry.reply_count = entry.diarycomment_set.count()
+        try:
+            comment = entry.diarycomment_set.latest()
+        except models.DiaryComment.DoesNotExist:
+            entry.actor = entry.user
+            entry.last_comment = None
+            entry.activity = entry.created
+            entry.reply_count = 0
+        else:
+            entry.actor = comment.user
+            entry.last_comment = comment
+            entry.activity = comment.created
+            entry.reply_count = entry.diarycomment_set.count()
         entry.save()
     messages.success(request, 'Messages updated')
     return render_to_response('challenge/index.html',

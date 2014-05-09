@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 #from django.conf.settings import DEBUG
 from pyweek.challenge.views.message import DiaryFeed
 
@@ -7,7 +7,6 @@ urlpatterns = patterns('pyweek.challenge.views.challenge',
     (r'^stats/$', 'stats'),
     (r'^stats.json$', 'stats_json'),
     #(r'^test/$', 'test'),
-    #(r'^update_messages/$', 'update_messages'),
     #(r'^update_has_final/$', 'update_has_final'),
     (r'^all_games/$', 'all_games'),
 
@@ -25,6 +24,7 @@ urlpatterns += patterns('pyweek.challenge.views.message',
     (r'^d/(\d+)/delete/$', 'diary_delete'),
     (r'^e/([\w-]+)/diary/$', 'entry_diary'),
     url(r'^d/feed/$', DiaryFeed(), name='diary_feed'),
+    (r'^update_messages/$', 'update_messages'),
 )
 
 urlpatterns += patterns('pyweek.challenge.views.user',

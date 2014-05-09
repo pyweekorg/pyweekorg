@@ -362,7 +362,7 @@ b.delete, a.delete[href] {
     color: red;
     cursor: pointer;
     padding-left:12px;
-    background:url(http://media.pyweek.org/static/admin/img/icon_deletelink.gif) 0 .25em no-repeat;
+    background:url(/static/admin/img/icon_deletelink.gif) 0 .25em no-repeat;
     text-decoration:none;
 }
 
@@ -371,7 +371,7 @@ a.add[href] {
     color: green;
     cursor: pointer;
     padding-left:12px;
-    background:url(http://media.pyweek.org/static/admin/img/icon_addlink.gif) 0 .25em no-repeat;
+    background:url(/static/admin/img/icon_addlink.gif) 0 .25em no-repeat;
     text-decoration:none;
 }
 
@@ -380,7 +380,7 @@ a.edit[href] {
     color: blue;
     cursor: pointer;
     padding-left:12px;
-    background:url(http://media.pyweek.org/static/admin/img/icon_changelink.gif) 0 .25em no-repeat;
+    background:url(/static/admin/img/icon_changelink.gif) 0 .25em no-repeat;
     text-decoration:none;
 }
 
