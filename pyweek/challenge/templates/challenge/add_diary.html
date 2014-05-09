@@ -1,31 +1,12 @@
 
 {% extends "base.html" %}
 
-{% block links %}
-{% load wysiwyg %}
-{% wysiwyg_setup %}
-<script type="text/javascript" charset="utf-8">
- django_wysiwyg_editor_config['height'] = "200px";
- django_wysiwyg_editor_config['toolbar']['titlebar'] = "";
- django_wysiwyg_editor_config['toolbar']['collapse'] = false;
- django_wysiwyg_editor_config['toolbar']['draggable'] = false;
-</script>
-{% endblock %}
-
 {% block title %}PyWeek - add diary entry for {{ entry.name }}{% endblock %}
 
 {% block content %}
 
 {% if form.has_errors %}
 <div class="form-error">Sorry, there's been an error, see below:</div>
-{% endif %}
-
-{% if previewed %}
-<fieldset>
-<legend>Preview</legend>
-<h1>{{ title }}</h1>
-{{ content }}
-</fieldset>
 {% endif %}
 
 <p>
@@ -37,8 +18,6 @@
 
     <br><input type="submit" name="save" value="Save">
 </form>
-
-{% wysiwyg_editor "id_content" %}
 
 </p>
 

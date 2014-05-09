@@ -55,7 +55,7 @@ class RatingAdmin(admin.ModelAdmin):
 
 
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'title', 'game', 'user', 'users',
+    list_display = ['name', 'title', 'game', 'user',
                     'challenge', 'is_upload_open']
     search_fields = ['name', 'title']
     list_filter = ['challenge']
