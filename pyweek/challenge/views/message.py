@@ -140,8 +140,8 @@ def list_messages(request):
 
 class DiaryForm(forms.Form):
     title = forms.CharField(required=True, widget=forms.TextInput(attrs={'size':'60'}))
-    content = SafeHTMLField(required=True)
-        #help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
+    content = SafeHTMLField(required=True,
+        help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
     def as_plain(self):
         return self._html_output(u'<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
              u'%s', '', u' %s', False)
@@ -268,8 +268,8 @@ class DiaryFeed(Feed):
         return item.created
 
 class CommentForm(forms.Form):
-    content = SafeHTMLField(required=True)
-        #help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
+    content = SafeHTMLField(required=True,
+        help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
     def as_plain(self):
         return self._html_output(u'%(field)s<br>%(help_text)s<br>%(errors)s',
              u'%s', '', u' %s', False)
