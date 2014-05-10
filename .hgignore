@@ -5,3 +5,4 @@ syntax: glob
 dev_media
 dev_settings.py
 development
+static

@@ -1,0 +1,8 @@
+To run the dev server, use:
+
+PYTHONPATH=. DJANGO_LOCAL_SETTINGS=dev_settings.py django-admin.py runserver --settings=pyweek.settings
+
+
+To collectstatic, use:
+
+PYTHONPATH=. DJANGO_LOCAL_SETTINGS=dev_settings.py DJANGO_SETTINGS_MODULE=pyweek.settings python pyweek/manage.py collectstatic
