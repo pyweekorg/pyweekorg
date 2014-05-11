@@ -28,8 +28,8 @@ urlpatterns += patterns('pyweek.challenge.views.message',
 )
 
 urlpatterns += patterns('pyweek.challenge.views.user',
-    url(r'^u/([\w\. \-\[\]]+)/$', 'user_display', name='user_display'),
-    url(r'^u/([\w\. \-\[\]]+)/delete_spam$', 'delete_spammer', name='delete_spammer'),
+    url(r'^u/([\w\. \-\[\]!]+)/$', 'user_display', name='user_display'),
+    url(r'^u/([\w\. \-\[\]!]+)/delete_spam$', 'delete_spammer', name='delete_spammer'),
     (r'^profile_description/$', 'profile_description'),
 )
 
