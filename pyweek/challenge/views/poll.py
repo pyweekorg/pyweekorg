@@ -145,6 +145,7 @@ def handle_votes(poll, current, request):
                 v = int(request.POST[key])
             except ValueError:
                 errors.append( "Votes must be numbers")
+                continue
             if v <= 0:
                 errors.append( "Votes must be numbers > 0")
             n = len(options)
