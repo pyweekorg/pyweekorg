@@ -1,19 +1,9 @@
-a[href] {
-    text-decoration: none;
-}
-a[href]:visited {
-    text-decoration: none;
-}
-a[href]:hover {
-    text-decoration: underline;
-}
-
 body {
 	margin-top: 20px;
 	padding: 0px;
 	font: 13px sans-serif;
 	color: #212121;
-	background: #eee;
+	background: white;
 }
 
 h1 {
@@ -168,6 +158,21 @@ ul.messages {
     margin: 1em;
     padding: 5px;
     list-style-type: none;
+}
+
+.diary-entry {
+    margin: 0.8em 0;
+    clear: both;
+}
+
+.diary-entry h3 {
+    display: inline;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.diary-entry p {
+    display: inline;
 }
 
 div.diary {

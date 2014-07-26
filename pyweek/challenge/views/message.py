@@ -45,6 +45,7 @@ def update_messages(request):
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
 
+
 def extract_entries(entries):
     diary_entries = []
     now = datetime.datetime.utcnow()
@@ -77,12 +78,14 @@ def extract_entries(entries):
             entry = entry and entry.title,
             entry_name = entry and entry.name,
             reply_count = diary.reply_count,
+            originator=diary.user,
             author = comm and diary.actor or diary.user,
             date = date,
             commid = comm and comm.id,
         )
         diary_entries.append(d)
     return diary_entries
+
 
 def list_messages(request):
     try:
@@ -146,8 +149,10 @@ class DiaryForm(forms.Form):
         return self._html_output(u'<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
              u'%s', '', u' %s', False)
 
+
 class StickyDiaryForm(DiaryForm):
     sticky = forms.BooleanField(required=False)
+
 
 def message_add(request):
     is_anon = request.user.is_anonymous()

@@ -8,48 +8,24 @@
 
 {% block content %}
 
-<p style="margin-top: 0px; text-align: right;"><span style="float:left;"><a class="add" href="/message_add/">Post new message</a></span> <a class="button" href="{% url "diary_feed" %}">Atom Feed</a></p>
+<p style="margin: 0 0 2em">
+    <a href="{% url "diary_feed" %}" style="float: right"><img src="/static/feed.png" alt="Atom Feed" /></a>
+    <a class="btn btn-default" href="/message_add/"><span class="glyphicon glyphicon-plus-sign"></span> Post new message</a>
+</p>
 
-<table id="diary-board">
-<tr><th>Message</th><!-- th>Team</th --><th>Rep</th><th>Last Post</th></tr>
 {% for entry in sticky_entries %}
-<tr class="{% cycle even,odd %}">
- <td><b>
-<a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b>
-</td>
-<!-- td>
-<a href="/e/{{ entry.entry_name }}/">{{ entry.entry_name }}</a>
-</td -->
-<td align="center">
-{{ entry.reply_count }}
-</td>
- <td style="white-space: pre"><a href="/u/{{ entry.author }}/">{{ entry.author }}</a> <span
-style="font-size: 75%">({{ entry.date }})</span></td>
-</tr>
+<div class="diary-entry diary-entry-sticky">
+    <h3><span class="label label-default">Sticky</span> <b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
+    <p>by <a href="/u/{{ entry.originator }}/">{{ entry.originator }}</a> {{ entry.date }} {% if entry.reply_count %}({{ entry.reply_count }} replies){% endif %}</p>
+</div>
 {% endfor %}
-{% if sticky_entries %}
-<tr>
-<td style="border-bottom: thin solid gray"></td>
-<td style="border-bottom: thin solid gray"></td>
-<td style="border-bottom: thin solid gray"></td>
-</tr>
-{% endif %}
 
 {% for entry in diary_entries %}
-<tr class="{% cycle even,odd %}">
- <td>
-<a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{{ entry.title }}</a>
-</td>
-<!-- td>
-<a href="/e/{{ entry.entry_name }}/">{{ entry.entry_name }}</a>
-</td -->
-<td align="center">
-{{ entry.reply_count }}
-</td>
- <td style="white-space: pre"><a href="/u/{{ entry.author }}/">{{ entry.author }}</a> <span style="font-size: 75%">({{ entry.date }})</span></td>
-</tr>
+<div class="diary-entry">
+    <h3><b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
+    <p>by <a href="/u/{{ entry.originator }}/">{{ entry.originator }}</a> {{ entry.date }} {% if entry.reply_count %}({{ entry.reply_count }} replies){% endif %}</p>
+</div>
 {% endfor %}
-</table>
 
 <table width="100%" id="pagination">
 <tr><td align="left">
