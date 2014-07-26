@@ -6,7 +6,7 @@ from PIL import Image
 
 from django import forms
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -106,8 +106,9 @@ def update_has_final(request):
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
 
-# Challenge
+
 def challenge_display(request, challenge_id):
+    """Display an overview page for a challenge."""
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
 
     screenie = challenge.file_set.order_by('-created').filter(is_screenshot__exact=True)[:0]
@@ -117,8 +118,13 @@ def challenge_display(request, challenge_id):
     finished = challenge.isCompFinished()
     all_done = challenge.isAllDone()
 
+    blogposts = models.DiaryEntry.objects.filter(
+        entry__challenge__number=challenge.number
+    ).select_related('entry').order_by('-created')
+
     return render_to_response('challenge/display.html',
         {
+            'blogposts': blogposts,
             'challenge': challenge,
             'open_polls': challenge.poll_set.filter(is_hidden__exact=False,
                 is_open__exact=True),
@@ -129,6 +135,22 @@ def challenge_display(request, challenge_id):
             'all_done': all_done,
             'recent_entryawards': challenge.entryaward_set.all()[:10]
         }, context_instance=RequestContext(request))
+
+
+
+def challenge_diaries(request, challenge_id):
+    """Display recent blog posts for a challenge."""
+    challenge = get_object_or_404(models.Challenge, pk=challenge_id)
+
+    blogposts = models.DiaryEntry.objects.filter(
+        entry__challenge__number=challenge.number
+    ).select_related('entry').order_by('-created')
+
+    return render(request, 'challenge/challenge_diaries.html', {
+        'blogposts': blogposts,
+        'challenge': challenge,
+    })
+
 
 def calculate_rating_tallies(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)

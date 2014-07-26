@@ -11,6 +11,7 @@ urlpatterns = patterns('pyweek.challenge.views.challenge',
     (r'^all_games/$', 'all_games'),
 
     (r'^(\d+)/$', 'challenge_display'),
+    (r'^(\d+)/diaries/$', 'challenge_diaries'),
     (r'^(\d+)/ratings/$', 'challenge_ratings'),
     (r'^(\d+)/calculate_rating_tallies/', 'calculate_rating_tallies'),
     (r'^(\d+)/fix_winners/', 'fix_winners'),

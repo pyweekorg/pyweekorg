@@ -32,8 +32,7 @@ h1 {
 }
 
 #logo {
-    width: 200px;
-    margin-top: -10px;
+    margin-top: -8px;
 }
 
 #menu {
@@ -45,7 +44,7 @@ h1 {
 
 #page {
     max-width: 960px;
-    margin: 0px auto;
+    margin: 80px auto 0;
 }
 
 /* Content */

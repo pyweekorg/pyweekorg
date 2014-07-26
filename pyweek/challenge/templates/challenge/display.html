@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %}{% endblock %}
+{% block title %}{% autoescape off %}{{ challenge.title }}{% endautoescape %}{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}{% endblock %}
 
 {% block content %}
+
+<h1>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h1>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#">Timetable</a></li>
+    <li><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
+    <li><a href="/{{ challenge.number}}/entries">Entries</a></li>
+    {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
+</ul>
+
 {% if screenie %}
 <div id="thumb" style="width: {{ screenie.thumb_width }}px">
 <p><strong>Latest Screenshot</strong></p>
@@ -10,8 +20,6 @@
 <p>{{ screenie.description }}</p>
 </div>
 {% endif %}
-
-<h1>{% autoescape off %}{{ challenge.title }}{% endautoescape %}</h1>
 
 {% include "motd.html" %}
 
@@ -43,9 +51,6 @@ to 00:00 UTC {{ challenge.end }}.</p>
 </table>
 {% endif %}
 
-<p>View this challenge's <a href="entries">entries</a>{% if challenge.isAllDone %} and <a href="/{{ challenge.number}}/ratings/">rankings</a>{% endif %}.
-
-
 {% if recent_entryawards %}
   <p>Recent awards:</p>
   {% for entryaward in recent_entryawards %}
@@ -62,5 +67,4 @@ to 00:00 UTC {{ challenge.end }}.</p>
     </div>
   {% endfor %}
 {% endif %}
-
 {% endblock %}

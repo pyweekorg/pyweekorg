@@ -79,6 +79,7 @@ def extract_entries(entries):
             entry_name = entry and entry.name,
             reply_count = diary.reply_count,
             originator=diary.user,
+            sticky=diary.sticky,
             author = comm and diary.actor or diary.user,
             date = date,
             commid = comm and comm.id,
@@ -95,8 +96,9 @@ def list_messages(request):
         start = 0
 
     # entries to display
-    entries = models.DiaryEntry.objects.filter(is_pyggy=False,
-        sticky=False).order_by('-activity')
+    entries = models.DiaryEntry.objects.filter(
+        is_pyggy=False,
+        entry__isnull=True).order_by('-sticky', '-activity')
     diary_entries = extract_entries(entries[start:start + MESSAGES_PER_PAGE])
 
     # pagination
@@ -125,12 +127,7 @@ def list_messages(request):
                 for i in range(s, e)
     ]
 
-    sticky_entries = models.DiaryEntry.objects.filter(is_pyggy=False,
-        sticky=True).order_by('-activity')
-    sticky_entries = extract_entries(sticky_entries)
-
     return render_to_response('messages.html', {
-        'sticky_entries': sticky_entries,
         'diary_entries': diary_entries,
         'pages': pages,
         'prev': start and start-MESSAGES_PER_PAGE or None,

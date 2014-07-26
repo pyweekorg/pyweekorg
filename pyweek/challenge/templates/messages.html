@@ -8,21 +8,16 @@
 
 {% block content %}
 
-<p style="margin: 0 0 2em">
-    <a href="{% url "diary_feed" %}" style="float: right"><img src="/static/feed.png" alt="Atom Feed" /></a>
-    <a class="btn btn-default" href="/message_add/"><span class="glyphicon glyphicon-plus-sign"></span> Post new message</a>
+<p style="float: right; margin-top: 10px">
+    <a href="{% url "diary_feed" %}"><img src="/static/feed.png" alt="Atom Feed" /></a>
+    <a class="btn btn-default" href="/message_add/"><span class="glyphicon glyphicon-plus"></span> New Thread</a>
 </p>
 
-{% for entry in sticky_entries %}
-<div class="diary-entry diary-entry-sticky">
-    <h3><span class="label label-default">Sticky</span> <b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
-    <p>by <a href="/u/{{ entry.originator }}/">{{ entry.originator }}</a> {{ entry.date }} {% if entry.reply_count %}({{ entry.reply_count }} replies){% endif %}</p>
-</div>
-{% endfor %}
+<h2 style="margin-bottom: 1em">Discussion Threads</h2>
 
 {% for entry in diary_entries %}
 <div class="diary-entry">
-    <h3><b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
+    <h3>{% if entry.sticky %}<span class="label label-default">Sticky</span> {% endif %}<b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
     <p>by <a href="/u/{{ entry.originator }}/">{{ entry.originator }}</a> {{ entry.date }} {% if entry.reply_count %}({{ entry.reply_count }} replies){% endif %}</p>
 </div>
 {% endfor %}

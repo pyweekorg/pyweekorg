@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Diaries - {% autoescape off %}{{ challenge.title }}{% endautoescape %}{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}{% endblock %}
+
+{% block content %}
+
+<h1>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h1>
+
+<ul class="nav nav-tabs">
+    <li><a href="{{challenge.get_absolute_url}}">Timetable</a></li>
+    <li class="active"><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
+    <li><a href="/{{ challenge.number}}/entries">Entries</a></li>
+    {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
+</ul>
+
+{% if blogposts %}
+{% for p in blogposts %}
+    <h3><a href="/e/{{ p.entry.name }}/">{{ p.entry.title }}</a> - {{ p.title }}</h3>
+    <p>Posted by <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y/m/d H:i" }}</p>
+
+    {% autoescape off %}
+    {{ p.content }}
+    {% endautoescape %}
+
+    <p><a href="{{p.get_absolute_url}}">View comments</a></p>
+{% endfor %}
+
+{% else %}
+<p>There are no diary entries for this challenge at this time.</p>
+{% endif %}
+
+{% endblock %}
+

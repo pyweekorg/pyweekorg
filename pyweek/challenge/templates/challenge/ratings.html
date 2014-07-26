@@ -5,6 +5,13 @@
 {% block content %}
 <h1>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results</h1>
 
+<ul class="nav nav-tabs">
+    <li><a href="{{challenge.get_absolute_url}}">Timetable</a></li>
+    <li><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
+    <li><a href="/{{ challenge.number}}/entries">Entries</a></li>
+    <li class="active"><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>
+</ul>
+
 <table id="top-entries">
 <tr>
   <th colspan="4">Top Individual Entries</th>
