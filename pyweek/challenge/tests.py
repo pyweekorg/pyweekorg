@@ -86,12 +86,6 @@ class RegistrationTest(TestCase):
         }, follow=True)
         return resp
 
-    def test_do_register_no_upcoming_challenge(self):
-        """We cannot register if there is no upcoming challenge."""
-        resp = self.register()
-        self.assertEqual(resp.request['PATH_INFO'], '/register/')
-        self.assertContains(resp, 'Registration is currently closed.')
-
     def test_do_register(self):
         """We can register if there is an upcoming challenge."""
         today = date.today()
@@ -113,8 +107,8 @@ class LoginTest(TestCase):
     def test_login_form(self):
         """The login form is usable"""
         resp = self.client.get('/login/')
-        self.assertContains(resp, '<form class="form" action="" method="post">', html=True)
-        self.assertContains(resp, '<input id="id_username" type="text" maxlength="30" name="username">', html=True)
+        self.assertContains(resp, '<form class="form" method="post" action="/login/">')
+        self.assertContains(resp, '<input id="id_username" type="text" name="username">', html=True)
 
     def test_login(self):
         """Users can login"""
@@ -158,7 +152,7 @@ class LoginTest(TestCase):
         "Submitting the lost password form without an address gives an error"
         resp = self.client.post('/resetpw/', {})
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, 'This field is required.')
+        self.assertContains(resp, 'No email address supplied!')
 
     def test_forgotten_password_bad_address(self):
         resp = self.client.post('/resetpw/', {
@@ -173,14 +167,15 @@ class LogoutTest(TestCase):
 
     def setUp(self):
         self.client.get('/login/')
-        self.client.post('/login/', {
-            'username': 'testuser',
+        resp = self.client.post('/login/', {
+            'username': 'test',
             'password': 'password'
         })
+        self.assertEqual(resp.status_code, 302, msg="Login unsuccessful")
 
     def test_logout_link(self):
         resp = self.client.get('/')
-        self.assertContains(resp, '<a href="/logout/">', html=True)
+        self.assertContains(resp, '<a href="/logout/">')
 
     def test_logout(self):
         """Users can logout"""
@@ -206,16 +201,14 @@ class DiscussionTest(TestCase):
         """Users can post comments on existing threads."""
 
 
-
-
-class TimetableTest(TestCase):
-    def test_timetable(self):
-        start = date(2012, 05, 06)
-        c = Challenge(start=start)
-        self.assertEqual(c.timetable(), [
-            (datetime(2012, 4, 6), 'Pre-registration underway'),
-            (datetime(2012, 4, 29), 'Theme voting commences'),
-            (datetime(2012, 5, 6), 'Challenge start'),
-            (datetime(2012, 5, 13), 'Challenge end, judging begins'),
-            (datetime(2012, 5, 27), 'Judging closes, winners announced'),
-        ])
+#class TimetableTest(TestCase):
+#    def test_timetable(self):
+#        start = date(2012, 05, 06)
+#        c = Challenge(start=start)
+#        self.assertEqual(c.timetable(), [
+#            (datetime(2012, 4, 6), 'Pre-registration underway'),
+#            (datetime(2012, 4, 29), 'Theme voting commences'),
+#            (datetime(2012, 5, 6), 'Challenge start'),
+#            (datetime(2012, 5, 13), 'Challenge end, judging begins'),
+#            (datetime(2012, 5, 27), 'Judging closes, winners announced'),
+#        ])

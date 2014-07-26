@@ -3,7 +3,9 @@
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = []
+ADMINS = [
+    ('Richard Jones', 'r1chardj0n3s@gmail.com'),
+]
 
 MANAGERS = ADMINS
 

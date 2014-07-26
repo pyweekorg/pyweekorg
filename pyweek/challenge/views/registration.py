@@ -1,15 +1,27 @@
 import smtplib
+from inspect import cleandoc
 
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (
+    HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+)
 from django import forms
 from django.core.mail import send_mail
 from django.contrib.auth.forms import AuthenticationForm
 #from django.models.auth import users
 from django.contrib.sites.models import Site
 from django.contrib import auth, messages
+
+from ..forms import LoginForm
+from ..models import Challenge
+
+
+def is_registration_open():
+    """Return True if registration is currently open."""
+    c = Challenge.objects.latest()
+    return c and c.isRegoOpen()
 
 
 class RegistrationForm(forms.Form):
@@ -20,6 +32,12 @@ class RegistrationForm(forms.Form):
 
 
 def register(request):
+    if not is_registration_open():
+        return HttpResponseForbidden(
+            "Registration is not available at the current time. "
+            "Please check back when a challenge is scheduled."
+        )
+
     redirect_to = request.REQUEST.get('next', '')
     if request.POST:
         f = RegistrationForm(request.POST)
@@ -72,26 +90,21 @@ def profile(request):
     return render_to_response('registration/profile.html', {'form': f},
         context_instance=RequestContext(request))
 
+
 def login_page(request, message=None, error=None):
     "Displays the login form and handles the login action."
     redirect_to = request.REQUEST.get('next', '')
-    if request.POST:
-        # Oh, Django, you are shitting me...
-        f = AuthenticationForm(data=request.POST)
-    else:
-        f = AuthenticationForm()
-    if not (message or error) and request.POST and f.is_valid():
-        username = f.cleaned_data['username']
-        password = f.cleaned_data['password']
-        user = auth.authenticate(username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            auth.login(request, form.cleaned_data['user'])
             return HttpResponseRedirect(redirect_to or '/')
-        else:
-            # Return an 'invalid login' error message.
-            error = "invalid login"
+    else:
+        form = LoginForm()
+
     info = {
-        'form': f,
+        'form': form,
         'next': redirect_to,
         'site_name': Site.objects.get_current().name,
     }
@@ -102,38 +115,46 @@ def login_page(request, message=None, error=None):
     return render_to_response('registration/login.html', info,
         context_instance=RequestContext(request))
 
+
 def logout(request, next_page=None):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
+
 def resetpw(request):
-    email_address = request.REQUEST['email_address']
+    if request.method != 'POST':
+        return redirect('login_page')
+
+    email_address = request.POST.get('email_address')
     if not email_address:
         return login_page(request, error='No email address supplied!')
+
     try:
         user = User.objects.get(email__exact=email_address)
     except User.DoesNotExist:
-        return login_page(request, error='Email address not recognised!')
-    new_password = User.objects.make_random_password()
-    user.set_password(new_password)
-    user.save()
+        return login_page(request, error='Email address not recognised.')
+    else:
+        new_password = User.objects.make_random_password()
+        user.set_password(new_password)
+        user.save()
 
-    from django.conf import settings
-    admin = settings.ADMINS[0]
+        from django.conf import settings
+        admin = settings.ADMINS[0]
 
-    message = '''This message is from the PyWeek system. It is in response to
-a request to reset the password in the login "%s".
+        message = '''
+        This message is from the PyWeek system. It is in response to
+        a request to reset the password in the login "%s".
 
-The new password is: %s
+        The new password is: %s
 
-Please visit http://pyweek.org/ to log in.
+        Please visit http://pyweek.org/ to log in.
 
----
-PyWeek Admin - %s <%s>
-'''%(user.username, new_password, admin[0], admin[1])
+        ---
+        PyWeek Admin - %s <%s>
+        ''' % (user.username, new_password, admin[0], admin[1])
 
-    send_mail('Your PyWeek login details', message,
-        '%s <%s>'%admin, [email_address])
+        send_mail('Your PyWeek login details', cleandoc(message.strip()),
+            '%s <%s>'%admin, [email_address])
 
-    return login_page(request, message='Email sent to %s'%email_address)
+        return login_page(request, message='Email sent to %s' % email_address)
 

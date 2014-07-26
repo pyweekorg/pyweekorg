@@ -5,45 +5,40 @@
 {% block content %}
 
 <fieldset>
-<legend>Login Form</legend>
-<form class="form" method="post" action="/login/">
-<table>
-<tr><td class="form-label"><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
-<tr><td class="form-label"><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
-<tr><td></td><td>
-        <p class="form-help">By logging in you are agreeing to the PyWeek <a href="{{ STATIC_URL }}conditions.html">conditions of use</a>.</p>
-<input type="submit" value="login">
-</td></tr>
-</table>
-
-{% if form.has_errors %}
-<p class="form-error">The login didn't work. Please keep in mind: usernames and
-passwords are case sensitive!</p>
-{% endif %}
-
-
-<input type="hidden" name="next" value="{{ next|urlencode }}">
-</form>
+    <legend>Login Form</legend>
+    <form class="form" method="post" action="/login/">
+        <input type="hidden" name="next" value="{{next}}">
+        {{form.as_p}}
+        <input type="submit" value="Log in">
+        <p class="form-help">
+            By logging in you are agreeing to the PyWeek
+            <a href="{{ STATIC_URL }}conditions.html">conditions of use</a>.
+        </p>
+    </form>
 </fieldset>
 
 <fieldset>
-<legend>Request login details</legend>
-<p>If you've forgotten your login details, just enter your email address
-below and we'll email them to you.</p>
-<form class="form" method="post" action="/resetpw/">
-<table>
-<tr><td class="form-label"><label for="id_email">Email
-Address:</label></td><td><input type="text" name="email_address" width="30"
-/></td></tr>
-<tr><td></td><td>
-<input type="submit" value="Send login details" />
-</td></tr>
-</table>
-{% if reset_error %}
-<p class="form-error">{{ reset_error }}</p>
-{% endif %}
-<input type="hidden" name="next" value="{{ next|urlencode }}">
-</form>
+    <legend>Request login details</legend>
+    <p>If you've forgotten your login details, just enter your email address
+    below and we'll email them to you.</p>
+    <form class="form" method="post" action="/resetpw/">
+        <table>
+            <tr>
+                <td class="form-label"><label for="id_email">Email Address:</label></td>
+                <td><input type="text" name="email_address" width="30"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Send login details" />
+                </td>
+            </tr>
+        </table>
+        {% if reset_error %}
+        <p class="form-error">{{ reset_error }}</p>
+        {% endif %}
+        <input type="hidden" name="next" value="{{ next|urlencode }}">
+    </form>
 </fieldset>
 
 {% endblock %}

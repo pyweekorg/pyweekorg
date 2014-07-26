@@ -1,4 +1,4 @@
-import os, sets, cgi, urllib, simplejson
+import os, cgi, urllib, simplejson
 import datetime
 import xml.sax.saxutils
 

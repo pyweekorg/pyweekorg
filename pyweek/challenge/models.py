@@ -26,7 +26,10 @@ class UTC(datetime.tzinfo):
         return "UTC"
     def dst(self, dt):
         return datetime.timedelta(0)
+
+
 UTC = UTC()
+
 
 def pretty_time_diff(diff):
     minutes = int(diff.seconds / 60)
@@ -54,6 +57,7 @@ def pretty_time_diff(diff):
     elif len(l) == 2:
         return '%s and %s'%tuple(l)
     return ', '.join(l[:-1]) + ' and ' + l[-1]
+
 
 def participation():
     cursor = connection.cursor()
@@ -99,7 +103,22 @@ def participation():
 
     return data
 
-# Create your models here.
+
+class ChallengeManager(models.Manager):
+    def get_latest_and_previous(self):
+        cs = list(self.filter(number__lt=1000).order_by('number')[:2])
+        return cs + [None] * (2 - len(cs))
+
+    def latest(self):
+        """Get the latest challenge."""
+        return self.get_latest_and_previous()[0]
+
+    def previous(self):
+        """Get the previous challenge."""
+        return self.get_latest_and_previous()[1]
+
+
+
 class Challenge(models.Model):
     number = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=100)
@@ -111,19 +130,24 @@ class Challenge(models.Model):
     theme = models.CharField(max_length=100, null=True, blank=True, default='')
     torrent_url = models.CharField(max_length=255, null=True, blank=True, default='')
 
+    objects = ChallengeManager()
+
     class Meta:
         ordering = ['start']
 
     def __repr__(self):
-        return '<Challenge %d: %r>' % (self.number, self.title)
+        return '<%s>' % self
+
     def __str__(self):
         return 'Challenge %d: %r' % (self.number, self.title)
+
     def __unicode__(self):
         return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
 
     def start_utc(self):
         return datetime.datetime(self.start.year, self.start.month,
             self.start.day, 0, 0, 0, 0)
+
     def end_utc(self):
         return datetime.datetime(self.end.year, self.end.month, self.end.day,
             0, 0, 0, 0)
@@ -200,6 +224,7 @@ class Challenge(models.Model):
         return now < rego_date
 
     def isRegoOpen(self):
+        """Are we in the registration window for this challenge?"""
         if self.is_rego_open: return True
         now = datetime.datetime.utcnow()
         sd = self.start_utc()
@@ -376,7 +401,7 @@ def challenge_save(sender, instance, **kwargs):
     """Generate an instance number.
 
     This should be done at the database level, but would require a PostgreSQL
-    SEQUENCE to be explicitly set up, which is much more difficult in Django. 
+    SEQUENCE to be explicitly set up, which is much more difficult in Django.
 
     """
     if instance.number is None:
@@ -385,8 +410,7 @@ def challenge_save(sender, instance, **kwargs):
         except IndexError:
             instance.number = 1
 
-pre_save.connect(challenge_save, sender=Challenge) 
-
+pre_save.connect(challenge_save, sender=Challenge)
 
 
 class Entry(models.Model):
