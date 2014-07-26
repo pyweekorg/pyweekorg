@@ -6,3 +6,6 @@ Change pyweek-upload to automatically handle final-hours md5 stuff.
 
 
 Fix skellington to work with py2exe.
+
+Fix: use django.conf.settings rather than directly re-importing settings module
+  (eg. in pyweek.challenge.views.pages)
