@@ -42,10 +42,8 @@ h1 {
 }
 
 #logo {
-	float: left;
-	padding-top: 20px;
-	padding-bottom: 20px;
-	padding-left: 20px;
+    width: 200px;
+    margin-top: -10px;
 }
 
 #menu {
@@ -56,15 +54,13 @@ h1 {
 /* Page */
 
 #page {
-	width: 750px;
-	margin: 0px auto;
+    max-width: 960px;
+    margin: 0px auto;
 }
 
 /* Content */
 
 #content {
-	float: left;
-	width: 730px;
     padding: 10px;
     background: white;
 }
@@ -90,9 +86,8 @@ h1 {
     border: thin solid #B399FF;
     background: #E1F1FC;
     padding: 20px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
     border-radius: 10px;
+    margin: 1em 0;
 }
 
 #motd p:first-child {
@@ -194,9 +189,10 @@ div.diary h3 {
 }
 
 div.diary-comment {
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
     border: thin solid #ddd;
-    padding: 5px;
+    padding: 0.6em 0.8em;
+    border-radius: 5px;
 }
 
 textarea#id_content,textarea#id_comment {

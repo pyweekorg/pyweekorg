@@ -1,9 +1,9 @@
 <div class="comment">
 {% for comment in comments %}
-<div class="{% cycle even,odd %} diary-comment">
+<div id="comment-{{comment.id}}" class="{% cycle even,odd %} diary-comment">
 <p class="diary-byline">
-<a name="comment-{{comment.id}}">By <a href="/u/{{ comment.user }}/">{{ comment.user }}</a>  on
-{{comment.created|date:"Y/m/d H:i"}}:</a>
+By <a href="/u/{{ comment.user }}/">{{ comment.user }}</a>  on
+{{comment.created|date:"Y/m/d H:i"}}:
 </p>
 {% autoescape off %}
 {{ comment.content }}

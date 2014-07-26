@@ -5,7 +5,7 @@ import xml.sax.saxutils
 from django import forms
 from django.contrib import messages
 from django.contrib.syndication.views import Feed
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
@@ -274,7 +274,9 @@ class CommentForm(forms.Form):
         return self._html_output(u'%(field)s<br>%(help_text)s<br>%(errors)s',
              u'%s', '', u' %s', False)
 
+
 def diary_display(request, diary_id):
+    """Display a message thread."""
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     entry = diary.entry
     challenge = diary.challenge
@@ -303,19 +305,18 @@ def diary_display(request, diary_id):
     else:
         form = CommentForm()
 
-    return render_to_response('challenge/diary.html',
-        {
-            'challenge': challenge,
-            'entry': entry,
-            'diary': diary,
-            'is_user': not request.user.is_anonymous(),
-            'previewed': previewed,
-            'content': diary.content,
-            'form': form,
-            'comments': diary.diarycomment_set.all(),
-            'is_member': is_member,
-            'is_owner': entry and entry.user == request.user,
-        }, context_instance=RequestContext(request))
+    return render(request, 'challenge/diary.html', {
+        'challenge': challenge,
+        'entry': entry,
+        'diary': diary,
+        'is_user': not request.user.is_anonymous(),
+        'previewed': previewed,
+        'content': diary.content,
+        'form': form,
+        'comments': diary.diarycomment_set.all(),
+        'is_member': is_member,
+        'is_owner': entry and entry.user == request.user,
+    })
 
 
 def diary_edit(request, diary_id):
@@ -375,7 +376,7 @@ def diary_delete(request, diary_id):
     if request.POST and 'delete' in request.POST:
         diary.delete()
         messages.success(request, "Diary entry deleted!")
-        return HttpResponseRedirect('/e/%s/'%diary.entry_id)
+        return HttpResponseRedirect('/messages/')
     else:
         return HttpResponseRedirect('/d/%s/'%diary_id)
 

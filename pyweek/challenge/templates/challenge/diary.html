@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}PyWeek - {{ diary.title }}{% endblock %}
+{% block title %}{{ diary.title }}{% endblock %}
 
 {% block content %}
-<h1>PyWeek - {{ diary.title }}</h1>
+<h2>{{ diary.title }}</h2>
 
 {% autoescape off %}
 {{ diary.content }}
@@ -15,18 +15,20 @@
     of <a href="/e/{{ diary.entry.name }}/">{{ diary.entry.title }}</a>
   {% endif %}
 
+  {% if diary.edited %}
+    <br>&mdash; <b>edited</b> on {{ diary.edited|date:"Y/m/d H:i" }}
+  {% endif %}
+</p>
+
   {% ifequal diary.user user %}
-    <br><a class="edit" href="/d/{{ diary.id }}/edit/">edit this entry</a>
-    <br><b class="delete">delete this entry</b>
+    <p><a class="edit" href="/d/{{ diary.id }}/edit/">edit this entry</a>
+    &emsp;<b class="delete">delete this entry</b>
     <form class="delete-form hidden" action="/d/{{ diary.id }}/delete/" method="POST">
      <input type="submit" name="delete" value="Delete">
      <input type="button" name="cancel" value="Cancel" class="delete">
     </form>
+    </p>
   {% endifequal %}
-
-  {% if diary.edited %}
-    <br>&mdash; <b>edited</b> on {{ diary.edited|date:"Y/m/d H:i" }}
-  {% endif %}
 
   {% if diary.diarycomment_set.count %}
   <hr>

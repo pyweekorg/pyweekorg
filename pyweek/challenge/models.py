@@ -93,7 +93,7 @@ def participation():
     select challenge_id, count(*)
       from challenge_entry, challenge_challenge c
      where challenge_id<1000
-       and has_final=true
+       and has_final=1
        and c.number=challenge_id
        and c.end < now() - interval '1 day'
     group by challenge_id'''
@@ -106,7 +106,7 @@ def participation():
 
 class ChallengeManager(models.Manager):
     def get_latest_and_previous(self):
-        cs = list(self.filter(number__lt=1000).order_by('number')[:2])
+        cs = list(self.filter(number__lt=1000).order_by('-start')[:2])
         return cs + [None] * (2 - len(cs))
 
     def latest(self):
@@ -143,6 +143,9 @@ class Challenge(models.Model):
 
     def __unicode__(self):
         return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
+
+    def get_absolute_url(self):
+        return '/%d/' % self.number
 
     def start_utc(self):
         return datetime.datetime(self.start.year, self.start.month,
@@ -614,7 +617,7 @@ class DiaryComment(models.Model):
     user = models.ForeignKey(User)
     content = models.TextField()
     created = models.DateTimeField()
-    edited = models.DateTimeField()
+    edited = models.DateTimeField(null=True)
 
     class Meta:
         get_latest_by = 'created'
