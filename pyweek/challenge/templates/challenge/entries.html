@@ -34,7 +34,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
 {% if entry.thumb %}
 <a href="{{ entry.thumb.content.url }}"><img border="0" width="150" src="{{ entry.thumb.content.url }}-thumb.png"></a>
 {% endif %}
-
+<div class="details">
 <h3><a href="/e/{{ entry.name }}/">{{ entry.title }}</a>
   {% if entry.may_rate %}&mdash;
   {% if entry.has_rated %}<span style="color: green">rated</span>{% else %}<span style="color: red">not rated</span>{% endif %}
@@ -45,10 +45,10 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
 <ul>
  {% for file in entry.files %}
   {% if file.is_final %}
-  <li><a href="{{ file.content.url }}">{{ file.filename }}</a></li>
+  <li><a href="{{ file.content.url }}">{{ file.filename }}</a>
    &mdash; {{ file.description }}
    ({{ file.pretty_size }}
-   on {{ file.created|date:"Y/m/d" }})
+   on {{ file.created|date:"Y/m/d" }})</li>
   {% endif %}
  {% endfor %}
 </ul>
@@ -67,7 +67,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
   {% endif %}
   </p>
 {% endwith %}
-
+</div>
 </div>
 {% endfor %}
 

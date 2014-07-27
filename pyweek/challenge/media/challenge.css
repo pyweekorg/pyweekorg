@@ -777,3 +777,20 @@ h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
 
 ul.auto-toc {
   list-style-type: none }
+
+.entry img {
+    float: left;
+    margin-right: 10px;
+}
+
+.entry .details {
+    margin-left: 160px;
+}
+
+.nav.nav-tabs {
+    margin-bottom: 1em;
+}
+
+ul li {
+    list-style: square;
+}
