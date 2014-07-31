@@ -62,7 +62,7 @@ jQuery(function ($) {
 
       <ul class="nav navbar-nav navbar-right">
         {% if not user.is_authenticated  %}
-        <li><a href="/login/">Log in</a></li>
+        <li><a href="/login/?next={{request.get_full_path|urlencode}}">Log in</a></li>
         {% if latest.isRegoOpen %}
             <li><a href="/register/">Register</a></li>
         {% endif %}
@@ -86,8 +86,8 @@ jQuery(function ($) {
            {% endif %}
             <li class="divider"></li>
             <li><a href="/logout/">Logout</a></li>
-          {% endif %}
           </ul>
+          {% endif %}
         </li>
         <li><a href="/s/help">Help</a></li>
       </ul>

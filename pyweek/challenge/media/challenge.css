@@ -791,6 +791,6 @@ ul.auto-toc {
     margin-bottom: 1em;
 }
 
-ul li {
+.entry ul li {
     list-style: square;
 }
