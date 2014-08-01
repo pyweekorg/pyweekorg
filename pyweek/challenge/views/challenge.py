@@ -54,7 +54,7 @@ def all_games(request):
     WHERE
          auth_user.id = challenge_entry_users.user_id AND
          challenge_entry_users.entry_id = challenge_entry.name AND
-         challenge_entry.has_final = 1 AND
+         challenge_entry.has_final = true AND
          challenge_entry.challenge_id < 1000
     ''')
     users = {}
@@ -73,7 +73,7 @@ def all_games(request):
     LEFT OUTER JOIN challenge_ratingtally ON
          (challenge_entry.name = challenge_ratingtally.entry_id)
     WHERE
-         challenge_entry.has_final = 1 AND
+         challenge_entry.has_final = true AND
          challenge_entry.challenge_id < 1000
     ORDER BY
          rating DESC
