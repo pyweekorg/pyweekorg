@@ -106,7 +106,7 @@ def participation():
 
 class ChallengeManager(models.Manager):
     def get_latest_and_previous(self):
-        cs = list(self.filter(number__lt=1000).order_by('-start')[:2])
+        cs = list(self.pyweek_challenges().order_by('-start')[:2])
         return cs + [None] * (2 - len(cs))
 
     def latest(self):
@@ -116,6 +116,19 @@ class ChallengeManager(models.Manager):
     def previous(self):
         """Get the previous challenge."""
         return self.get_latest_and_previous()[1]
+
+    def all_previous(self):
+        """Get a QuerySet of all challenges that have finished."""
+        today = datetime.date.today()
+        return self.pyweek_challenges().filter(end__lt=today).order_by('-start')
+
+    def pyweek_challenges(self):
+        """All Pyweek challenges.
+
+        AFAICT challenge numbers >1000 are reserved for Pyggys.
+
+        """
+        return self.filter(number__lt=1000)
 
 
 

@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h1>
+<h2>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h2>
 
 <ul class="nav nav-tabs">
     <li class="active"><a href="#">Timetable</a></li>
@@ -21,7 +21,62 @@
 </div>
 {% endif %}
 
-{% include "motd.html" %}
+<div id="motd">
+
+{% if challenge.isCompComing %}
+ <p>The <b>next challenge</b> is <a href="/{{ challenge.number }}/">{{ challenge.title }}</a>.</p>
+ <p>Registration will be open 30 days before it starts.</p>
+{% endif %}
+
+{% if challenge.isRegoOpen %}
+<p>The next challenge is <a href="/{{ challenge.number }}/">{{ challenge.title }}</a>.</p>
+<p>Registration is now open.</p>
+{% endif %}
+
+{% if challenge.isVotingOpen %}
+<p><a href="/p/{{ challenge.theme_poll.id }}/"><b>Theme voting has started!</b></a></p>
+{% endif %}
+
+{% if challenge.isCompRunning %}
+<p><strong>PyWeek {{ challenge.number }} has started</strong> and the theme is
+"<i>{{ challenge.theme }}</i>"!</strong></p>
+<p>Good luck, and don't forget the advice in the <a
+href="{{ STATIC_URL }}help.html">help page</a> or the folk
+hanging around in IRC at irc.freenode.net channel #pyweek!
+Also, see the <a href="https://twitter.com/search?q=pyweek&src=typd">#pyweek
+Twitters</a>.</p>
+{% endif %}
+
+{% if challenge.isGraceUploadTime %}
+<p><strong>PyWeek {{ challenge.number }} coding has finished!</strong></p>
+<p>Please upload your final entries now. This is not extra coding time
+:-)</p>
+{% endif %}
+
+{% if challenge.isRatingOpen %}
+ <p>The <a href="/{{ challenge.number }}/">{{ challenge.title }}</a> challenge has finished! Time to try
+ out all those wonderful games!</p>
+ {% if challenge.torrent_url %}
+  <p>Please use <a href="http://btfaq.com/">BitTorrent</a> to download all
+  the games if you can - the site hosts will appreciate it. The torrent file is
+  <A href="{{ challenge.torrent_url }}">here</a>.</p>
+ {% endif %}
+{% endif %}
+
+{% if challenge.isAllDone %}
+ <p>The <a href="/{{ challenge.number }}/">{{ challenge.title }}</a> challenge has finished!</p>
+ <p><b>The winners are:</b></p>
+ <p>
+ {% for e in challenge.individualWinners %}
+  Individual: <a href="/e/{{ e.name }}/">{% if e.game %}{{ e.game }}{% else %}{{ e.title }}{% endif %}</a><br>
+ {% endfor %}
+ {% for e in challenge.teamWinners %}
+  Team: <a href="/e/{{ e.name }}/">{% if e.game %}{{ e.game }}{% else %}{{ e.title }}{% endif %}</a><br>
+ {% endfor %}
+ </p>
+ <p>Congratulations to <a href="/{{ challenge.number }}/entries/">everyone who entered</a>! </p>
+{% endif %}
+</div>
 
 {% if open_polls %}
  <p>

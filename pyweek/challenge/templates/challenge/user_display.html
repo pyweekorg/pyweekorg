@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<h1>{{ profile_user }}</h1>
+<h2>{{ profile_user }}</h2>
 
 {% autoescape off %}
 {{ profile_user.userprofile_set.all.0.content }}

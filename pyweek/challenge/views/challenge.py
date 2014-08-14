@@ -95,6 +95,7 @@ def all_games(request):
 def test(request):
     assert False, 'this is false'
 
+
 def update_has_final(request):
     for entry in models.Entry.objects.all():
         n = len(entry.file_set.filter(is_final__exact=True,
@@ -105,6 +106,14 @@ def update_has_final(request):
     messages.success(request, 'has_final updated')
     return render_to_response('challenge/index.html',
         {} , context_instance=RequestContext(request))
+
+
+def previous_challenges(request):
+    """Display an overview of all previous challenges."""
+    challenges = models.Challenge.objects.all_previous()
+    return render(request, 'challenge/list.html', {
+        'challenges': challenges
+    })
 
 
 def challenge_display(request, challenge_id):
