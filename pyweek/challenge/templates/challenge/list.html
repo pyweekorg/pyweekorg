@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Previous challenges{% endblock %}
+
+{% block content %}
+<h2>Previous Challenges</h2>
+
+{% for challenge in challenges %}
+<h3><a href="{% url "challenge" challenge.number %}">Pyweek {{challenge.number}} - {{challenge.theme}}</a></h3>
+<p>This challenge ran in {{challenge.start|date:"F Y"}}. The winners were:</p>
+
+<ul>
+ {% for e in challenge.individualWinners %}
+    <li>Individual: <a href="/e/{{ e.name }}/">{% if e.game %}{{ e.game }}{% else %}{{ e.title }}{% endif %}</a></li>
+ {% endfor %}
+ {% for e in challenge.teamWinners %}
+    <li>Team: <a href="/e/{{ e.name }}/">{% if e.game %}{{ e.game }}{% else %}{{ e.title }}{% endif %}</a></li>
+ {% endfor %}
+</ul>
+{% endfor %}
+
+{# The first couple are hard-coded. #}
+
+<h3><a href="{{ STATIC_URL }}pygame.draw-0606.html">Pyweek 1.5 - <code>pygame.draw</code></a></h3>
+<p>This mini challenge ran in June 2006.</p>
+
+
+<h3><a href="http://www.mechanicalcat.net/tech/PyWeek/1">Pyweek 1 - Power</a></h3>
+<p>This challenge ran in August 2005. The winners were:</p>
+
+<ul>
+    <li>Individual: <a href="http://www.mechanicalcat.net/tech/PyWeek/1/entrants/scav">Pawns: Power vs Responsibility</a></li>
+    <li>Team: <a href="http://www.mechanicalcat.net/tech/PyWeek/1/entrants/philhassey">Dynamite</a></li>
+</ul>
+
+{% endblock %}
