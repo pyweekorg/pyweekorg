@@ -1,21 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
+<!DOCTYPE html>
+<html land="en">
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <link rel="stylesheet" href="{{ STATIC_URL }}challenge.css" type="text/css">
-    <link rel="alternate" type="application/rss+xml"
-       title="PyWeek Diaries RSS feed" href="{% url "diary_feed" %}">
+    <meta charset="utf8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tooltip.min.js"></script>
 
+    <link rel="stylesheet" href="{{ STATIC_URL }}challenge.css" type="text/css">
+    <link rel="alternate" type="application/rss+xml"
+       title="PyWeek Diaries RSS feed" href="{% url "diary_feed" %}">
     <link rel="shortcut icon" href="/static/favicon.ico">
 
-       <script src="{{ STATIC_URL }}js/challenge.js" type="text/javascript"></script>
-    {% block links %}
-    {% endblock %}
+   <script src="{{ STATIC_URL }}js/challenge.js" type="text/javascript"></script>
+    {% block links %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
     <script>
 jQuery(function ($) {
