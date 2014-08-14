@@ -3,7 +3,7 @@
 {% block title %}{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; entries{% endblock %}
 
 {% block content %}
-<h1>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; entries</h1>
+<h2>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; entries</h2>
 
 <ul class="nav nav-tabs">
     <li><a href="{{challenge.get_absolute_url}}">Timetable</a></li>

@@ -6,7 +6,7 @@
 {% block content %}
 <table width="100%" border=0 cellspacing=0 cellpadding=0>
 <tr><td valign="top">
-<h1>PyWeek - {{ entry.title|escape }}</h1>
+<h2>{{ entry.title|escape }}</h2>
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%"><tr>
 <td valign="top">
@@ -32,7 +32,7 @@
 </tr>
 </table>
 
-<h2>Awards</h2>
+<h3>Awards</h3>
 {% for award in awards %}
   <div class="award">
     <a href="/a/{{award.award.id}}">
@@ -48,7 +48,9 @@
   <a href="/e/{{entry.name}}/give_award/">Give this entry an award</a>
 </p>
 
+
 {% if rating %}
+<h3>Scores</h3>
 <p><strong>Ratings</strong> (<a href="/e/{{ entry.name }}/ratings/">show
 detail</a>)</p>
 <p style="margin-left: 1em;">
@@ -181,6 +183,7 @@ resulted from that (include a traceback if you got one).</p>
 
 
 {% if files %}
+<h3>Files</h3>
 <table width="100%" id="files">
 <tr><th colspan="2">Files:</th>
 <th>Uploader</th>
@@ -206,7 +209,11 @@ resulted from that (include a traceback if you got one).</p>
 </table>
 {% endif %}
 
+
+{% if diary_entries %}
+<h3>Diary Entries</h3>
 {% include "diary_entries.html" %}
+{% endif %}
 
 {% endblock %}
 
