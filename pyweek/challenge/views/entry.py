@@ -82,6 +82,7 @@ def entry_list(request, challenge_id):
         info = {
             'entry': entry,
             'name': entry.name,
+            'game': entry.game,
             'title': entry.title,
             # 'description': description,
             'files': files,

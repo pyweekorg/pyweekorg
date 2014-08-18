@@ -11,7 +11,7 @@
 </div>
 {% endif %}
 
-<h2>{{entry.game}}</h2>
+<h2>{{entry.game|default:entry.title}}</h2>
 <p class="byline">A
     {% with pyweek=entry.challenge.number %}
         <a href="/{{pyweek}}/">Pyweek {{pyweek}}</a>
