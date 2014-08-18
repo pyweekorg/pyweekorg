@@ -93,7 +93,7 @@ def participation():
     select challenge_id, count(*)
       from challenge_entry, challenge_challenge c
      where challenge_id<1000
-       and has_final=1
+       and has_final=true
        and c.number=challenge_id
        and c.end < now() - interval '1 day'
     group by challenge_id'''
