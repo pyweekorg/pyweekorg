@@ -8,6 +8,7 @@ from django import forms
 from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template import RequestContext
+from django.core.paginator import Paginator, InvalidPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from pyweek.challenge import models
@@ -17,31 +18,37 @@ from django.core import validators
 from pyweek.settings import MEDIA_ROOT
 from django.db import connection
 
-from stripogram import html2text, html2safehtml
+from stripogram import html2safehtml
 
-safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
-    ul ol li span div'''.split()
 
 class SafeHTMLField(forms.CharField):
+    SAFE_TAGS = '''b a i br blockquote table tr td img pre p dl dd dt
+        ul ol li span div'''.split()
     widget = forms.Textarea
+
     def clean(self, value):
         if '<' in value:
-            value = html2safehtml(value, safeTags)
-        if not value: raise forms.ValidationError(['This field is required'])
+            value = html2safehtml(value, self.SAFE_TAGS)
+        if not value:
+            raise forms.ValidationError(['This field is required'])
         return value
+
 
 def index(request):
     return render_to_response('challenge/index.html',
-        { } , context_instance=RequestContext(request))
+        {}, context_instance=RequestContext(request))
+
 
 def stats(request):
     return render_to_response('stats.html',
         { } , context_instance=RequestContext(request))
 
+
 def stats_json(request):
     stats = models.participation()
     json = simplejson.dumps({'stats': stats})
     return HttpResponse(json, mimetype='application/json')
+
 
 def all_games(request):
     cursor = connection.cursor()
@@ -152,9 +159,16 @@ def challenge_diaries(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
     blogposts = models.DiaryEntry.objects.for_challenge(challenge)
 
+    pages = Paginator(blogposts, 10)
+    try:
+        page = pages.page(request.GET.get('page', 1))
+    except InvalidPage:
+        page = pages.page(1)
+
     return render(request, 'challenge/challenge_diaries.html', {
-        'blogposts': blogposts,
         'challenge': challenge,
+        'pages': pages,
+        'page': page
     })
 
 

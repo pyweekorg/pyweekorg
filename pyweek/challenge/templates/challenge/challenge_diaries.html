@@ -13,8 +13,8 @@
     {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
 </ul>
 
-{% if blogposts %}
-{% for p in blogposts %}
+{% if page.object_list %}
+{% for p in page.object_list %}
     <h3><a href="/e/{{ p.entry.name }}/">{{ p.entry.game }}</a> - {{ p.title }}</h3>
     <p>Posted by <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y/m/d H:i" }}</p>
 
@@ -36,6 +36,19 @@
 {% else %}
 <p>There are no diary entries for this challenge at this time.</p>
 {% endif %}
+
+<div class="paginator">
+    {% if page.has_next %}
+        <a class="btn btn-default next-page" href="?page={{page.next_page_number}}">
+            Older diary entries &rarr;
+        </a>
+    {% endif %}
+    {% if page.has_previous %}
+        <a class="btn btn-default previous-page" href="?page={{page.previous_page_number}}">
+            &larr; Newer diary entries
+        </a>
+    {% endif %}
+</div>
 
 {% endblock %}
 

@@ -228,6 +228,10 @@ table.grid {
     margin: 1em 0;
 }
 
+table.grid.auto {
+    width: auto;
+}
+
 table.grid th,
 table.grid td {
     padding: 0.2em 0.4em;
@@ -771,13 +775,21 @@ h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
 ul.auto-toc {
   list-style-type: none }
 
+.entry {
+    margin: 1.5em 0;
+}
+
 .entry img {
     float: left;
     margin-right: 10px;
 }
 
 .entry .details {
-    margin-left: 160px;
+    margin-left: 170px;
+}
+
+.entry .details h3 {
+    margin-top: 0;
 }
 
 .nav.nav-tabs {
@@ -820,4 +832,12 @@ ul.auto-toc {
 
 .diary-content img {
     max-width: 100%;
+}
+
+.paginator {
+    margin-top: 2em;
+}
+
+.paginator .next-page {
+    float: right;
 }

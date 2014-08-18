@@ -10,9 +10,7 @@
 
 <h2>{{ profile_user }}</h2>
 
-{% autoescape off %}
-{{ profile_user.userprofile_set.all.0.content }}
-{% endautoescape %}
+{{profile_user.userprofile_set.all.0.content|safe }}
 
 {% if user.is_staff %}
 <form action="/u/{{ profile_user.username }}/delete_spam" method="POST">
@@ -21,21 +19,21 @@
 </form>
 {% endif %}
 
-<p>Entries this user has been in:</p>
-<table id="files">
-<tr><th>PyWeek</th><th>Name</th><th>Team?</th><th>Rating</th></tr>
+<h3>{{profile_user}}'s entries</h3>
+<table class="grid auto">
+    <tr><th>PyWeek</th><th>Game</th><th>Team</th><th>Rating</th></tr>
 {% for entry in entries %}
 <tr class="{% cycle even,odd %}">
     <td align="center">{{ entry.challenge.number }}</td>
-    <td><a href="/e/{{ entry.name }}/">{{ entry.title }}</a></td>
-    <td>{% if entry.is_team %}yes{% else %}no{% endif %}</td>
+    <td><a href="/e/{{ entry.name }}/">{{ entry.game }}</a></td>
+    <td>{% if entry.is_team %}{{ entry.title }}{% endif %}</td>
     <td>{% if entry.challenge.isCompFinished %}{% if entry.has_final %}{{ entry.ratingtally_set.all.0.overall }}{% else %}DNF{% endif %}{% endif %}</td>
 </tr>
 {% endfor %}
 </table>
 
 {% if received_awards %}
-  <p>Awards this user has received:</p>
+    <h3>{{profile_user}}'s awards</h3>
   {% for entryaward in received_awards %}
     <div class="award">
       <a href="/a/{{entryaward.award.id}}">
@@ -47,19 +45,6 @@
         by <a href="/u/{{entryaward.creator}}">{{entryaward.creator}}</a>
         for <a href="/e/{{entryaward.entry.name}}">{{entryaward.entry.title|escape}}</a>
        </em>
-    </div>
-  {% endfor %}
-{% endif %}
-
-{% if given_awards %}
-  <p style="clear:left">Awards this user has created:</p>
-  {% for award in given_awards %}
-    <div class="award">
-      <a href="/a/{{award.id}}">
-          <img src="{{ MEDIA_URL }}{{award.content}}">
-      </a>
-      <br/>
-      <strong>{{award.description|escape}}</strong><br/>
     </div>
   {% endfor %}
 {% endif %}
