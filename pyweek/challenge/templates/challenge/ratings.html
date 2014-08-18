@@ -3,7 +3,7 @@
 {% block title %}{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results{% endblock %}
 
 {% block content %}
-<h2>{% autoescape off %}{{ challenge.pageTitle }}{% endautoescape %} &mdash; results</h2>
+<h2>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h2>
 
 <ul class="nav nav-tabs">
     <li><a href="{{challenge.get_absolute_url}}">Timetable</a></li>
@@ -77,8 +77,8 @@
 </tr>
 </table>
 
-<table id="diary-board" style="width: auto">
-<tr><th style="text-align: center" colspan="8">Individual Entries</th></tr>
+<table class="grid">
+<tr><th class="section" colspan="8">Individual Entries</th></tr>
 <tr><th>Entry</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in individual_ratings %}
  <tr class="{% cycle even,odd %}">
@@ -95,7 +95,7 @@
  </tr>
 {% endfor %}
 
-<tr><th style="border-top: thin solid gray; text-align: center" colspan="8">Team Entries</th></tr>
+<tr><th class="section" colspan="8">Team Entries</th></tr>
 <tr><th>Entry</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in team_ratings %}
  <tr class="{% cycle even,odd %}">

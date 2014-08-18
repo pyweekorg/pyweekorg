@@ -432,10 +432,15 @@ pre_save.connect(challenge_save, sender=Challenge)
 class Entry(models.Model):
     SHORT_TITLE_LEN = 14
 
-    name = models.CharField(max_length=15, primary_key=True,
-        validators=[validators.validate_slug])
-    title = models.CharField(max_length=100)
-    game = models.CharField(max_length=100)
+    name = models.SlugField(max_length=15, primary_key=True)
+    title = models.CharField(
+        max_length=100,
+        help_text="The name of the team that created the entry."
+    )
+    game = models.CharField(
+        max_length=100,
+        help_text="The name of the game itself."
+    )
     challenge = models.ForeignKey(Challenge, related_name='challenge')
     winner = models.ForeignKey(Challenge, blank=True, null=True, related_name='winner')
     user = models.ForeignKey(User, verbose_name='entry owner', related_name="owner")
@@ -451,8 +456,10 @@ class Entry(models.Model):
 
     def __repr__(self):
         return '<Entry %r>' % (self.name, )
+
     def __str__(self):
         return 'Entry "%s"' % (self.name, )
+
     def __unicode__(self):
         return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
 
@@ -464,6 +471,16 @@ class Entry(models.Model):
 
     def is_team(self):
         return len(self.users.all()) > 1
+
+    def diary_entries(self):
+        """Get a QuerySet of all diary entries.
+
+        Entries will be annotated with the number of comments.
+
+        """
+        return self.diaryentry_set.annotate(
+            num_comments=models.Count('diarycomment')
+        )
 
     def isUploadOpen(self):
         if self.is_upload_open:
@@ -579,6 +596,19 @@ class RatingTally(models.Model):
     def __unicode__(self):
         return u'%s rating tally'%(self.entry,)
 
+
+class DiaryEntryManager(models.Manager):
+    def for_challenge(self, challenge):
+        return self.with_comment_counts().filter(
+            entry__challenge__number=challenge.number
+        ).select_related('entry').order_by('-created')
+
+    def with_comment_counts(self):
+        return self.annotate(
+            num_comments=models.Count('diarycomment')
+        )
+
+
 class DiaryEntry(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)      # convenience
     entry = models.ForeignKey(Entry, blank=True, null=True)
@@ -593,6 +623,8 @@ class DiaryEntry(models.Model):
     reply_count = models.PositiveIntegerField(default=0)
     sticky = models.BooleanField(default=False)
     is_pyggy = models.BooleanField(default=False)
+
+    objects = DiaryEntryManager()
 
     class Meta:
         get_latest_by = 'activity'

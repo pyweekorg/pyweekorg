@@ -3,6 +3,7 @@ syntax: glob
 *.pyc
 *.swap
 *.orig
+pyweek/media
 dev_media
 dev_settings.py
 development

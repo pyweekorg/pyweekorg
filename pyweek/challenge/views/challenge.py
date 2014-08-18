@@ -150,10 +150,7 @@ def challenge_display(request, challenge_id):
 def challenge_diaries(request, challenge_id):
     """Display recent blog posts for a challenge."""
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
-
-    blogposts = models.DiaryEntry.objects.filter(
-        entry__challenge__number=challenge.number
-    ).select_related('entry').order_by('-created')
+    blogposts = models.DiaryEntry.objects.for_challenge(challenge)
 
     return render(request, 'challenge/challenge_diaries.html', {
         'blogposts': blogposts,

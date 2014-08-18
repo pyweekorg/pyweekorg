@@ -1,21 +1,22 @@
 
 <div class="diary">
-{% for entry in diary_entries %}
-{% ifchanged %}<h2>{{ entry.created|date:"l d F, Y" }}</h2>{% endifchanged %}
+{% for p in diary_entries %}
+    <h3>{{ p.title }}</h3>
+    <p class="byline">Posted by <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y-m-d H:i" }}</p>
 
-<div class="diary-entry">
-<h3 class="diary-title">[
-  <a href="/u/{{ entry.user.username }}/">{{ entry.user.username }}</a>
- @ {{ entry.created|date:"H:i" }}
-] {{ entry.title }}</h3>
-<p>{% autoescape off %}{{ entry.content }}{% endautoescape %}</p>
+    <div class="diary-content">
+    {{p.content|safe}}
+    </div>
 
-<p class="diary-byline">
-<a href="/d/{{ entry.id }}/">show
-    {% if entry.diarycomment_set.count > 0 %}({{ entry.diarycomment_set.count }} comment{{ entry.diarycomment_set.count|pluralize  }}){% endif %}</a>
-// ({% if is_user %}<a href="/d/{{ entry.id }}/#add-comment">add comment</a>{% else %}login to comment{% endif %})
-</p>
-</div>
+    <p class="view-comments">
+        <a href="{{p.get_absolute_url}}">
+            {% if not p.num_comments %}
+                Add a comment
+            {% else %}
+                {{p.num_comments}} comment{{p.num_comments|pluralize}}
+            {% endif %}
+        </a>
+    </p>
 {% endfor %}
 </div>
 

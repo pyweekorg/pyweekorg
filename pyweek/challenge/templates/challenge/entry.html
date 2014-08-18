@@ -4,33 +4,31 @@
 {% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
 
 {% block content %}
-<table width="100%" border=0 cellspacing=0 cellpadding=0>
-<tr><td valign="top">
-<h2>{{ entry.title|escape }}</h2>
-
-<table cellspacing=0 cellpadding=0 border=0 width="100%"><tr>
-<td valign="top">
-{% with entry as e %}
-  {% if e.description %}
-   {{ e.description|safe }}<br>
-  {% endif %}
-  {% if e.is_team %}
-   {% for user in e.users.all %}
-    <a href="{% url 'user_display' user.username %}">{{ user.username }}</a>
-   {% endfor %}
-  {% else %}
-   <a href="{% url 'user_display' e.user.username %}">{{ e.user.username }}</a>
-  {% endif %}
-{% endwith %}
-</td>
 {% if thumb %}
-<td valign="top" width="{{ thumb.thumb_width }}px">
-<a href="{{ thumb.content.url }}"><img src="{{ thumb.content.url }}-thumb.png"></a>
-<br>{{ thumb.description }}
-</td>
+<div id="latest-screenshot" style="width: {{ thumb.thumb_width }}px">
+    <a href="{{ thumb.content.url }}"><img src="{{ thumb.content.url }}-thumb.png"></a>
+    <br>{{ thumb.description }}
+</div>
 {% endif %}
-</tr>
-</table>
+
+<h2>{{entry.game}}</h2>
+<p class="byline">A
+    {% with pyweek=entry.challenge.number %}
+        <a href="/{{pyweek}}/">Pyweek {{pyweek}}</a>
+    {% endwith %}
+        entry by
+    {% if entry.is_team %}<strong>{{entry.title}}</strong>
+        ({% for user in entry.users.all %}<a href="{% url 'user_display' user.username %}">{{ user.username }}</a>{% if not forloop.last %}, {% endif %}{% endfor %})
+    {% else %}
+        <a href="{% url 'user_display' entry.user.username %}">{{entry.user.username}}</a>
+    {% endif %}
+</p>
+
+{% if entry.description %}
+<div id="entry-description">
+   {{ entry.description|safe }}
+</div>
+{% endif %}
 
 <h3>Awards</h3>
 {% for award in awards %}
@@ -184,23 +182,25 @@ resulted from that (include a traceback if you got one).</p>
 
 {% if files %}
 <h3>Files</h3>
-<table width="100%" id="files">
-<tr><th colspan="2">Files:</th>
-<th>Uploader</th>
-<th>Date</th>
+<table class="grid">
+<tr>
+    <th>File</th>
+    <th>Size</th>
+    <th>Uploader</th>
+    <th>Date</th>
+    {% if is_member %}<th>&nbsp;</th>{% endif %}
 </tr>
  {% for file in files %}
   <tr class="{% cycle even,odd %}"><td>
   <a href="{{ file.content.url }}">{{ file.filename }}</a>
   {% if file.is_final %}&mdash; <b>final</b>{% endif %}
+  <br />{{ file.description }}
   </td>
   <td style="whitespace: pre">
-  {{ file.pretty_size }}
+  {{ file.content.size|filesizeformat }}
   </td>
   <td>{{ file.user }}</td>
   <td style="whitespace: pre">{{ file.created|date:"Y/m/d H:i" }}</td>
-  </tr>
-  <tr class="{% cycle even,odd %}"><td colspan="{%if is_member%}3{%else%}4{%endif%}">{{ file.description }}</td>
 {% if is_member %}
   <td><a class="delete" href="/e/{{entry.name}}/delete/{{file.content.name}}">delete</a></td>
 {% endif %}
@@ -211,7 +211,7 @@ resulted from that (include a traceback if you got one).</p>
 
 
 {% if diary_entries %}
-<h3>Diary Entries</h3>
+<h2>Diary Entries</h2>
 {% include "diary_entries.html" %}
 {% endif %}
 

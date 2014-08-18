@@ -18,19 +18,25 @@ safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
 def isUnusedEntryName(field_data):
     if models.Entry.objects.filter(name__exact=field_data):
         raise validators.ValidationError('"%s" already taken'%field_data)
+
+
 def isUnusedEntryTitle(field_data):
     if models.Entry.objects.filter(title__exact=field_data):
         raise validators.ValidationError('"%s" already taken'%field_data)
+
+
 def isCommaSeparatedUserList(field_data):
     for name in [e.strip() for e in field_data.split(',')]:
         if not models.User.objects.filter(username__exact=name):
             raise validators.ValidationError('No such user %s'%name)
+
 
 class AddEntryForm(forms.Form):
     name = forms.CharField(max_length=15, validators=[validators.validate_slug, isUnusedEntryName], required=True)
     title = forms.CharField(required=True, validators=[isUnusedEntryTitle])
     description = forms.CharField(required=False, widget=forms.Textarea)
     users = forms.CharField(validators=[isCommaSeparatedUserList])
+
 
 def entry_list(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
@@ -148,6 +154,7 @@ def entry_add(request, challenge_id):
             'is_owner': True,
         }, context_instance=RequestContext(request))
 
+
 class RatingForm(forms.Form):
     fun = forms.IntegerField(widget=forms.Select( choices=models.RATING_CHOICES))
     innovation = forms.IntegerField(widget=forms.Select( choices=models.RATING_CHOICES))
@@ -158,6 +165,7 @@ class RatingForm(forms.Form):
     #forms.BooleanField(required=False)
     disqualify = forms.BooleanField(required=False)
     comment = forms.CharField(widget=forms.Textarea, required=True)
+
 
 def entry_display(request, entry_id):
     entry = get_object_or_404(models.Entry, pk=entry_id)
@@ -230,7 +238,7 @@ def entry_display(request, entry_id):
             'entry': entry,
             'files': entry.file_set.all(),
             'thumb': thumb,
-            'diary_entries': entry.diaryentry_set.all(),
+            'diary_entries': entry.diary_entries(),
             'is_user': not request.user.is_anonymous(),
             'is_member': is_member,
             'is_team': len(user_list) > 1,

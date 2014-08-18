@@ -174,24 +174,6 @@ ul.messages {
     display: inline;
 }
 
-div.diary {
-    background: white;
-}
-
-div.diary h2 {
-    font-size: 1em;
-    border-top: thin solid gray;
-    background: #EEE;
-    margin-top: 1px;
-    margin-bottom: 1px;
-}
-
-div.diary h3 {
-    font-size: 1em;
-    margin-top: 1px;
-    border-bottom: thin solid gray;
-}
-
 div.diary-comment {
     margin-bottom: 0.5em;
     border: thin solid #ddd;
@@ -237,34 +219,45 @@ table#files tr.odd td {
     font-weight: bold;
 }
 
-table#diary-board {
+table.grid {
     clear: none !important;
-    border: thin solid gray;
-    border-collapse: separate;
+    border: thin solid silver;
+    border-collapse: collapse;
     border-spacing: 0px 0px;
     width: 100%;
+    margin: 1em 0;
 }
-table#diary-board th {
+
+table.grid th,
+table.grid td {
+    padding: 0.2em 0.4em;
+}
+
+table.grid th.section {
+    text-align: center;
+}
+
+table.grid th {
     text-align: left;
-    font-weight: bold;
-    background: #e0e0e0;
-    border-bottom: thin solid gray;
-    border-left: thin solid gray;
-    padding-left: 2px;
-    padding-right: 2px;
+    font-weight: normal;
+    background: #eee;
+    color: black;
+    border: thin solid silver;
+    border-left-style: dotted;
+    border-right-style: none;
 }
-table#diary-board th:first-child {
+table.grid th:first-child {
     border-left: none;
 }
-table#diary-board td {
-    border-left: thin solid gray;
-    padding: 2px;
+table.grid td {
+    border-left: thin dotted silver;
 }
-table#diary-board td:first-child {
+table.grid td:first-child {
     border-left: none;
 }
-table#diary-board tr.odd td {
-    background: #e0e0e0;
+
+table.grid tr.odd td {
+    background: #eef5ff;
 }
 
 table#top-entries {
@@ -793,4 +786,38 @@ ul.auto-toc {
 
 .entry ul li {
     list-style: square;
+}
+
+#entry-description {
+    margin: 1em 170px 1em 0;
+}
+
+#latest-screenshot {
+    float: right;
+    margin-top: 2em;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.byline {
+    /*border-bottom: dotted silver 1px;
+    padding-bottom: 0.5em;*/
+    margin-bottom: 2.5em;
+    margin-right: 170px;
+}
+
+.diary h4 {
+    margin-top: 1.5em;
+}
+
+.diary .byline {
+    margin-bottom: 1.5em;
+}
+
+.diary-content {
+    margin: 1.5em 0;
+}
+
+.diary-content img {
+    max-width: 100%;
 }

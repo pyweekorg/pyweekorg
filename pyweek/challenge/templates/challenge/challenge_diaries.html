@@ -15,14 +15,22 @@
 
 {% if blogposts %}
 {% for p in blogposts %}
-    <h3><a href="/e/{{ p.entry.name }}/">{{ p.entry.title }}</a> - {{ p.title }}</h3>
+    <h3><a href="/e/{{ p.entry.name }}/">{{ p.entry.game }}</a> - {{ p.title }}</h3>
     <p>Posted by <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y/m/d H:i" }}</p>
 
-    {% autoescape off %}
-    {{ p.content }}
-    {% endautoescape %}
+    <div class="diary-content">
+    {{ p.content|safe }}
+    </div>
 
-    <p><a href="{{p.get_absolute_url}}">View comments</a></p>
+    <p class="view-comments">
+        <a href="{{p.get_absolute_url}}">
+            {% if not p.num_comments %}
+                Add a comment
+            {% else %}
+                {{p.num_comments}} comment{{p.num_comments|pluralize}}
+            {% endif %}
+        </a>
+    </p>
 {% endfor %}
 
 {% else %}
