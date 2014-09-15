@@ -51,6 +51,16 @@
   {% endif %}
 </td>
 </tr>
+
+<tr{% if form.captcha.errors %} class="form-error"{% endif %}>
+ <td class="form-label"><label for="id_again">Verification:</label></td>
+ <td>{{ form.captcha }}
+  {% if form.captcha.errors %}
+   <p class="form-error">{{ form.captcha.errors|join:", " }}</p>
+  {% endif %}
+</td>
+</tr>
+
 <tr><td></td><td>
 <input type="submit" value="Register">
 </td></tr>

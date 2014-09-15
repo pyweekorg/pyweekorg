@@ -1,18 +1,15 @@
-import smtplib
 from inspect import cleandoc
 
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.http import (
-    HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-)
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django import forms
 from django.core.mail import send_mail
-from django.contrib.auth.forms import AuthenticationForm
-#from django.models.auth import users
 from django.contrib.sites.models import Site
 from django.contrib import auth, messages
+
+from captcha.fields import ReCaptchaField
 
 from ..forms import LoginForm
 from ..models import Challenge
@@ -29,6 +26,7 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
     again = forms.CharField(widget=forms.PasswordInput)
+    captcha = ReCaptchaField()
 
 
 def register(request):
@@ -82,7 +80,6 @@ def profile(request):
                 messages.success(request, 'Changes saved!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
-        errors = {}
         f = RegistrationForm({
             'name': request.user.username,
             'email': request.user.email,
@@ -154,7 +151,6 @@ def resetpw(request):
         ''' % (user.username, new_password, admin[0], admin[1])
 
         send_mail('Your PyWeek login details', cleandoc(message.strip()),
-            '%s <%s>'%admin, [email_address])
+            '%s <%s>' % admin, [email_address])
 
         return login_page(request, message='Email sent to %s' % email_address)
-
