@@ -119,5 +119,5 @@ def delete_spammer(request, user_id):
             # print '---', comment
             comment.delete()
 
-    messages.success(request, 'Spammer deleted!')
+    messages.success(request, 'Spammer deleted! ({0})'.format(user))
     return HttpResponseRedirect('/u/%s/' % user_id)
