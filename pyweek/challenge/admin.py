@@ -1,6 +1,23 @@
 from django.contrib import admin
-
 from pyweek.challenge import models
+
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from .views.user import delete_spammer
+
+
+admin.site.unregister(User)
+
+def do_delete_spammer(modeladmin, request, queryset):
+    for obj in queryset:
+        delete_spammer(request, obj.username)
+do_delete_spammer.short_description = 'Delete that spammer!'
+
+class CustomUserAdmin(UserAdmin):
+
+    actions = [do_delete_spammer]
+
+admin.site.register(User, CustomUserAdmin)
 
 
 class OptionAdmin(admin.ModelAdmin):
