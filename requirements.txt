@@ -1,4 +1,4 @@
-Django==1.5.1
+Django==1.5.10
 Pillow==1.7.7
 django-wysiwyg==0.4.1
 simplejson==2.5.0
