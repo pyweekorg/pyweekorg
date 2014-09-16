@@ -80,10 +80,7 @@ def profile_description(request):
 
 
 def delete_spammer(request, user_id):
-    if not request.POST or 'confirm' not in request.POST:
-        return user_display(request, user_id)
-
-    if not request.user.is_staff:
+    if not request.POST or not request.user.is_staff:
         return user_display(request, user_id)
 
     user = models.User.objects.get(username__exact=user_id)
@@ -97,26 +94,21 @@ def delete_spammer(request, user_id):
 
     last = None
     for diary_entry, comments in d.items():
-        # print 'ENTRY', diary_entry
         for comment in diary_entry.diarycomment_set.all():
-            # print '...', comment, comment.user
             if comment.user != user:
                 last = comment
         if last is None:
-            # print '===', last
             diary_entry.actor = diary_entry.user
             diary_entry.last_comment = None
             diary_entry.activity = diary_entry.created
             diary_entry.reply_count = 0
         else:
-            # print '<<<', last
             diary_entry.last_comment = last
             diary_entry.activity = last.created
             diary_entry.actor = last.user
             diary_entry.reply_count -= len(comments)
         diary_entry.save()
         for comment in comments:
-            # print '---', comment
             comment.delete()
 
     messages.success(request, 'Spammer deleted!')
