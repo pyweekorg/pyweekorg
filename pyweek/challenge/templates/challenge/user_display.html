@@ -25,7 +25,7 @@
 {% for entry in entries %}
 <tr class="{% cycle even,odd %}">
     <td align="center">{{ entry.challenge.number }}</td>
-    <td><a href="/e/{{ entry.name }}/">{{ entry.game }}</a></td>
+    <td><a href="/e/{{ entry.name }}/">{{ entry.game|default:entry.title }}</a></td>
     <td>{% if entry.is_team %}{{ entry.title }}{% endif %}</td>
     <td>{% if entry.challenge.isCompFinished %}{% if entry.has_final %}{{ entry.ratingtally_set.all.0.overall }}{% else %}DNF{% endif %}{% endif %}</td>
 </tr>

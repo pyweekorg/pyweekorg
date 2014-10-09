@@ -15,7 +15,7 @@
 
 {% if page.object_list %}
 {% for p in page.object_list %}
-    <h3><a href="/e/{{ p.entry.name }}/">{{ p.entry.game }}</a> - {{ p.title }}</h3>
+    <h3><a href="/e/{{ p.entry.name }}/">{{ p.entry.game|default:p.entry.title }}</a> - {{ p.title }}</h3>
     <p>Posted by <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y/m/d H:i" }}</p>
 
     <div class="diary-content">
