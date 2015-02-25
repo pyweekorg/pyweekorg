@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html land="en">
+<!DOCTYPE HTML>
+<html lang="en">
 <head>
-    <meta charset="utf8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tooltip.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tooltip.min.js"></script>
 
     <link rel="stylesheet" href="{{ STATIC_URL }}challenge.css" type="text/css">
     <link rel="alternate" type="application/rss+xml"
@@ -18,7 +18,7 @@
    <script src="{{ STATIC_URL }}js/challenge.js" type="text/javascript"></script>
     {% block links %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
-    <script>
+    <script type="text/javascript">
 jQuery(function ($) {
     $('a[data-toggle=tooltip]').tooltip();
 });
@@ -90,97 +90,11 @@ jQuery(function ($) {
             <li><a href="/logout/">Logout</a></li>
           </ul>
           {% endif %}
-        </li>
         <li><a href="/s/help">Help</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
-<!--
-         <ul>
-            <li><strong><a href="/{{ latest.number }}/">{{ latest.title|escape }}</a></strong></li>
-            {% if user.is_authenticated  %}
-             {% if not latest.isCompFinished %}
-              <li><a href="/{{ latest.number }}/entry_add/">Register Entry</a></li>
-             {% endif %}
-             {% if latest.theme_poll and not latest.theme_poll.is_hidden %}
-              {% if latest.theme_poll.is_open %}
-               <li><a href="/p/{{ latest.theme_poll.id }}/">Vote for the Theme</a></li>
-              {% else %}
-               <li><a href="/p/{{ latest.theme_poll.id }}/">Theme Poll</a></li>
-              {% endif %}
-             {% endif %}
-            {% else %}
-             {% if latest.isRegoOpen %}
-              <li><a href="/register/">Register</a></li>
-             {% endif %}
-            {% endif %}
-           <li><a href="/{{ latest.number }}/entries/">Entries</a></li>
-         </ul>
-    </li>
-
-    <li class="headlink">
-       <a href="/all_games/">Previous Challenges</a>
-       <ul>
-          <li><a href="/all_games/">All Games</a></li>
-          {% for one in all reversed %}
-             <li><a title="{{ one.title|escape }}" href="/{{ one.number }}/">{{ one.start|date:"F Y" }}</a></li>
-          {% endfor %}
-          <li><a href="{{ STATIC_URL }}pygame.draw-0606.html">June 2006 (mini)</a></li>
-          <li><a href="http://www.mechanicalcat.net/tech/PyWeek/1">August 2005</a></li>
-      </ul>
-
-    <li class="headlink">
-      <A href="/messages/">Discussion</a>
-    </li>
-
-    <li class="headlink">
-      {% if not user.is_authenticated  %}
-       <span>Not logged in</span>
-       <ul>
-       <li><a href="/login/">Login</a></li>
-        {% for one in all reversed %}
-         {% if forloop.first %}
-          {% if one.isRegoOpen %}
-           <li><a href="/register/">Register</a></li>
-          {% endif %}
-         {% endif %}
-        {% endfor %}
-
-      {% else %}
-       <A href="/profile/">Your Account</A>
-       <ul>
-
-       {% if challenge %}
-        {% if not challenge.isCompFinished %}
-         <li><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
-        {% endif %}
-       {% endif %}
-
-       {% if user_entries %}
-        <li><strong>Your Entries:</strong></li>
-        {% for e in user_entries %}
-          <li><a href="/e/{{e.name}}/">{{e.challenge_id}}) {{e.name}}</a></li>
-        {% endfor %}
-       {% endif %}
-        <li>&nbsp;</li>
-        <li><a href="/logout/">Logout</a></li>
-
-      {% endif %}
-
-      </ul>
-    </li>
-
-    <li class="headlink">
-      <a href="/s/rules">About</a>
-      <ul>
-       <li><a href="/s/rules">Rules</a></li>
-       <li><a href="/s/help">Help</a></li>
-      </ul>
-    </li>
-  </ul>
- </div>-->
 
 <div id="page">
 
