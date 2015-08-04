@@ -29,7 +29,12 @@ def poll_display(request, poll_id):
 
 def poll_view(request, poll_id):
     poll = get_object_or_404(Poll, pk=poll_id)
-    if not (poll.is_ongoing or (not request.user.is_anonymous() and request.user.is_superuser)):
+    ok = False
+    if request.user.is_superuser:
+        ok = True
+    elif not poll.is_ongoing:
+        ok = True
+    if not ok:
         return HttpResponse('not allowed')
     info = {
         'num_choices': len(poll.option_set.all()),
@@ -79,11 +84,7 @@ def render_fields(poll, request):
                 r = Response(option=option, value=value,
                     user=request.user, poll=poll)
                 r.save()
-            if poll.is_ongoing:
-                messages.success(request, 'Vote recorded.' +
-                    '<a href="view">View current results</a>.')
-            else:
-                messages.success(request, 'Vote recorded')
+            messages.success(request, 'Vote recorded')
 
     l = []
     if message:
