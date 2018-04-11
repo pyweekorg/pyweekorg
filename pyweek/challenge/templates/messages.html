@@ -18,7 +18,13 @@
 {% for entry in diary_entries %}
 <div class="diary-entry">
     <h3>{% if entry.sticky %}<span class="label label-default">Sticky</span> {% endif %}<b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
-    <p>by <a href="/u/{{ entry.originator }}/">{{ entry.originator }}</a> {{ entry.date }} {% if entry.reply_count %}({{ entry.reply_count }} replies){% endif %}</p>
+    {% if entry.reply_count %}
+    &mdash; {{ entry.reply_count }} repl{{ entry.reply_count|pluralize:"y,ies" }} &mdash; updated by <a href="/u/{{ entry.author }}">{{ entry.author }}</a>,
+    {% else %}
+    <p>by <a href="/u/{{ entry.originator }}/">{{ entry.originator }}</a>,
+    {% endif %}
+    {{ entry.date }}
+    </p>
 </div>
 {% endfor %}
 

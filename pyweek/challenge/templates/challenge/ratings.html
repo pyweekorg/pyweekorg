@@ -25,22 +25,22 @@
 <tr>
   <td>
     {% for rating in individual_overall %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.overall|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br />
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.overall|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br />
     {% endfor %}
   </td>
   <td>
     {% for rating in individual_fun %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.fun|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.fun|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in individual_inno %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.innovation|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.innovation|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in individual_prod %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.production|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.production|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
 </tr>
@@ -56,34 +56,37 @@
 <tr>
   <td>
     {% for rating in team_overall %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.overall|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.overall|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in team_fun %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.fun|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.fun|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in team_inno %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.innovation|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.innovation|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
   <td>
     {% for rating in team_prod %}
-    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.production|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.short_title }}</a><br/>
+    <span class="prize {% cycle "gold" "silver" "bronze" %}">{{ rating.production|floatformat:2  }}</span> <a href="/e/{{ rating.entry.name }}/" title="{{ rating.entry.title }}">{{ rating.entry.game }}</a><br/>
     {% endfor %}
   </td>
 </tr>
 </table>
 
 <table class="grid">
-<tr><th class="section" colspan="8">Individual Entries</th></tr>
-<tr><th>Entry</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
+<tr><th class="section" colspan="9">Individual Entries</th></tr>
+<tr><th>Entry</th><th>By</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in individual_ratings %}
  <tr class="{% cycle even,odd %}">
   <td>
-   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a>
+   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.game }}</a>
+  </td>
+  <td>
+   <a href="/u/{{ rating.entry.user }}/">{{ rating.entry.user }}</a>
   </td>
   <td>{{ rating.overall|floatformat:2 }}</td>
   <td>{{ rating.fun }}</td>
@@ -95,12 +98,15 @@
  </tr>
 {% endfor %}
 
-<tr><th class="section" colspan="8">Team Entries</th></tr>
-<tr><th>Entry</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
+<tr><th class="section" colspan="9">Team Entries</th></tr>
+<tr><th>Entry</th><th>By</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in team_ratings %}
  <tr class="{% cycle even,odd %}">
   <td>
-   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.title }}</a>
+   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.game }}</a>
+  </td>
+  <td>
+   {{rating.entry.title}}
   </td>
   <td>{{ rating.overall|floatformat:2 }}</td>
   <td>{{ rating.fun }}</td>

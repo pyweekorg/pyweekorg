@@ -2,6 +2,10 @@
 
 {% block title %}User Profile{% endblock %}
 
+{% block scripts %}
+    {% include "trumbowyg-scripts.html" %}
+{% endblock %}
+
 {% block content %}
 
 {% if form.has_errors %}

@@ -56,7 +56,6 @@ h1 {
 
 #footer {
 	clear: both;
-	width: 750px;
 	height: 100px;
 	margin: 0px auto 30px auto;
 
@@ -116,11 +115,10 @@ span.prize {
     display: block-inline;
     padding-left: 24px;
     padding-right: 4px;
-	padding-bottom: 16px;
-    font-family: fixed;
+    padding-bottom: 16px;
     background-repeat: no-repeat;
     background-position: left top;
-    line-height: 18px;
+    line-height: 22px;
 }
 span.gold {
     background-image: url('gold.png');
@@ -840,4 +838,40 @@ ul.auto-toc {
 
 .paginator .next-page {
     float: right;
+}
+
+#flash {
+	text-align: center;
+	border-top: solid #ec8 1px;
+	border-bottom: solid #ec8 1px;
+background-color: #ffe6c0;
+padding: 0.3em;
+}
+
+a:not(*[class]):visited {
+	color: #8b42ca;
+}
+
+.nav.nav-tabs a {
+	color: #555;
+}
+
+.carousel-inner .item {
+    height: 480px;
+    width: 100%;
+    background-position: center center;
+    background-size: cover;
+}
+
+.carousel-caption {
+    font-size: 20px;
+    text-shadow: 0 0 5px black;
+}
+
+.carousel-indicators {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    width: 19%;
+    margin-left: -8%;
+    padding: 0.2em 0 0.1em;
 }

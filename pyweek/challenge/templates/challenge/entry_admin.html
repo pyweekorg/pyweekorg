@@ -2,6 +2,10 @@
 
 {% block title %}PyWeek - {{ entry.title|escape }}{% endblock %}
 
+{% block scripts %}
+    {% include "trumbowyg-scripts.html" %}
+{% endblock %}
+
 {% block content %}
 <h1>PyWeek - {{ entry.title|escape }}</h1>
 

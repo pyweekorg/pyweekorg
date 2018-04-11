@@ -2,22 +2,22 @@
 
 {% block title %}User Profile{% endblock %}
 
+{% block scripts %}
+    {% include "trumbowyg-scripts.html" %}
+{% endblock %}
+
 {% block content %}
 
 {% if form.has_errors %}
 <div class="form-error">Sorry, there's been an error</div>
 {% endif %}
 
-<table width="100%" cellspacing=0 cellpadding=2 border=0>
-    <tr>
-        <th style="border: thin solid #e0e0e0"><a
-                href="/profile/"><strong>User Profile</strong></a></th>
-        <th bgcolor="#e0e0e0"><strong>User Description</strong></th>
-        <th style="border: thin solid #e0e0e0"><a
-                href="/u/{{ user.username }}"><strong>View Your Profile</strong></a></th>
-        <th>&nbsp;</th>
-    </tr>
-    <tr><td colspan="3" bgcolor="#e0e0e0">
+<ul class="nav nav-tabs">
+    <li><a href="/profile/">User Profile</a></li>
+    <li class="active"><a>User Description</a></li>
+    <li><a href="/u/{{ user.username }}">View Your Profile</a></li>
+</ul>
+
 <form class="form" method="post" action=".">
 
 <dl>
@@ -29,8 +29,6 @@
  {% endfor %}
 </dl>
 <input type="submit" value="Save Changes">
-
 </form>
-</td></tr></table>
 
 {% endblock %}

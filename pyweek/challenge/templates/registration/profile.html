@@ -8,15 +8,12 @@
 <div class="form-error">Sorry, there's been an error</div>
 {% endif %}
 
-<table width="100%" cellspacing=0 cellpadding=2 border=0>
-    <tr>
-        <th bgcolor="#e0e0e0"><strong>User Profile</strong></th>
-        <th style="border: thin solid #e0e0e0"><a
-                href="/profile_description/"><strong>User Description</strong></a></th>
-        <th style="border: thin solid #e0e0e0"><a
-                href="/u/{{ user.username }}"><strong>View Your Profile</strong></a></th>
-    </tr>
-    <tr><td colspan="3" bgcolor="#e0e0e0">
+<ul class="nav nav-tabs">
+    <li class="active"><a>User Profile</a></li>
+    <li><a href="/profile_description/">User Description</a></li>
+    <li><a href="/u/{{ user.username }}">View Your Profile</a></li>
+</ul>
+
 <form class="form" method="post" action=".">
 
 <div {% if form.name.errors %} class="form-error"{% endif %}>
@@ -55,6 +52,5 @@
 
 <input type="hidden" name="next" value="{{ next|urlencode }}">
 </form>
-</td></tr></table>
 
 {% endblock %}

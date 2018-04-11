@@ -1,0 +1,23 @@
+    <script src="{{ STATIC_URL }}/lib/trumbowyg/trumbowyg.min.js"></script>
+    <script src="{{ STATIC_URL }}/lib/trumbowyg/plugins/preformatted/trumbowyg.preformatted.min.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}/lib/trumbowyg/ui/trumbowyg.min.css">
+    <script>
+jQuery(function ($) {
+    $('textarea').trumbowyg({
+        semantic: false,
+        removeformatPasted: true,
+        autogrow: true,
+        btns: [
+            ['viewHTML'],
+            ['formatting'],
+            ['strong', 'em', 'preformatted'],
+            ['link'],
+            ['insertImage'],
+            ['unorderedList', 'orderedList'],
+            ['removeformat'],
+            ['fullscreen']
+        ]
+    });
+});
+    </script>
+

@@ -2,6 +2,10 @@
 
 {% block title %}{{ diary.title }}{% endblock %}
 
+{% block scripts %}
+    {% include "trumbowyg-scripts.html" %}
+{% endblock %}
+
 {% block content %}
 <h2>{{ diary.title }}</h2>
 

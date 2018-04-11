@@ -8,6 +8,90 @@
 
 {% block content %}
 
+<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="5"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="6"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="7"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="8"></li>
+    <li data-target="#carousel-example-generic" data-slide-to="9"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="item active" style="background-image: url(/static/carousel/my-sincerest-apologies.png)">
+      <div class="carousel-caption">
+        My Sincerest Apologies, Pyweek 24
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/static/carousel/hackerbot.png)">
+      <div class="carousel-caption">
+        Hackerbot, Pyweek 24
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/media/dl/23/Tee-py23/AKnightOfCurses-ss.png)">
+      <div class="carousel-caption">
+        A Knight of Curses, Pyweek 23
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/media/dl/23/unifac23/image.png)">
+      <div class="carousel-caption">
+        The Final Choice, Pyweek 23
+      </div>
+    </div>
+
+    <div class="item" style="background-image: url(/media/dl/22/Tee-py22/Breach-ss.png)">
+      <div class="carousel-caption">
+        Breach, Pyweek 22
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/media/dl/22/chimera22/harpoon.png)">
+      <div class="carousel-caption">
+        Beneath The Ice, Pyweek 22
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/media/dl/21/noisyprotozoa1/screenshot.png)">
+      <div class="carousel-caption">
+        Pentomino's Pizza, Pyweek 21
+      </div>
+    </div>
+
+    <div class="item" style="background-image: url(/media/dl/20/Tee-py20/invisipin-ss.png)">
+      <div class="carousel-caption">
+        Invisispin, Pyweek 20
+      </div>
+    </div>
+
+    <div class="item" style="background-image: url(/media/dl/19/wasabi-jam/day7-1.png)">
+      <div class="carousel-caption">
+        Legend of Goblit, Pyweek 19
+      </div>
+    </div>
+
+    <div class="item" style="background-image: url(/media/dl/2/rushed/sc9.png)">
+      <div class="carousel-caption">
+        Nelly's Rootftop Garden, Pyweek 2
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
 {% include "motd.html" %}
 
 <p>The PyWeek challenge:</p>
@@ -21,6 +105,7 @@
 <li>May inspire new projects (with ready made teams!)</li>
 </ol>
 
+<!--
 <p>
 <a href="/e/xasm_pw6/" title="invention"><img width="120" border="0" alt="invention" src="/media/dl/6/xasm_pw6/screenshot0.jpg-thumb.png"></a>
 <a href="/e/eevee_evolution/" title="Robot Underground"><img width="120" border="0" alt="Robot Underground" src="/media/dl/6/eevee_evolution/screenshot4.png-thumb.png"></a>
@@ -34,14 +119,14 @@ Up!" src="/media/dl/5/psyduck_revenge/Picture%202.png-thumb.png"></a>
 <a href="/e/rushed/" title="Nelly's Rooftop Garden"><img width="120" border="0" alt="Nelly's Rooftop Garden" src="/media/dl/2/rushed/sc9.png-thumb.png"></a>
 <a href="/e/Pekuja/" title="Trip on the Funny Boat"><img width="120" border="0" alt="Trip on the Funny Boat" src="/media/dl/2/Pekuja/funnyboat-final.png-thumb.png"></a>
 </p>
-
+-->
 <p>
 Entries must be developed in Python during the challenge, and must
 incorporate some theme decided at the start of the challenge. See the <a
 href="{{ STATIC_URL }}rules.html">challenge rules</a> for more information.
 </p>
 
-<div id="footer">
+<div id="footer" style="width: auto">
 Contact &lt;richard@pyweek.org&gt; with any enquiries.
 Site <A href="{{ STATIC_URL }}conditions.html">conditions of use</A>.
 Hosting thanks to <A href="http://tummy.com/">tummy.com</A>.<BR>

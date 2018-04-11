@@ -12,6 +12,8 @@
     {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
 </ul>
 
+<p style="float: right; color: #888">{{ entries|length }} entr{{entries|length|pluralize:"y,ies"}}</p>
+
 {% if finished %}
 <p>To play the games listed here, you may need to install <a
 href="http://www.python.org/">Python</a> (typically 2.5+).
