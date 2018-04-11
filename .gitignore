@@ -1,10 +1,8 @@
-syntax: glob
-
 .idea
 *.pyc
+*.swp
 *.swap
 *.orig
-pyweek/media
 dev_media
 dev_settings.py
 development
