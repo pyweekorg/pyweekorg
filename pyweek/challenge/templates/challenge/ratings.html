@@ -83,7 +83,9 @@
 {% for rating in individual_ratings %}
  <tr class="{% cycle even,odd %}">
   <td>
-   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.game }}</a>
+   <a href="/e/{{ rating.entry.name }}/">
+        {{rating.entry.game|default:rating.entry.title}}
+   </a>
   </td>
   <td>
    <a href="/u/{{ rating.entry.user }}/">{{ rating.entry.user }}</a>
@@ -103,7 +105,9 @@
 {% for rating in team_ratings %}
  <tr class="{% cycle even,odd %}">
   <td>
-   <a href="/e/{{ rating.entry.name }}/">{{ rating.entry.game }}</a>
+   <a href="/e/{{ rating.entry.name }}/">
+        {{rating.entry.game|default:rating.entry.title}}
+   </a>
   </td>
   <td>
    {{rating.entry.title}}
