@@ -82,7 +82,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'pyweek.challenge',
-    'captcha',
+    'snowpenguin.django.recaptcha2',
 ]
 
 try:

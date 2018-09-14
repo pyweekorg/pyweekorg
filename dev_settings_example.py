@@ -38,4 +38,3 @@ SECRET_KEY = ';z{!:d:DK^Uf6}-R~HNn$+kv)c{9ILD}uWa&@nu#~uHI",5Zv{CMmC"z`WE|&I'
 
 RECAPTCHA_PUBLIC_KEY = 'aaaa'
 RECAPTCHA_PRIVATE_KEY = 'bbbb'
-RECAPTCHA_USE_SSL = True

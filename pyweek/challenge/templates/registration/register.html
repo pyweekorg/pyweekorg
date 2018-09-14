@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load recaptcha2 %}
 
 {% block title %}Registration Form{% endblock %}
+
+{% block scripts %}
+    {% recaptcha_init %}
+{% endblock %}
 
 {% block content %}
 

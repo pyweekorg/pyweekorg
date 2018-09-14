@@ -5,4 +5,4 @@ django-wysiwyg==0.4.1
 simplejson==2.5.0
 stripogram==1.5
 wsgiref==0.1.2
-django-recaptcha
+django-recaptcha2

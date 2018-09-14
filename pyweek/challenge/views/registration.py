@@ -9,7 +9,8 @@ from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.contrib import auth, messages
 
-from captcha.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
 from ..forms import LoginForm
 from ..models import Challenge
@@ -26,7 +27,7 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
     again = forms.CharField(widget=forms.PasswordInput)
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(widget=ReCaptchaWidget())
 
 
 def register(request):
