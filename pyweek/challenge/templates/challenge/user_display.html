@@ -23,7 +23,7 @@
 <table class="grid auto">
     <tr><th>PyWeek</th><th>Game</th><th>Team</th><th>Rating</th></tr>
 {% for entry in entries %}
-<tr class="{% cycle even,odd %}">
+<tr class="{% cycle 'even' 'odd' %}">
     <td align="center">{{ entry.challenge.number }}</td>
     <td><a href="/e/{{ entry.name }}/">{{ entry.game|default:entry.title }}</a></td>
     <td>{% if entry.is_team %}{{ entry.title }}{% endif %}</td>

@@ -1,6 +1,6 @@
 <div class="comment">
 {% for comment in comments %}
-<div id="comment-{{comment.id}}" class="{% cycle even,odd %} diary-comment">
+<div id="comment-{{comment.id}}" class="{% cycle 'even' 'odd' %} diary-comment">
 <p class="diary-byline">
 By <a href="/u/{{ comment.user }}/">{{ comment.user }}</a>  on
 {{comment.created|date:"Y/m/d H:i"}}:

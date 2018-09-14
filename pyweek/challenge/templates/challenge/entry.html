@@ -191,7 +191,7 @@ resulted from that (include a traceback if you got one).</p>
     {% if is_member %}<th>&nbsp;</th>{% endif %}
 </tr>
  {% for file in files %}
-  <tr class="{% cycle even,odd %}"><td>
+  <tr class="{% cycle 'even' 'odd' %}"><td>
   <a href="{{ file.content.url }}">{{ file.filename }}</a>
   {% if file.is_final %}&mdash; <b>final</b>{% endif %}
   <br />{{ file.description }}
