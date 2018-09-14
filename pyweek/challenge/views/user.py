@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from pyweek.challenge import models
@@ -31,13 +31,14 @@ def user_display(request, user_id):
     given_awards = user.award_set.all()
     received_awards = models.EntryAward.objects.filter(
         challenge__number__lt=1000, entry__users=user)
-    return render_to_response('challenge/user_display.html',
+    return render(request, 'challenge/user_display.html',
         {
             'profile_user': user,
             'entries': entries,
             'given_awards': given_awards,
             'received_awards': received_awards,
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 class ProfileForm(forms.Form):
@@ -73,10 +74,11 @@ def profile_description(request):
             return HttpResponseRedirect('/profile_description/')
     else:
         form = ProfileForm(data)
-    return render_to_response('challenge/profile_description.html',
+    return render(request, 'challenge/profile_description.html',
         {
             'form': form,
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 def delete_spammer(request, user_id):

@@ -1,7 +1,7 @@
 from inspect import cleandoc
 
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django import forms
@@ -37,7 +37,7 @@ def register(request):
             "Please check back when a challenge is scheduled."
         )
 
-    redirect_to = request.REQUEST.get('next', '')
+    redirect_to = request.GET.get('next', '')
     if request.POST:
         f = RegistrationForm(request.POST)
         if f.is_valid():
@@ -59,12 +59,11 @@ def register(request):
                 return HttpResponseRedirect(redirect_to or '/')
     else:
         f = RegistrationForm()
-    return render_to_response('registration/register.html', {'form': f},
-        context_instance=RequestContext(request))
+    return render(request, 'registration/register.html', {'form': f})
 
 
 def profile(request):
-    redirect_to = request.REQUEST.get('next', '')
+    redirect_to = request.GET.get('next', '')
     if request.user.is_anonymous():
         return HttpResponseRedirect('/login/')
     elif request.POST:
@@ -85,13 +84,12 @@ def profile(request):
             'name': request.user.username,
             'email': request.user.email,
         })
-    return render_to_response('registration/profile.html', {'form': f},
-        context_instance=RequestContext(request))
+    return render(request, 'registration/profile.html', {'form': f})
 
 
 def login_page(request, message=None, error=None):
     "Displays the login form and handles the login action."
-    redirect_to = request.REQUEST.get('next', '')
+    redirect_to = request.GET.get('next', '')
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -110,8 +108,7 @@ def login_page(request, message=None, error=None):
         info['messages'] = [message]
     if error:
         info['reset_error'] = error
-    return render_to_response('registration/login.html', info,
-        context_instance=RequestContext(request))
+    return render(request, 'registration/login.html', info)
 
 
 def logout(request, next_page=None):

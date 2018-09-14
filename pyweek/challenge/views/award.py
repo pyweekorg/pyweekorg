@@ -7,7 +7,7 @@ from PIL import Image
 
 from django import forms
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
@@ -18,21 +18,24 @@ from stripogram import html2text
 
 def view_all_awards(request):
     awards = models.Award.objects.all()
-    return render_to_response('challenge/all_awards.html', dict(
-        awards=awards,
-        ), context_instance=RequestContext(request))
+    return render(request, 'challenge/all_awards.html', {'awards': awards})
+
 
 def view_award(request, award_id):
     award = get_object_or_404(models.Award, pk=award_id)
     entry_awards = award.entryaward_set.filter(challenge__number__lt=1000)
     entries = [e.entry for e in entry_awards]
-    return render_to_response('challenge/award.html', dict(
-        award=award,
-        entries=entries,
-        ), context_instance=RequestContext(request))
+    return render(
+        request, 'challenge/award.html', dict(
+            award=award,
+            entries=entries,
+        )
+    )
+
 
 class GiveAwardForm(forms.Form):
     award = forms.ModelChoiceField(models.Award)
+
 
 def give_award(request, entry_id):
     creator = request.user
@@ -60,15 +63,13 @@ def give_award(request, entry_id):
         f = GiveAwardForm()
         f.fields['award'].queryset = creator.award_set.all()
         info['give_form'] = f
-        return render_to_response('challenge/upload_award.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/upload_award.html', info)
 
     f = GiveAwardForm(request.POST)
     f.fields['award'].queryset = creator.award_set.all()
     info['give_form'] = f
     if not f.is_valid():
-        return render_to_response('challenge/upload_award.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/upload_award.html', info)
 
     if _give_award(challenge, creator, entry, f.cleaned_data['award']):
         messages.success(request, 'Award given!')
@@ -111,8 +112,7 @@ def upload_award(request, entry_id):
 
     # Display form
     if not f.is_valid():
-        return render_to_response('challenge/upload_award.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/upload_award.html', info)
 
     # make sure the filename is unique
 #    if os.path.exists(fspath):
@@ -128,8 +128,7 @@ def upload_award(request, entry_id):
         pass
     if not ok:
         messages.error(request, 'The image could not be read or is not 64x64')
-        return render_to_response('challenge/upload_award.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/upload_award.html', info)
 
     # Write award image to disk
     award = models.Award(creator=creator,

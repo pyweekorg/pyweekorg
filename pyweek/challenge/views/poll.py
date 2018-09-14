@@ -1,7 +1,7 @@
 import cgi
 import sets
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib import messages
@@ -22,10 +22,13 @@ def poll_display(request, poll_id):
     info = {
         'num_choices': len(poll.option_set.all()),
     }
-    return render_to_response('challenge/poll.html', {'poll': poll,
+    return render(request, 'challenge/poll.html', {
+        'poll': poll,
         'instructions': instructions[poll.type]%info,
-        'challenge': poll.challenge, 'fields': render(poll, request)},
-        RequestContext(request))
+        'challenge': poll.challenge,
+        'fields': render(poll, request)
+    })
+
 
 def poll_view(request, poll_id):
     poll = get_object_or_404(Poll, pk=poll_id)
@@ -39,12 +42,15 @@ def poll_view(request, poll_id):
     info = {
         'num_choices': len(poll.option_set.all()),
     }
-    return render_to_response('challenge/poll.html', {'poll': poll,
+    return render(request, 'challenge/poll.html', {
+        'poll': poll,
         'instructions': instructions[poll.type]%info,
-        'challenge': poll.challenge, 'fields': render(poll, request,
-        force_display=True)}, RequestContext(request))
+        'challenge': poll.challenge,
+        'fields': render_poll(poll, request, force_display=True)
+    })
 
-def render(poll, request, force_display=False):
+
+def render_poll(poll, request, force_display=False):
     if poll.is_open and not force_display:
         if request.user.is_anonymous():
             return '<p>You must log in to vote.</p>'
@@ -65,6 +71,7 @@ def render(poll, request, force_display=False):
 
         s += '<p>There were %d respondents.</p>'%num
         return s
+
 
 def render_fields(poll, request):
     '''Figure the votes display for the current user.'''

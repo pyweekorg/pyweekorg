@@ -2,7 +2,7 @@ import cgi, urllib, random, hashlib
 
 from django import forms
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
@@ -109,13 +109,14 @@ def entry_list(request, challenge_id):
         return cmp(a['num_ratings'], b['num_ratings'])
     entries.sort(sortfun)
 
-    return render_to_response('challenge/entries.html', {
+    return render(request, 'challenge/entries.html', {
             'challenge': challenge,
             'entries': entries,
             'limited': finished,
             'finished': finished,
             'all_done': all_done,
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 def entry_add(request, challenge_id):
@@ -147,13 +148,14 @@ def entry_add(request, challenge_id):
     else:
         f = AddEntryForm()
 
-    return render_to_response('challenge/entry_add.html',
+    return render(request, 'challenge/entry_add.html',
         {
             'challenge': challenge,
             'form': f,
             'is_member': True,
             'is_owner': True,
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 class RatingForm(forms.Form):
@@ -234,7 +236,7 @@ def entry_display(request, entry_id):
         d['dp'] = '%d%%'%(d.get('disqualify', 0)*100)
         d['dnwp'] = '%d%%'%(d.get('nonworking', 0)*100)
 
-    return render_to_response('challenge/entry.html', {
+    return render(request, 'challenge/entry.html', {
             'challenge': challenge,
             'entry': entry,
             'files': entry.file_set.all(),
@@ -247,7 +249,8 @@ def entry_display(request, entry_id):
             'form': f,
             'rating': rating_results,
             'awards': entry.entryaward_set.all(),
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 def entry_ratings(request, entry_id):
@@ -262,14 +265,16 @@ def entry_ratings(request, entry_id):
     user_list = entry.users.all()
     is_member = request.user in list(user_list)
 
-    return render_to_response('challenge/entry_ratings.html', {
+    return render(request, 'challenge/entry_ratings.html', {
             'challenge': challenge,
             'entry': entry,
             'is_user': not request.user.is_anonymous(),
             'is_member': is_member,
             'is_team': len(user_list) > 1,
             'is_owner': entry.user == request.user,
-        }, context_instance=RequestContext(request))
+        }
+    )
+
 
 class EntryForm(forms.Form):
     title = forms.CharField(required=True)
@@ -309,12 +314,13 @@ def entry_manage(request, entry_id):
 
     challenge = entry.challenge
     #form = forms.FormWrapper(f, new_data, errors)
-    return render_to_response('challenge/entry_admin.html',
+    return render(request, 'challenge/entry_admin.html',
         {
             'challenge': challenge,
             'entry': entry,
             'form': f,
             'is_member': True,
             'is_owner': True,
-        }, context_instance=RequestContext(request))
+        }
+    )
 

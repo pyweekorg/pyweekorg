@@ -5,7 +5,7 @@ from PIL import Image
 
 from django import forms
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
@@ -47,21 +47,18 @@ def entry_upload(request, entry_id):
 
     # just display the form?
     if not f.is_valid():
-        return render_to_response('challenge/entry_file.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/entry_file.html', info)
 
     # make sure user isn't sneeeky
     if f.cleaned_data['is_final'] and not challenge.isFinalUploadOpen():
         f._errors['is_final'] = f.error_class(["Final uploads are not allowed now."])
-        return render_to_response('challenge/entry_file.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/entry_file.html', info)
 
     # avoid dupes
     if os.path.exists(os.path.join(MEDIA_ROOT, str(challenge.number), entry.name,
             request.FILES['content'].name)):
         f._errors['content'] = f.error_class(["File with that filename already exists."])
-        return render_to_response('challenge/entry_file.html', info,
-            context_instance=RequestContext(request))
+        return render(request, 'challenge/entry_file.html', info)
 
     file = models.File(
         challenge=challenge,
@@ -85,8 +82,7 @@ def entry_upload(request, entry_id):
         except:
             # XXX need feedback with custom error "file is not an image"
 	    messages.error(request, 'File is not an image')
-            return render_to_response('challenge/entry_file.html', info,
-                context_instance=RequestContext(request))
+            return render(request, 'challenge/entry_file.html', info)
 
     messages.success(request, 'File added!')
     return HttpResponseRedirect('/e/%s/'%entry_id)
@@ -186,9 +182,10 @@ def file_delete(request, entry_id, filename):
             messages.success(request, 'Cancelled')
             return HttpResponseRedirect('/e/%s/'%entry_id)
 
-    return render_to_response('confirm.html',
+    return render(request, 'confirm.html',
         {
             'url': '/e/%s/delete/%s'%(entry_id, filename),
             'message': 'Are you sure you wish to delete the file %s?'%filename,
-        }, context_instance=RequestContext(request))
+        }
+    )
 

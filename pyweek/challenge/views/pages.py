@@ -4,7 +4,7 @@ import xml.sax.saxutils
 
 from PIL import Image
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.conf import settings
 from django.http import Http404
@@ -16,6 +16,5 @@ def page(request, page_id):
     if not os.path.exists(path):
         raise Http404('No file called %s'%page_id)
     content = open(path, 'r').read()
-    return render_to_response('page.html',
-        dict(content=content), context_instance=RequestContext(request))
+    return render(request, 'page.html', {'content': content})
 

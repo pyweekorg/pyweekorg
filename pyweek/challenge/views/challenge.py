@@ -6,7 +6,7 @@ from PIL import Image
 
 from django import forms
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404, render
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.core.paginator import Paginator, InvalidPage
 from django.http import HttpResponse, HttpResponseRedirect
@@ -35,19 +35,17 @@ class SafeHTMLField(forms.CharField):
 
 
 def index(request):
-    return render_to_response('challenge/index.html',
-        {}, context_instance=RequestContext(request))
+    return render(request, 'challenge/index.html', {})
 
 
 def stats(request):
-    return render_to_response('stats.html',
-        { } , context_instance=RequestContext(request))
+    return render(request, 'stats.html', {})
 
 
 def stats_json(request):
     stats = models.participation()
     json = simplejson.dumps({'stats': stats})
-    return HttpResponse(json, mimetype='application/json')
+    return HttpResponse(json, content_type='application/json')
 
 
 def all_games(request):
@@ -94,10 +92,8 @@ def all_games(request):
         all.append(dict(entry_id=entry_id, game_name=game or title,
             challenge_num=challenge_num, winner=winner, rating=rating,
             team=team))
-    return render_to_response('challenge/all_games.html',
-        {
-            'all_games': all,
-        } , context_instance=RequestContext(request))
+    return render(request, 'challenge/all_games.html', {'all_games': all})
+
 
 def test(request):
     assert False, 'this is false'
@@ -111,8 +107,7 @@ def update_has_final(request):
             entry.has_final = True
             entry.save()
     messages.success(request, 'has_final updated')
-    return render_to_response('challenge/index.html',
-        {} , context_instance=RequestContext(request))
+    return render(request, 'challenge/index.html', {})
 
 
 def previous_challenges(request):
@@ -138,7 +133,9 @@ def challenge_display(request, challenge_id):
         entry__challenge__number=challenge.number
     ).select_related('entry').order_by('-created')
 
-    return render_to_response('challenge/display.html',
+    return render(
+        request,
+        'challenge/display.html',
         {
             'blogposts': blogposts,
             'challenge': challenge,
@@ -150,7 +147,8 @@ def challenge_display(request, challenge_id):
             'finished': finished and 'finished' or '',
             'all_done': all_done,
             'recent_entryawards': challenge.entryaward_set.all()[:10]
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 
@@ -197,7 +195,9 @@ def challenge_ratings(request, challenge_id):
         else:
             team.append(rating)
 
-    return render_to_response('challenge/ratings.html',
+    return render(
+        request,
+        'challenge/ratings.html',
         {
             'challenge': challenge,
             'polls': challenge.poll_set.filter(is_hidden__exact=False),
@@ -212,4 +212,5 @@ def challenge_ratings(request, challenge_id):
             'team_fun': sorted(team, key=lambda x: x.fun, reverse=True)[:3],
             'team_inno': sorted(team, key=lambda x: x.innovation, reverse=True)[:3],
             'team_prod': sorted(team, key=lambda x: x.production, reverse=True)[:3],
-        }, context_instance=RequestContext(request))
+        }
+    )

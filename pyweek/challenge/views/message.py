@@ -5,7 +5,7 @@ import xml.sax.saxutils
 from django import forms
 from django.contrib import messages
 from django.contrib.syndication.views import Feed
-from django.shortcuts import render_to_response, get_object_or_404, render
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
@@ -42,8 +42,7 @@ def update_messages(request):
             entry.reply_count = entry.diarycomment_set.count()
         entry.save()
     messages.success(request, 'Messages updated')
-    return render_to_response('challenge/index.html',
-        {} , context_instance=RequestContext(request))
+    return render(request, 'challenge/index.html', {})
 
 
 def extract_entries(entries):
@@ -185,13 +184,15 @@ def message_add(request):
     else:
         form = cls()
 
-    return render_to_response('message_add.html',
+    return render(request, 'message_add.html',
         {
             'previewed': previewed,
             'content': content,
             'title': title,
             'form': cls,
-        }, context_instance=RequestContext(request))
+        }
+    )
+
 
 def entry_diary(request, entry_id):
     is_anon = request.user.is_anonymous()
@@ -236,7 +237,7 @@ def entry_diary(request, entry_id):
     else:
         form = cls()
 
-    return render_to_response('challenge/add_diary.html',
+    return render(request, 'challenge/add_diary.html',
         {
             'previewed': previewed,
             'content': content,
@@ -247,7 +248,9 @@ def entry_diary(request, entry_id):
             'diary_entries': entry.diaryentry_set.all(),
             'is_member': True,
             'is_owner': entry.user == request.user,
-        }, context_instance=RequestContext(request))
+        }
+    )
+
 
 class DiaryFeed(Feed):
     title = "PyWeek Diary Entries"
@@ -357,14 +360,15 @@ def diary_edit(request, diary_id):
             return HttpResponseRedirect('/d/%s/edit/'%diary_id)
     else:
         form = cls(data)
-    return render_to_response('challenge/diary_edit.html',
+    return render(request, 'challenge/diary_edit.html',
         {
             'diary': diary,
             'challenge': diary.challenge,
             'entry': diary.entry,
             'form': form,
             'is_super': is_super,
-        }, context_instance=RequestContext(request))
+        }
+    )
 
 
 def diary_delete(request, diary_id):
