@@ -679,14 +679,17 @@ class DiaryComment(models.Model):
             self.created = datetime.datetime.utcnow()
         super(DiaryComment, self).save()
 
+
+def file_upload_location(instance, filename):
+    return os.path.join(str(instance.challenge.number), str(instance.entry.name), filename)
+
+
 class File(models.Model):
     challenge = models.ForeignKey(Challenge)
     entry = models.ForeignKey(Entry)
     user = models.ForeignKey(User)
     thumb_width = models.PositiveIntegerField(default=0)
-    def upload_location(instance, filename):
-        return os.path.join(str(instance.challenge.number), str(instance.entry.name), filename)
-    content = models.FileField(upload_to=upload_location)
+    content = models.FileField(upload_to=file_upload_location)
     created = models.DateTimeField()
     description = models.CharField(max_length=255)
     is_final = models.BooleanField(default=False)
@@ -727,12 +730,15 @@ class File(models.Model):
         sizeInUnit = size/unitSize[unit]
         return '%0.2f %sbytes'%(sizeInUnit, unit)
 
+
+def award_upload_location(instance, filename):
+    return os.path.join('awards', str(instance.creator.id), filename)
+
+
 class Award(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField()
-    def upload_location(instance, filename):
-        return os.path.join('awards', str(instance.creator.id), filename)
-    content = models.FileField(upload_to=upload_location)
+    content = models.FileField(upload_to=award_upload_location)
     description = models.CharField(max_length=255)
 
     class Meta:

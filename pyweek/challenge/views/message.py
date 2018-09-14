@@ -127,7 +127,7 @@ def list_messages(request):
                 for i in range(s, e)
     ]
 
-    return render_to_response('messages.html', {
+    return render(request, 'messages.html', {
         'diary_entries': diary_entries,
         'pages': pages,
         'prev': start and start-MESSAGES_PER_PAGE or None,
@@ -135,7 +135,7 @@ def list_messages(request):
         'more_start': more_start,
         'more_end': more_end,
         'next': start+MESSAGES_PER_PAGE < num and start+MESSAGES_PER_PAGE or None,
-    } , context_instance=RequestContext(request))
+    })
 
 
 class DiaryForm(forms.Form):

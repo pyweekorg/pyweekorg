@@ -1,75 +1,69 @@
-from django.conf.urls import patterns, url, include
-#from django.conf.settings import DEBUG
+from django.conf.urls import url, include
 from pyweek.challenge.views.message import DiaryFeed
-
-urlpatterns = patterns('pyweek.challenge.views.challenge',
-    (r'^/?$', 'index'),
-    (r'^stats/$', 'stats'),
-    (r'^stats.json$', 'stats_json'),
-    #(r'^test/$', 'test'),
-    #(r'^update_has_final/$', 'update_has_final'),
-    (r'^all_games/$', 'all_games'),
-    (r'^challenges/$', 'previous_challenges'),
-
-    url(r'^(\d+)/$', 'challenge_display', name="challenge"),
-    (r'^(\d+)/diaries/$', 'challenge_diaries'),
-    (r'^(\d+)/ratings/$', 'challenge_ratings'),
-    (r'^(\d+)/calculate_rating_tallies/', 'calculate_rating_tallies'),
-    (r'^(\d+)/fix_winners/', 'fix_winners'),
+from .views import (
+    challenge, message, user, entry, files, poll, registration, award, pages
 )
 
-urlpatterns += patterns('pyweek.challenge.views.message',
-    (r'^messages/$', 'list_messages'),
-    (r'^message_add/$', 'message_add'),
-    (r'^d/(\d+)/$', 'diary_display'),
-    (r'^d/(\d+)/edit/$', 'diary_edit'),
-    (r'^d/(\d+)/delete/$', 'diary_delete'),
-    (r'^e/([\w-]+)/diary/$', 'entry_diary'),
+urlpatterns = [
+    url(r'^$', challenge.index),
+    url(r'^stats/$', challenge.stats),
+    url(r'^stats.json$', challenge.stats_json),
+    #url(r'^test/$', 'test'),
+    #url(r'^update_has_final/$', 'update_has_final'),
+    url(r'^all_games/$', challenge.all_games),
+    url(r'^challenges/$', challenge.previous_challenges),
+
+    url(r'^(\d+)/$', challenge.challenge_display, name="challenge"),
+    url(r'^(\d+)/diaries/$', challenge.challenge_diaries),
+    url(r'^(\d+)/ratings/$', challenge.challenge_ratings),
+    url(r'^(\d+)/calculate_rating_tallies/', challenge.calculate_rating_tallies),
+    url(r'^(\d+)/fix_winners/', challenge.fix_winners),
+
+    # Message views
+    url(r'^messages/$', message.list_messages),
+    url(r'^message_add/$', message.message_add),
+    url(r'^d/(\d+)/$', message.diary_display),
+    url(r'^d/(\d+)/edit/$', message.diary_edit),
+    url(r'^d/(\d+)/delete/$', message.diary_delete),
+    url(r'^e/([\w-]+)/diary/$', message.entry_diary),
     url(r'^d/feed/$', DiaryFeed(), name='diary_feed'),
-    (r'^update_messages/$', 'update_messages'),
-)
+    url(r'^update_messages/$', message.update_messages),
 
-urlpatterns += patterns('pyweek.challenge.views.user',
-    url(r'^u/([\w\. \-\[\]!]+)/$', 'user_display', name='user_display'),
-    url(r'^u/([\w\. \-\[\]!]+)/delete_spam$', 'delete_spammer', name='delete_spammer'),
-    (r'^profile_description/$', 'profile_description'),
-)
+    # User views
+    url(r'^u/([\w\. \-\[\]!]+)/$', user.user_display, name='user_display'),
+    url(r'^u/([\w\. \-\[\]!]+)/delete_spam$', user.delete_spammer, name='delete_spammer'),
+    url(r'^profile_description/$', user.profile_description),
 
-urlpatterns += patterns('pyweek.challenge.views.entry',
-    (r'^(\d+)/entry_add/$', 'entry_add'),
-    (r'^(\d+)/entries/$', 'entry_list'),
-    (r'^e/([\w-]+)/$', 'entry_display'),
-    (r'^e/([\w-]+)/manage/$', 'entry_manage'),
-    (r'^e/([\w-]+)/ratings/$', 'entry_ratings'),
-)
+    # Entry views
+    url(r'^(\d+)/entry_add/$', entry.entry_add),
+    url(r'^(\d+)/entries/$', entry.entry_list),
+    url(r'^e/([\w-]+)/$', entry.entry_display),
+    url(r'^e/([\w-]+)/manage/$', entry.entry_manage),
+    url(r'^e/([\w-]+)/ratings/$', entry.entry_ratings),
 
-urlpatterns += patterns('pyweek.challenge.views.files',
-    (r'^e/([\w-]+)/upload/$', 'entry_upload'),
-    (r'^e/([\w-]+)/oup/$', 'oneshot_upload'),
-    (r'^e/([\w-]+)/delete/(.+)$', 'file_delete'),
-)
+    # Files views
+    url(r'^e/([\w-]+)/upload/$', files.entry_upload),
+    url(r'^e/([\w-]+)/oup/$', files.oneshot_upload),
+    url(r'^e/([\w-]+)/delete/(.+)$', files.file_delete),
 
-urlpatterns += patterns('pyweek.challenge.views.poll',
-    (r'^p/(\d+)/$', 'poll_display'),
-    (r'^p/(\d+)/view/$', 'poll_view'),
-    (r'^p/(\d+)/test/$', 'poll_view'),
-)
+    # Poll views
+    url(r'^p/(\d+)/$', poll.poll_display),
+    url(r'^p/(\d+)/view/$', poll.poll_view),
+    url(r'^p/(\d+)/test/$', poll.poll_view),
 
-urlpatterns += patterns('pyweek.challenge.views.registration',
-    (r'^login/', 'login_page' ),
-    (r'^logout/', 'logout' ),
-    (r'^profile/', 'profile' ),
-    (r'^register/', 'register' ),
-    (r'^resetpw/', 'resetpw' ),
-)
+    # Registration views
+    url(r'^login/', registration.login_page ),
+    url(r'^logout/', registration.logout ),
+    url(r'^profile/', registration.profile ),
+    url(r'^register/', registration.register ),
+    url(r'^resetpw/', registration.resetpw ),
 
-urlpatterns += patterns('pyweek.challenge.views.award',
-    (r'^e/([\w-]+)/upload_award/$', 'upload_award'),
-    (r'^e/([\w-]+)/give_award/$', 'give_award'),
-    (r'^a/(\d+)/$', 'view_award'),
-    (r'^all_awards/$', 'view_all_awards'),
-)
+    # Award views
+    url(r'^e/([\w-]+)/upload_award/$', award.upload_award),
+    url(r'^e/([\w-]+)/give_award/$', award.give_award),
+    url(r'^a/(\d+)/$', award.view_award),
+    url(r'^all_awards/$', award.view_all_awards),
 
-urlpatterns += patterns('pyweek.challenge.views.pages',
-    (r'^s/(\w+)/$', 'page'),
-)
+    # Pages views
+    url(r'^s/(\w+)/$', pages.page),
+]

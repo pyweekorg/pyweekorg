@@ -1,7 +1,6 @@
 # Django settings for pyweek project.
 
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = [
     ('Richard Jones', 'r1chard@example.com'),
@@ -50,28 +49,30 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.doc.XViewMiddleware',
 )
 
 ROOT_URLCONF = 'pyweek.urls'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-#    '/home/pyweek/lib/pyweek/challenge/templates',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.static",
-    "django.core.context_processors.media",
-    "django.contrib.messages.context_processors.messages",
-#    "django.core.context_processors.i18n",
-    "django.core.context_processors.request",
-    "pyweek.challenge.views.context.challenges",
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            # ... some options here ...
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                "django.template.context_processors.static",
+                "django.template.context_processors.media",
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                "pyweek.challenge.views.context.challenges",
+            ],
+            'debug': DEBUG,
+        },
+    },
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
