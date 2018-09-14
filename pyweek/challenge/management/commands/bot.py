@@ -9,12 +9,15 @@ from pyweek.challenge.models import Challenge, Entry, UTC
 
 
 def send_email(challenge, message, **info):
-    info.update(dict(ch=challenge.title))
+    info.update(dict(
+        ch=challenge.title,
+        chnum=challenge.number
+    ))
 
     message += '''
 
-     Richard Jones
-     http://pyweek.org/
+     Daniel Pope
+     https://pyweek.org/
 
 ----
 You are receiving this email because you have signed up to the PyWeek
@@ -71,7 +74,7 @@ and rate everyone else's games.
 '''
 
 CHALLENGE_START = '''Subject: PyWeek %(ch)s has started!
-From: Richard Jones <richard@pyweek.org>
+From: Daniel Pope <daniel@pyweek.org>
 To: %(to)s
 
 %(ch)s has started!
@@ -81,17 +84,21 @@ The theme for this challenge is "%(theme)s".
 Please make sure you've had a read of the rules and help pages.
 In particular make sure you're aware of the rules for submissions:
 
-  http://pyweek.org/s/rules/
-  http://pyweek.org/s/help/
+  https://pyweek.org/s/rules/
+  https://pyweek.org/s/help/
 
 Don't forget that there's a diary attached to your entry - record
-your progress and upload screenshots! Diary entries are automatically
-listed in the site Discussion page:
+your progress and upload screenshots! Diary entries are displayed
+in the challenge page:
 
-  http://pyweek.org/messages/
+  https://pyweek.org/%(chnum)s/diaries/
 
 Finally there's a handy reference listing links to game development
-resources (theory, artwork, music, ...) on the Discussion page.
+resources (theory, artwork, music, ...) on the Discussion page:
+
+  https://pyweek.org/messages/
+
+Good luck!
 '''
 
 
