@@ -81,7 +81,7 @@
 <tr><th class="section" colspan="9">Individual Entries</th></tr>
 <tr><th>Entry</th><th>By</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in individual_ratings %}
- <tr class="{% cycle even,odd %}">
+ <tr class="{% cycle "even" "odd" %}">
   <td>
    <a href="/e/{{ rating.entry.name }}/">
         {{rating.entry.game|default:rating.entry.title}}
@@ -103,7 +103,7 @@
 <tr><th class="section" colspan="9">Team Entries</th></tr>
 <tr><th>Entry</th><th>By</th><th>Overall</th><th>Fun</th><th>Inno</th><th>Prod</th><th>Ents</th><th>DNW</th><th>DQ</th></tr>
 {% for rating in team_ratings %}
- <tr class="{% cycle even,odd %}">
+ <tr class="{% cycle "even" "odd" %}">
   <td>
    <a href="/e/{{ rating.entry.name }}/">
         {{rating.entry.game|default:rating.entry.title}}
