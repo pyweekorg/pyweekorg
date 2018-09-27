@@ -22,8 +22,8 @@ The PyWeek challenge:
 ------------------------------------
 
 You may either enter as an individual or as a team with as many members as
-you like. Individuals and teams will be judged together (we figure the benefits
-of being in a team are outweighed by the disadvantages of being in a team).
+you like. Individual and team and team entries will be judged separately and
+a winner announced in each category.
 
 All members of a team get to vote (though not for their own team), enter diary
 entries and upload files. People may join more than one team.
