@@ -864,16 +864,21 @@ a:not(*[class]):visited {
 }
 
 .carousel-caption {
-    font-size: 20px;
-    text-shadow: 0 0 5px black;
+    font-size: 30px;
+    text-shadow: 0 0 5px black, 1px 1px 0 black;
 }
 
 .carousel-indicators {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
-    width: 19%;
+    width: 200px;
     margin-left: -8%;
-    padding: 0.2em 0 0.1em;
+    padding: 5px;
+    bottom: 5px;
+}
+
+.carousel-indicators li {
+    vertical-align: -2px;
 }
 
 #content img {
