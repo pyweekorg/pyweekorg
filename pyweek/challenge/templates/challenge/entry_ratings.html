@@ -5,6 +5,36 @@
 {% block content %}
 <h1>PyWeek - {{ entry.title|escape }} - feedback</h1>
 
+
+{% if entry.challenge.rules.ratings_public %}
+
+
+{% for rating in entry.rating_set.all %}
+<div class="user_rating">
+    <div class="rating_scores">
+        {% if rating.nonworking %}
+            <span class="v">Did not work</span>
+        {% else %}
+            {% if rating.disqualify %}
+                <span class="dq">Disqualify</span>
+            {% endif %}
+            <span class="k">Fun</span>
+            <span class="v">{{ rating.fun }}</span>
+            <span class="k">Prod</span>
+            <span class="v">{{ rating.production }}</span>
+            <span class="k">Inno</span>
+            <span class="v">{{ rating.innovation }}</span>
+        {% endif %}
+    </div>
+    <h4><a href="/u/{{rating.user.username}}">{{ rating.user.username }}</a></h4>
+
+    <div class="comment">
+    {{ rating.comment|linebreaks }}
+    </div>
+</div>
+{% endfor %}
+
+{% else %}
 <table border="1" cellspacing="0">
 <tr>
 <th>Fun</th>
@@ -25,6 +55,7 @@
 </tr>
 {% endfor %}
 </table>
+{% endif %}
 
 {% endblock %}
 

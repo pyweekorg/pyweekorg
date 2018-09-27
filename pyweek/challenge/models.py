@@ -160,6 +160,14 @@ class Challenge(models.Model):
     def get_absolute_url(self):
         return '/%d/' % self.number
 
+    @property
+    def rules(self):
+        """Get a dict of specify rules by competition number."""
+        return {
+            # True if ratings are associated with the username
+            'ratings_public': 25 < self.number < 1000,
+        }
+
     def start_utc(self):
         return datetime.datetime(self.start.year, self.start.month,
             self.start.day, 0, 0, 0, 0)

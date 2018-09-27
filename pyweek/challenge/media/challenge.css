@@ -884,3 +884,42 @@ a:not(*[class]):visited {
 #content img {
     max-width: 100%;
 }
+
+.user_rating {
+    padding: 1em 0;
+}
+
+.user_rating + .user_rating {
+    border-top: 1px dotted #bbb;
+}
+
+.user_rating h4 {
+    font-size: 18pt;
+    margin: 0 0 0.5em;
+}
+
+.user_rating .comment {
+    clear: both;
+}
+
+.user_rating .rating_scores {
+    float: right;
+}
+
+.rating_scores .k {
+    color: #888;
+    font-size: 12pt;
+    margin-left: 1em;
+}
+
+.rating_scores .v {
+    color: #3a738e;
+    font-size: 18pt;
+    font-style: italic;
+}
+
+.rating_scores .dq {
+    color: #a00;
+    font-size: 16pt;
+    font-style: italic;
+}
