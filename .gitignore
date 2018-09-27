@@ -5,5 +5,7 @@
 *.orig
 dev_media
 dev_settings.py
+prod_settings.py
 development
 static
+dumps

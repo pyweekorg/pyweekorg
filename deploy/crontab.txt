@@ -1,0 +1,3 @@
+MAILTO=lord.mauve@gmail.com
+0 0 * * sun /home/pyweek/pyweek-bot.sh
+@reboot /home/pyweek/src/runserver.sh start

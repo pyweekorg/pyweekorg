@@ -93,10 +93,3 @@ try:
     INSTALLED_APPS.append('raven.contrib.django')
 except ImportError:
     pass
-
-# now load local modifications to these settings
-import os
-local_settings = os.environ.get('DJANGO_LOCAL_SETTINGS')
-if local_settings:
-    execfile(local_settings)
-

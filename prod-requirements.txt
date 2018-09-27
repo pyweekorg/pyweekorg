@@ -1,2 +1,2 @@
-gunicorn==19.1.0
+gunicorn==19.9.0
 raven==4.2.1

@@ -10,13 +10,8 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('pyweek.challenge.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
-if settings.DEBUG:
-    urlpatterns += staticfiles_urlpatterns()
-    urlpatterns += [
-        url(r'^media/(?P<path>.*)$', django.views.static.serve, {
-            'document_root': settings.MEDIA_ROOT,
-        }),
-   ]
-
+# These rules automatically only apply when DEBUG is True
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
