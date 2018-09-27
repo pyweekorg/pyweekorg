@@ -4,6 +4,7 @@ import xml.sax.saxutils
 
 from PIL import Image
 
+import django
 from django import forms
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render
@@ -35,7 +36,9 @@ class SafeHTMLField(forms.CharField):
 
 
 def index(request):
-    return render(request, 'challenge/index.html', {})
+    return render(request, 'challenge/index.html', {
+        'django_version': django.__version__
+    })
 
 
 def stats(request):

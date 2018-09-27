@@ -1,8 +1,7 @@
 #!/bin/bash
 
 PROJDIR="/home/pyweek/www"
-#PORT=8765
-PORT=8766
+PORT=8765
 PIDFILE="/home/pyweek/www/gunicorn.pid"
 LOGFILE="/home/pyweek/www/gunicorn.log"
 VENV="/home/pyweek/www/venv"
@@ -22,6 +21,8 @@ function reload () {
     if [ -f $PIDFILE ] ; then
         echo "Reloading gunicorn"
         kill -HUP $(cat $PIDFILE)
+    else
+        start
     fi
 }
 

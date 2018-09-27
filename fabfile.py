@@ -33,6 +33,10 @@ def publish():
             run('virtualenv --python={} venv'.format(PYTHON))
             run('venv/bin/python get-pip.py')
 
+        # Symlink the media directory (containing uploads) into place
+        if run('test -d media', quiet=True).failed:
+            run('ls -s ../media')
+
         path = run('echo "${PATH}"', quiet=True)
         with shell_env(
                 DJANGO_SETTINGS_MODULE='prod_settings',
@@ -41,10 +45,8 @@ def publish():
             run('pip install --upgrade setuptools distribute')
             run('pip install -r requirements.txt -r prod-requirements.txt')
             run('python manage.py collectstatic -v 0 -c --no-input')
-            run('./runserver.sh stop')
             run('python manage.py migrate')
-            run('./runserver.sh start')
-            #run('./runserver.sh reload')
+            run('./runserver.sh reload')
         run('crontab crontab.txt')
 
 
