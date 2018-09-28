@@ -662,7 +662,7 @@ class DiaryEntry(models.Model):
         super(DiaryEntry, self).save()
 
     def get_absolute_url(self):
-        return reverse("pyweek.challenge.views.message.diary_display", args=[self.id])
+        return reverse("display-diary", args=[self.id])
 
 class DiaryComment(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)

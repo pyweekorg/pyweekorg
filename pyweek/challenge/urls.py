@@ -22,7 +22,7 @@ urlpatterns = [
     # Message views
     url(r'^messages/$', message.list_messages),
     url(r'^message_add/$', message.message_add),
-    url(r'^d/(\d+)/$', message.diary_display),
+    url(r'^d/(\d+)/$', message.diary_display, name="display-diary"),
     url(r'^d/(\d+)/edit/$', message.diary_edit),
     url(r'^d/(\d+)/delete/$', message.diary_delete),
     url(r'^e/([\w-]+)/diary/$', message.entry_diary),
