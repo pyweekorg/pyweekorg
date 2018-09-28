@@ -87,9 +87,3 @@ INSTALLED_APPS = [
     'pyweek.challenge',
     'snowpenguin.django.recaptcha2',
 ]
-
-try:
-    import raven
-    INSTALLED_APPS.append('raven.contrib.django')
-except ImportError:
-    pass
