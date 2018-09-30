@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load gravatar %}
 
 {% block title %}PyWeek - {{ profile_user }}{% endblock %}
 
@@ -8,11 +9,12 @@
 
 {% block content %}
 
-<h2>{{ profile_user }}</h2>
 
-{{profile_user.userprofile_set.all.0.content|safe }}
+<h2>{% gravatar profile_user.email %} {{ profile_user }}</h2>
 
-{% if user.is_staff %}
+{{profile.content|safe }}
+
+{% if user.is_staff and not profile_user.is_staff %}
 <form action="/u/{{ profile_user.username }}/delete_spam" method="POST">
   <input type="submit" value="Delete Spammer">
   <input type="checkbox" name="confirm">

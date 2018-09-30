@@ -1,8 +1,11 @@
-
+{% load gravatar %}
 <div class="diary">
 {% for p in diary_entries %}
     <h3>{{ p.title }}</h3>
-    <p class="byline">Posted by <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y-m-d H:i" }}</p>
+    <p class="byline">
+    {% gravatar p.user.email 40 %}
+    <a href="/u/{{ p.user.username }}/">{{ p.user }}</a> on {{ p.created|date:"Y-m-d H:i" }}
+    </p>
 
     <div class="diary-content">
     {{p.content|safe}}

@@ -7,6 +7,7 @@ from pyweek.challenge import models
 
 from stripogram import html2safehtml
 import collections
+from django.core.exceptions import ObjectDoesNotExist
 
 safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
     ul ol li span div'''.split()
@@ -33,9 +34,15 @@ def user_display(request, user_id):
     given_awards = user.award_set.all()
     received_awards = models.EntryAward.objects.filter(
         challenge__number__lt=1000, entry__users=user)
+
+    try:
+        profile = user.userprofile_set.all().get()
+    except ObjectDoesNotExist:
+        profile = None
     return render(request, 'challenge/user_display.html',
         {
             'profile_user': user,
+            'profile': profile,
             'entries': entries,
             'given_awards': given_awards,
             'received_awards': received_awards,

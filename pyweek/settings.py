@@ -71,7 +71,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "pyweek.challenge.views.context.challenges",
             ],
-            'debug': DEBUG,
         },
     },
 ]
@@ -86,4 +85,5 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'pyweek.challenge',
     'snowpenguin.django.recaptcha2',
+    'django_gravatar',
 ]

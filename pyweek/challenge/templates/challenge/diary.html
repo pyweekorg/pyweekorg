@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load gravatar %}
 
 {% block title %}{{ diary.title }}{% endblock %}
 
@@ -9,12 +10,10 @@
 {% block content %}
 <h2>{{ diary.title }}</h2>
 
-{% autoescape off %}
-{{ diary.content }}
-{% endautoescape %}
-
-<p>&mdash;
-  <a href="/u/{{ diary.user.username }}/">{{ diary.user }}</a> on {{ diary.created|date:"Y/m/d H:i" }}
+<p class="diary-byline">
+  <a href="/u/{{ diary.user.username }}/">
+      {% gravatar p.user.email 40 %}
+      {{ diary.user }}</a> on {{ diary.created|date:"Y/m/d H:i" }}
   {% if entry %}
     of <a href="/e/{{ diary.entry.name }}/">{{ diary.entry.title }}</a>
   {% endif %}
@@ -23,6 +22,10 @@
     <br>&mdash; <b>edited</b> on {{ diary.edited|date:"Y/m/d H:i" }}
   {% endif %}
 </p>
+
+{% autoescape off %}
+{{ diary.content }}
+{% endautoescape %}
 
   {% ifequal diary.user user %}
     <p><a class="edit" href="/d/{{ diary.id }}/edit/">edit this entry</a>
@@ -35,26 +38,24 @@
   {% endifequal %}
 
   {% if diary.diarycomment_set.count %}
-  <hr>
-  <p><strong>Comments:</strong>
-  ({% if is_user %}<a href="#add-comment">add comment</a>{% else %}log in to comment{% endif %})
-</p>
+  <section>
+  <p style="float: right">({% if is_user %}<a href="#add-comment">add comment</a>{% else %}log in to comment{% endif %})</p>
+    <h3>Comments</h3>
 
 {% include "diary_comments.html" %}
-
+    </section>
 {% endif %}
 
 {% if is_user %}
-
+<section>
 <a name="add-comment"><hr /></a>
 
 {% if form.has_errors %}
 <div class="form-error">Sorry, there's been an error, see below:</div>
 {% endif %}
 
+<h3>Add Comment</h3>
 <p>
-<b>Add Comment</b><br>
-
 <form class="form" method="post" action="#add-comment">
 
 {{ form.as_plain }}
@@ -78,7 +79,7 @@
     });
 </script>
 
-
+</section>
 {% endblock %}
 
 {% block leftbar %}{% include "entry_nav.html" %}{% endblock %}

@@ -472,6 +472,11 @@ class Entry(models.Model):
         return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
 
     @property
+    def display_title(self):
+        """Display the title of the game."""
+        return self.game or self.title
+
+    @property
     def short_title(self):
         if len(self.title) <= Entry.SHORT_TITLE_LEN:
             return self.title
@@ -1008,7 +1013,7 @@ class Response(models.Model):
             self.created = datetime.datetime.utcnow()
         super(Response, self).save()
 
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
     content = models.TextField()
-

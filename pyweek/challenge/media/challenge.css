@@ -6,7 +6,7 @@
 body {
 	margin-top: 20px;
 	padding: 0px;
-	font: 13px sans-serif;
+	font-family: sans-serif;
 	color: #212121;
 	background: white;
 }
@@ -23,6 +23,11 @@ h2 {
         1px -1px #2d5a6e,
         -1px 1px #2d5a6e,
         -1px -1px #2d5a6e;
+}
+
+section h3 {
+    font-family: RosesAreRed;
+    font-size: 120%;
 }
 
 /* Header */
@@ -203,14 +208,13 @@ table.form {
     width: 100%;
 }
 
-div.odd {
-    background: #e0e0e0;
-}
 p.diary-byline {
-    margin-top: 0px;
+    margin: 0 0 1em;
+    padding: 0 0 5px;
     font-weight: bold;
     border-bottom: thin dashed #ddd;
 }
+
 table#files {
     border: thin solid gray;
     border-collapse: separate;
@@ -937,4 +941,9 @@ a:not(*[class]):visited {
     color: #a00;
     font-size: 16pt;
     font-style: italic;
+}
+
+nav.navbar .gravatar {
+    margin-top: -1em;
+    margin-bottom: -1em;
 }

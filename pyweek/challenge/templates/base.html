@@ -1,3 +1,4 @@
+{% load gravatar %}
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -69,9 +70,12 @@ jQuery(function ($) {
         {% endif %}
         {% else %}
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.username}} <span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                {% gravatar user.email 32 %}
+                {{user.username}} <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li><a href="/profile/">Your Account</a></li>
+                <li><a href="/profile_description/">Your Profile</a></li>
 
            {% if challenge %}
             {% if not challenge.isCompFinished %}
@@ -80,9 +84,9 @@ jQuery(function ($) {
            {% endif %}
 
            {% if user_entries %}
-            <li><strong>Your Entries:</strong></li>
+            <li><strong style="margin-left: 1em">Your Entries:</strong></li>
             {% for e in user_entries %}
-              <li><a href="/e/{{e.name}}/">{{e.challenge_id}}) {{e.name}}</a></li>
+              <li><a href="/e/{{e.name}}/">{{e.challenge_id}}) {{e.display_title}}</a></li>
             {% endfor %}
            {% endif %}
             <li class="divider"></li>

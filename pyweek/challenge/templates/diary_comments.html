@@ -1,8 +1,11 @@
+{% load gravatar %}
 <div class="comment">
 {% for comment in comments %}
 <div id="comment-{{comment.id}}" class="{% cycle 'even' 'odd' %} diary-comment">
 <p class="diary-byline">
-By <a href="/u/{{ comment.user }}/">{{ comment.user }}</a>  on
+<a href="/u/{{ comment.user }}/">
+    {% gravatar comment.user.email 30 %}
+    {{ comment.user }}</a>  on
 {{comment.created|date:"Y/m/d H:i"}}:
 </p>
 {% autoescape off %}
