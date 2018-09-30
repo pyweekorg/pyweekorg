@@ -16,6 +16,8 @@ class SafeHTMLField(forms.CharField):
     widget = forms.Textarea
 
     def clean(self, value):
+#        if value is None:
+#            return None
         if '<' in value:
             value = html2safehtml(value, safeTags)
         if not value:
@@ -73,7 +75,7 @@ def profile_description(request):
             messages.success(request, 'Description saved!')
             return HttpResponseRedirect('/profile_description/')
     else:
-        form = ProfileForm(data)
+        form = ProfileForm()
     return render(request, 'challenge/profile_description.html',
         {
             'form': form,

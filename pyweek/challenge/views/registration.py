@@ -80,7 +80,7 @@ def profile(request):
                 messages.success(request, 'Changes saved!')
                 return HttpResponseRedirect(redirect_to or '/')
     else:
-        f = RegistrationForm({
+        f = RegistrationForm(initial={
             'name': request.user.username,
             'email': request.user.email,
         })

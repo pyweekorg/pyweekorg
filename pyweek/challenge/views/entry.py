@@ -146,7 +146,7 @@ def entry_add(request, challenge_id):
             messages.success(request, 'Entry created!')
             return HttpResponseRedirect("/e/%s/"%entry.name)
     else:
-        f = AddEntryForm()
+        f = AddEntryForm(initial={'users': request.user.username})
 
     return render(request, 'challenge/entry_add.html',
         {
@@ -308,7 +308,7 @@ def entry_manage(request, entry_id):
             messages.success(request, 'Changes saved!')
             return HttpResponseRedirect("/e/%s/"%entry_id)
     else:
-        f = EntryForm({'name': entry.name, 'title': entry.title,
+        f = EntryForm(initial={'name': entry.name, 'title': entry.title,
             'description': entry.description, 'game': entry.game,
             'users': ', '.join(map(str, entry.users.all()))})
 
