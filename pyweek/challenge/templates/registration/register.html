@@ -64,7 +64,6 @@ Pyweek events and will not be shared with third parties.
 <tr{% if form.captcha.errors %} class="form-error"{% endif %}>
  <td class="form-label"><label for="id_again">Verification:</label></td>
  <td>
- <p>(As of 2018-03-31 this is broken; please just type something in the box).
  {{ form.captcha }}
   {% if form.captcha.errors %}
    <p class="form-error">{{ form.captcha.errors|join:", " }}</p>
