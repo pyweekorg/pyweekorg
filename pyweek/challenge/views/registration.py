@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django import forms
+from django.forms.models import inlineformset_factory
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.contrib import auth, messages
@@ -14,6 +15,7 @@ from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
 from ..forms import LoginForm
 from ..models import Challenge
+from ...users.models import EmailAddress, UserSettings
 
 
 def is_registration_open():
@@ -62,29 +64,91 @@ def register(request):
     return render(request, 'registration/register.html', {'form': f})
 
 
+
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = UserSettings
+        exclude = ['user']
+
+
+class PasswordForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    again = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ['password']
+
+    def clean(self):
+        if self.cleaned_data['password'] or self.cleaned_data['again']:
+            if self.cleaned_data['password'] != self.cleaned_data['again']:
+                raise forms.ValidationError(
+                    "Supplied passwords did not match."
+                )
+
+
+    def save(self):
+        self.instance.set_password(f.cleaned_data['password'])
+        self.instance.save()
+
+
+class AddressForm(forms.ModelForm):
+    address = forms.CharField(widget=forms.TextInput(attrs={'size': '50'}))
+
+    class Meta:
+        model = EmailAddress
+        fields = ['address']
+
+
+    def save(self):
+        obj, created = EmailAddress.objects.get_or_create(
+            user=self.user,
+            address=self.cleaned_data['address'],
+        )
+        if created:
+            obj.request_verification()
+
+
 def profile(request):
+    def create_forms(data=None):
+        profile_form = ProfileForm(
+            data,
+            prefix='profile',
+            instance=request.user
+        )
+        password_form = PasswordForm(
+            data,
+            prefix='passwd',
+            instance=request.user
+        )
+        address_form = AddressForm(data, prefix='addr')
+        address_form.user = request.user
+        return profile_form, password_form, address_form
+
     redirect_to = request.GET.get('next', '')
     if request.user.is_anonymous():
         return HttpResponseRedirect('/login/')
     elif request.POST:
-        f = RegistrationForm(request.POST)
-        if f.is_valid():
-            if f.cleaned_data['password'] != f.cleaned_data['again']:
-                f.errors['again'] = ['Does not match password.']
-            if not f.errors:
-                request.user.username = f.cleaned_data['name']
-                request.user.email = f.cleaned_data['email']
-                if f.cleaned_data['password']:
-                    request.user.set_password(f.cleaned_data['password'])
-                request.user.save()
-                messages.success(request, 'Changes saved!')
-                return HttpResponseRedirect(redirect_to or '/')
+        forms = create_forms(request.POST)
+        if all(f.is_valid() for f in forms):
+            for f in forms:
+                f.save()
+            messages.success(request, 'Changes saved!')
+            return HttpResponseRedirect(redirect_to or '/')
     else:
-        f = RegistrationForm(initial={
-            'name': request.user.username,
-            'email': request.user.email,
-        })
-    return render(request, 'registration/profile.html', {'form': f})
+        profile_form, password_form, address_form = create_forms()
+
+    return render(
+        request,
+        'registration/profile.html',
+        {
+            'addresses': request.user.emailaddress_set.all(),
+            'profile_form': profile_form,
+            'password_form': password_form,
+            'address_form': address_form,
+        }
+    )
 
 
 def login_page(request, message=None, error=None):

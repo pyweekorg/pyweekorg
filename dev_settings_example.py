@@ -38,3 +38,7 @@ SECRET_KEY = ';z{!:d:DK^Uf6}-R~HNn$+kv)c{9ILD}uWa&@nu#~uHI",5Zv{CMmC"z`WE|&I'
 
 RECAPTCHA_PUBLIC_KEY = 'aaaa'
 RECAPTCHA_PRIVATE_KEY = 'bbbb'
+
+# Don't really send e-mail messages in development
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = './mail-messages'

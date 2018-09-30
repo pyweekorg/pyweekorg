@@ -83,7 +83,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.admin',
-    'pyweek.challenge',
+
     'snowpenguin.django.recaptcha2',
     'django_gravatar',
+
+    'pyweek.challenge',
+    'pyweek.mail',
+    'pyweek.users',
 ]

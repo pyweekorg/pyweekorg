@@ -947,3 +947,31 @@ nav.navbar .gravatar {
     margin-top: -1em;
     margin-bottom: -1em;
 }
+
+section {
+    margin-top: 3em;
+}
+
+#email-addresses {
+    width: 50em;
+}
+
+#email-addresses td {
+    padding: 4px;
+}
+
+#email-addresses .extra {
+    padding-top: 1em;
+}
+
+.label {
+    font-size: 100%;
+}
+
+.label + .label {
+    margin-left: 5px;
+}
+
+form label.option {
+    font-weight: normal;
+}

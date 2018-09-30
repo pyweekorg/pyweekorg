@@ -15,42 +15,65 @@
 </ul>
 
 <form class="form" method="post" action=".">
+    <section>
+        <h3>Preferences</h3>
+        {% for field in profile_form %}
+        <p>{{ field }} <label class="option" for="{{ field.auto_id }}">{{ field.help_text }}</label></p>
+        {{ field.errors }}
+        {% endfor %}
+    </section>
 
-<div {% if form.name.errors %} class="form-error"{% endif %}>
-<label for="id_name">Username:</label><br>
- {{ form.name }}
-  {% if form.name.errors %}
-   <p class="form-error">{{ form.name.errors|join:", " }}</p>
-  {% endif %}
-</div>
+    <section>
+        <h3>Change Password</h3>
+        {{password_form.as_p}}
+    </section>
 
-<div {% if form.email.errors %} class="form-error"{% endif %}>
-<label for="id_email">Email:</label><br>
- {{ form.email }}
-  {% if form.email.errors %}
-   <p class="form-error">{{ form.email.errors|join:", " }}</p>
-  {% endif %}
-</div>
+    <section>
+        <h3>E-mail addresses</h3>
+        <table id="email-addresses">
+        {% for addr in addresses %}
+            <tr>
+                <td>{{ addr.address }}</td>
+                <td>
+                    {% if addr.is_primary %}
+                    <span class="label label-default">
+                        Primary
+                    </span>
+                    {% endif %}
 
-<div {% if form.password.errors %} class="form-error"{% endif %}>
-	<label for="id_password">Password:</label><br>
-{{ form.password }}
-  {% if form.password.errors %}
-   <p class="form-error">{{ form.password.errors|join:", " }}</p>
-  {% endif %}
-</div>
+                    {% if not addr.verified %}
+                    <span class="label label-warning">
+                        Not verified
+                    </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not addr.is_primary %}
+                    <button name="make-primary" value="{{ addr.address }}">
+                        Make primary
+                    </button>
+                    <button name="delete" value="{{ addr.address }}">
+                        Delete
+                    </button>
+                    {% endif %}
 
-<div {% if form.again.errors %} class="form-error"{% endif %}>
-	<label for="id_again">Again:</label><br>
- {{ form.again }}
-  {% if form.again.errors %}
-   <p class="form-error">{{ form.again.errors|join:", " }}</p>
-  {% endif %}
-</div>
+                    {% if not addr.verified %}
+                    <button name="resend-verification" value="{{ addr.address }}">
+                        Resend verification
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
-<input type="submit" value="Save Changes">
+    <h4>Add a new address:</h4>
+    {{ address_form.as_p }}
 
-<input type="hidden" name="next" value="{{ next|urlencode }}">
+    </section>
+
+    <input type="submit" value="Save Changes">
+    <input type="hidden" name="next" value="{{ next|urlencode }}">
 </form>
 
 {% endblock %}
