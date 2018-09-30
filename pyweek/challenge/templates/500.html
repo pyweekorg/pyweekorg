@@ -1,9 +1,47 @@
-{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Oh no! - Pyweek</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html {
+    height: 100%;
+    position: relative;
 
-{% block title %}Server error (500){% endblock %}
+    background: #ffffff;
+    background: radial-gradient(ellipse at center, #fff 0%, #fff 30%, #bbc 100%);
+    overflow: hidden;
 
-{% block content %}
-<h1>Server Error <em>(500)</em></h1>
-<p>There's been an error. It's been reported to the site administrators via e-mail and should be fixed shortly. Thanks for your patience.</p>
+    font-family: sans-serif;
+}
 
-{% endblock %}
+header {
+    position: absolute;
+    text-align: center;
+
+    top: 50%;
+    left: 0;
+    right: 0;
+}
+
+header img {
+    height: 76px;
+    margin-top: -50%;
+    max-width: 90%;
+}
+
+header p {
+    font-size: 14pt;
+}
+</style>
+    </head>
+    <body>
+        <header>
+            <img src="{% static "pyweek-large.png" %}" alt="Pyweek">
+            <p>Whoops! Something bad happened. This has been logged and will be fixed
+            as soon as possible.</p>
+            <p><a href="/" onclick="history.go(-1); return false;">Return to site</a></p>
+        </header>
+    </body>
+</html>
