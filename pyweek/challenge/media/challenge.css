@@ -1,3 +1,8 @@
+@font-face {
+    font-family: RosesAreRed;
+    src: url(roses-are-ff0000.woff) format('woff');
+}
+
 body {
 	margin-top: 20px;
 	padding: 0px;
@@ -8,6 +13,16 @@ body {
 
 h1 {
     font-size: 1.2em;
+}
+
+h2 {
+    font-family: RosesAreRed;
+    color: #589cbb;
+    text-shadow:
+        1px 1px #2d5a6e,
+        1px -1px #2d5a6e,
+        -1px 1px #2d5a6e,
+        -1px -1px #2d5a6e;
 }
 
 /* Header */
