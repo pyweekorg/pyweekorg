@@ -5,9 +5,3 @@ from django.contrib import admin
 
 from . import models
 
-
-class EmailTemplateAdmin(admin.ModelAdmin):
-    list_display = ['name', 'subject']
-
-
-admin.site.register(models.EmailTemplate, EmailTemplateAdmin)

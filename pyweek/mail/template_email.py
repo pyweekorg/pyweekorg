@@ -1,6 +1,8 @@
-import django.core.mail
-from .models import EmailTemplate
+from __future__ import unicode_literals
+import pkgutil
 
+import django.core.mail
+from django.conf import settings
 from django.template import Template, Context
 
 
@@ -10,24 +12,24 @@ class InvalidTemplate(Exception):
 
 def send_email(template_name, recipients, params):
     """Send a templated e-mail."""
-    try:
-        template = EmailTemplate.objects.get(name=template_name)
-    except EmailTemplate.DoesNotExist:
-        raise InvalidTemplate(
-            "No template defined named {!r}".format(template_name)
-        )
+    tmpl_bytes = pkgutil.get_data(
+        __name__,
+        'templates/emails/{}.txt'.format(template_name)
+    )
+    subject_source, body_source = tmpl_bytes.decode('utf-8').split('\n', 1)
 
     context = Context(params, autoescape=False)
 
-    subject_template = Template(template.subject)
+    subject_template = Template(subject_source)
     subject = subject_template.render(context)
 
-    body_template = Template(template.body)
+    body_template = Template(body_source.strip())
     body = body_template.render(context)
 
     django.core.mail.send_mail(
-        subject.strip(),
-        body,
-        list(recipients),
+        subject=subject.strip(),
+        message=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=list(recipients),
         fail_silently=False,
     )

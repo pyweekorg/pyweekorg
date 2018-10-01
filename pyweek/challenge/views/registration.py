@@ -9,6 +9,7 @@ from django.forms.models import inlineformset_factory
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
 
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
@@ -64,37 +65,59 @@ def register(request):
     return render(request, 'registration/register.html', {'form': f})
 
 
-
 class ProfileForm(forms.ModelForm):
-
     class Meta:
         model = UserSettings
         exclude = ['user']
 
 
 class PasswordForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    again = forms.CharField(widget=forms.PasswordInput)
+    old_password = forms.CharField(widget=forms.PasswordInput, required=False)
+    password = forms.CharField(widget=forms.PasswordInput, required=False)
+    again = forms.CharField(widget=forms.PasswordInput, required=False)
 
     class Meta:
         model = User
-        fields = ['password']
+        fields = []
+
+    def clean_old_password(self):
+        pw = self.cleaned_data['old_password']
+        if not pw:
+            return None
+        if not self.instance.check_password(pw):
+            raise forms.ValidationError(
+                "This password is not correct."
+            )
+        return pw
 
     def clean(self):
-        if self.cleaned_data['password'] or self.cleaned_data['again']:
-            if self.cleaned_data['password'] != self.cleaned_data['again']:
-                raise forms.ValidationError(
-                    "Supplied passwords did not match."
-                )
-
+        if not self.cleaned_data.get('old_password'):
+            return
+        if not self.cleaned_data['password'] or not self.cleaned_data['again']:
+            raise forms.ValidationError(
+                "You must enter the new password."
+            )
+        if self.cleaned_data['password'] != self.cleaned_data['again']:
+            raise forms.ValidationError(
+                "Supplied passwords did not match."
+            )
 
     def save(self):
-        self.instance.set_password(f.cleaned_data['password'])
-        self.instance.save()
+        if self.cleaned_data['password']:
+            messages.success(
+                self.request,
+                'Your password has been updated.'
+            )
+            self.instance.set_password(self.cleaned_data['password'])
+            self.instance.save()
+            auth.login(self.request, self.request.user)
 
 
 class AddressForm(forms.ModelForm):
-    address = forms.CharField(widget=forms.TextInput(attrs={'size': '50'}))
+    address = forms.CharField(
+        widget=forms.TextInput(attrs={'size': '50'}),
+        required=False
+    )
 
     class Meta:
         model = EmailAddress
@@ -102,20 +125,103 @@ class AddressForm(forms.ModelForm):
 
 
     def save(self):
+        new_address = self.cleaned_data['address']
+        if not new_address:
+            return
         obj, created = EmailAddress.objects.get_or_create(
             user=self.user,
-            address=self.cleaned_data['address'],
+            address=new_address,
         )
         if created:
             obj.request_verification()
+            messages.success(
+                self.request,
+                'Your new e-mail address, {}, must be '.format(new_address) +
+                'verified. Please check your e-mail for a verification link.'
+            )
 
 
+def _handle_delete_address(request):
+    to_delete = request.POST.get('delete-address')
+    if not to_delete:
+        return
+
+    if to_delete == request.user.email:
+        messages.error(
+            request,
+            'Your primary e-mail address can not be deleted.'
+        )
+
+    try:
+        addr = request.user.emailaddress_set.get(address=to_delete)
+    except EmailAddress.DoesNotExist:
+        pass
+    else:
+        addr.delete()
+        messages.success(
+            request,
+            'E-mail address {} has been deleted.'.format(to_delete)
+        )
+
+
+def _handle_make_primary(request):
+    to_make_primary = request.POST.get('make-primary-address')
+    if not to_make_primary:
+        return
+
+    try:
+        addr = request.user.emailaddress_set.get(address=to_make_primary)
+    except EmailAddress.DoesNotExist:
+        return
+
+    if not addr.verified:
+        messages.error(
+            request,
+            'You can not set your primary e-mail to an unverified e-mail '
+            'address.'
+        )
+        return
+
+    user = request.user
+    user.email = addr.address
+    user.save()
+    messages.success(
+        request,
+        'Your primary e-mail address has been set to {}.'.format(addr.address)
+    )
+
+
+def _handle_resend_verification(request):
+    to_resend = request.POST.get('resend-verification')
+    if not to_resend:
+        return
+
+    try:
+        addr = request.user.emailaddress_set.get(address=to_resend)
+    except EmailAddress.DoesNotExist:
+        return
+
+    if addr.verified:
+        messages.error(
+            request,
+            'Your e-mail address {} is already verified.'.format(addr.address)
+        )
+        return
+
+    addr.request_verification()
+    messages.success(
+        request,
+        'Please check your e-mail for a verification link.'
+    )
+
+
+@login_required
 def profile(request):
     def create_forms(data=None):
         profile_form = ProfileForm(
             data,
             prefix='profile',
-            instance=request.user
+            instance=request.user.settings,
         )
         password_form = PasswordForm(
             data,
@@ -124,21 +230,25 @@ def profile(request):
         )
         address_form = AddressForm(data, prefix='addr')
         address_form.user = request.user
-        return profile_form, password_form, address_form
 
-    redirect_to = request.GET.get('next', '')
-    if request.user.is_anonymous():
-        return HttpResponseRedirect('/login/')
-    elif request.POST:
+        forms = profile_form, password_form, address_form
+        for f in forms:
+            f.request = request
+        return forms
+
+    if request.POST:
+        _handle_delete_address(request)
+        _handle_make_primary(request)
+        _handle_resend_verification(request)
         forms = create_forms(request.POST)
         if all(f.is_valid() for f in forms):
             for f in forms:
                 f.save()
-            messages.success(request, 'Changes saved!')
-            return HttpResponseRedirect(redirect_to or '/')
+            return HttpResponseRedirect(request.path)
     else:
-        profile_form, password_form, address_form = create_forms()
+        forms = create_forms()
 
+    profile_form, password_form, address_form = forms
     return render(
         request,
         'registration/profile.html',
@@ -149,6 +259,59 @@ def profile(request):
             'address_form': address_form,
         }
     )
+
+    if request.POST:
+        _handle_delete_address(request)
+        forms = create_forms(request.POST)
+        if all(f.is_valid() for f in forms):
+            for f in forms:
+                f.save()
+            messages.success(request, 'Changes saved!')
+            return HttpResponseRedirect(request.path)
+    else:
+        forms = create_forms()
+
+    profile_form, password_form, address_form = forms
+    return render(
+        request,
+        'registration/profile.html',
+        {
+            'addresses': request.user.emailaddress_set.all(),
+            'profile_form': profile_form,
+            'password_form': password_form,
+            'address_form': address_form,
+        }
+    )
+
+
+
+@login_required
+def verify_email(request):
+    """Verify an e-mail address."""
+    try:
+        key = request.GET['key']
+    except KeyError:
+        return HttpResponseRedirect('/profile/')
+
+    try:
+        address = EmailAddress.objects.get(verification_key=key)
+    except EmailAddress.DoesNotExist:
+        messages.error(request, 'Invalid verification key')
+        return HttpResponseRedirect('/profile/')
+
+    if address.verified:
+        messages.warning(
+            request,
+            'Your e-mail address has already been verified.'
+        )
+    else:
+        address.verified = True
+        address.save()
+        messages.success(
+            request,
+            'Your e-mail address {} has been verified.'.format(address.address)
+        )
+    return HttpResponseRedirect('/profile/')
 
 
 def login_page(request, message=None, error=None):

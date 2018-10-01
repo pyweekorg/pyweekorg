@@ -25,13 +25,13 @@ class Migration(migrations.Migration):
                 ('status', models.IntegerField(choices=[(1, 'Draft'), (2, 'Sending'), (3, 'Sent')])),
             ],
         ),
-        migrations.CreateModel(
-            name='EmailTemplate',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.SlugField()),
-                ('subject', models.CharField(max_length=255)),
-                ('body', models.TextField()),
-            ],
-        ),
+#        migrations.CreateModel(
+#            name='EmailTemplate',
+#            fields=[
+#                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+#                ('name', models.SlugField()),
+#                ('subject', models.CharField(max_length=255)),
+#                ('body', models.TextField()),
+#            ],
+#        ),
     ]

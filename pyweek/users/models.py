@@ -43,12 +43,16 @@ class EmailAddress(models.Model):
         """Send an e-mail address verification code."""
         if self.verified:
             return
+        self.verification_key = default_verification_key()
+        self.save()
         send_email(
             'email-verification',
-            recipients=[instance.address],
-            user=self.user,
-            address=self.address,
-            verification_key=self.verification_key,
+            recipients=[self.address],
+            params={
+                'user': self.user,
+                'address': self.address,
+                'verification_key': self.verification_key,
+            }
         )
 
 

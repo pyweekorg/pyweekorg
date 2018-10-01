@@ -975,3 +975,8 @@ section {
 form label.option {
     font-weight: normal;
 }
+
+form p label:not(.option) {
+    display: inline-block;
+    width: 10em;
+}

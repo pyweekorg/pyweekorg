@@ -49,10 +49,12 @@
                 </td>
                 <td>
                     {% if not addr.is_primary %}
-                    <button name="make-primary" value="{{ addr.address }}">
+                    {% if addr.verified %}
+                    <button name="make-primary-address" value="{{ addr.address }}">
                         Make primary
                     </button>
-                    <button name="delete" value="{{ addr.address }}">
+                    {% endif %}
+                    <button name="delete-address" value="{{ addr.address }}">
                         Delete
                     </button>
                     {% endif %}
