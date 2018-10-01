@@ -91,9 +91,13 @@ class PasswordForm(forms.ModelForm):
         return pw
 
     def clean(self):
-        if not self.cleaned_data.get('old_password'):
-            return
-        if not self.cleaned_data['password'] or not self.cleaned_data['again']:
+        if not any(self.cleaned_data.values()):
+            return {}
+        if not self.cleaned_data['old_password']:
+            raise forms.ValidationError(
+                "You must enter the old password."
+            )
+        if not self.cleaned_data['password'] and not self.cleaned_data['again']:
             raise forms.ValidationError(
                 "You must enter the new password."
             )
@@ -103,7 +107,10 @@ class PasswordForm(forms.ModelForm):
             )
 
     def save(self):
-        if self.cleaned_data['password']:
+        if not self.cleaned_data:
+            return
+
+        if self.cleaned_data['password'] and self.cleaned_data['old_password']:
             messages.success(
                 self.request,
                 'Your password has been updated.'
