@@ -3,9 +3,13 @@ import datetime
 import smtplib
 import random
 
+from django.db.models import Q
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 
+from pyweek.users.models import EmailAddress
 from pyweek.challenge.models import Challenge, Entry, UTC
+from pyweek.mail.lists import latest_challenge_users
 
 
 def send_email(challenge, message, **info):
@@ -25,12 +29,9 @@ challenge as an entrant. If you do not wish to receive emails of this
 kind please reply to the message asking to be removed. And accept my
 apologies in advance.
 '''
-    emails = set()
-    for entry in Entry.objects.filter(challenge=challenge):
-       for user in entry.users.all():
-          emails.add(user.email)
-    #emails = set(['r1chardj0n3s@gmail.com', 'rjones@ekit-inc.com'])
-    for email in emails:
+    mailing_list = set(e.address for e in latest_challenge_users(challenge))
+
+    for email in mailing_list:
         info['to'] = email
         # send email
         s = smtplib.SMTP()
@@ -129,8 +130,7 @@ Stay a while ... stay forever!
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        all = list(Challenge.objects.filter(number__lt=1000))
-        latest = all[-1]
+        latest = Challenge.objects.latest()
 
         sd = latest.start_utc()
         ed = latest.end_utc()

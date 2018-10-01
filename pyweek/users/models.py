@@ -35,6 +35,12 @@ class EmailAddress(models.Model):
         default=default_verification_key,
     )
 
+    def __repr__(self):
+        return '<EmailAddress {!r} {}>'.format(
+            self.address,
+            'verified' if self.verified else 'UNVERIFIED'
+        )
+
     def is_primary(self):
         """Return True if this is the primary e-mail address for the user."""
         return self.address == self.user.email

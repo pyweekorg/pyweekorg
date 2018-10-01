@@ -471,6 +471,9 @@ class Entry(models.Model):
     def __unicode__(self):
         return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
 
+    def get_absolute_url(self):
+        return '/e/{}'.format(self.name)
+
     @property
     def display_title(self):
         """Display the title of the game."""
