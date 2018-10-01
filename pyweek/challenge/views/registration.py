@@ -345,7 +345,7 @@ def logout(request, next_page=None):
 
 def resetpw(request):
     if request.method != 'POST':
-        return redirect('login_page')
+        return redirect(login_page)
 
     email_address = request.POST.get('email_address')
     if not email_address:

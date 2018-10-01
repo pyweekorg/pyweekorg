@@ -26,7 +26,7 @@ def poll_display(request, poll_id):
         'poll': poll,
         'instructions': instructions[poll.type]%info,
         'challenge': poll.challenge,
-        'fields': render(poll, request)
+        'fields': render_poll(poll, request)
     })
 
 
