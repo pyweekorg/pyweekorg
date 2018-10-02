@@ -5,6 +5,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 
 from .lists import LISTS
+import html2text
 
 
 class DraftEmail(models.Model):
@@ -50,6 +51,12 @@ class DraftEmail(models.Model):
         """
         name, list_func = LISTS[self.list_name]
         return list_func.reason
+
+    def body_text(self):
+        """Convert the HTML body to text."""
+        converter = html2text.HTML2Text()
+        converter.inline_links = False
+        return converter.handle(self.body)
 
     def __str__(self):
         return '<{self.list_name}: "{self.subject}">'.format(self=self)

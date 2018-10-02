@@ -1,68 +1,10 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>{{ object.subject }}</title>
-<style>
-nav {
-    font-family: sans-serif;
-    background-color: #eee;
-    border-bottom: solid #ccc 1px;
+{% extends 'mail/draftemail_base.html' %}
 
-    height: 1.4em;
-    line-height: 1.4em;
-    padding: 0.6em;
-}
+{% block nav %}
+<a href="{% url 'preview-email-text' object.id %}">View as text</a>
+{% endblock %}
 
-nav a {
-    margin-right: 0.6em;
-}
-
-nav button {
-    float: right;
-}
-
-
-body {
-    font-family: sans-serif;
-    margin: 0;
-}
-
-article {
-    width: 960px;
-    margin: 0 auto;
-}
-
-footer {
-    text-align: right;
-    margin-top: 3em;
-    background-color: #eee;
-    padding: 5px 2em;
-    font-size: 80%;
-}
-
-footer #logo {
-    float: left;
-    margin: 1em 1em 1em 0;
-}
-
-footer img {
-    border: none;
-    height: 3em;
-}
-
-</style>
-    </head>
-    <body>
-        <nav>
-            <a href="{% url 'draft-emails' %}">Back to e-mails</a>
-            <a href="{% url 'edit-email' object.pk %}">Edit</a>
-            <button name="action">Send</button>
-        </nav>
-        <article>
-            <p><strong>To:</strong> &lt;{{ object.list_title }} ({{ object.recipients.count }} recipients)&gt;</p>
-
-            <h1>{{ object.subject }}</h1>
-
+{% block content %}
             {{ object.body|safe }}
 
             <footer>
@@ -71,6 +13,4 @@ footer img {
                 <p>Please <a href="https://pyweek.org/profile/">update your e-mail settings</a> if you do not wish to receive these notifications.</p>
 
             </footer>
-        </article>
-    </body>
-</html>
+{% endblock %}

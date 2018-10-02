@@ -1,0 +1,21 @@
+{% extends 'mail/draftemail_base.html' %}
+
+{% block nav %}
+<a href="{% url 'preview-email' object.id %}">View as HTML</a>
+{% endblock %}
+
+{% block content %}
+
+<pre>
+{{ object.body_text }}
+
+---
+Pyweek -- https://pyweek.org
+
+{% filter wordwrap:79 %}You are receiving this email {{ object.list_reason|striptags }}{% endfilter %}
+
+Please update your e-mail settings at https://pyweek.org/profile/ if you do not
+wish to receive these notifications.
+</pre>
+{% endblock %}
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ object.subject }}</title>
+<style>
+nav {
+    font-family: sans-serif;
+    background-color: #eee;
+    border-bottom: solid #ccc 1px;
+
+    height: 1.4em;
+    line-height: 1.4em;
+    padding: 0.6em;
+}
+
+nav a {
+    margin-right: 0.6em;
+}
+
+nav button {
+    float: right;
+}
+
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+article {
+    width: 960px;
+    margin: 0 auto;
+}
+
+footer {
+    text-align: right;
+    margin-top: 3em;
+    background-color: #eee;
+    padding: 5px 2em;
+    font-size: 80%;
+}
+
+footer #logo {
+    float: left;
+    margin: 1em 1em 1em 0;
+}
+
+footer img {
+    border: none;
+    height: 3em;
+}
+
+</style>
+    </head>
+    <body>
+        <nav>
+            <a href="{% url 'draft-emails' %}">Back to e-mails</a>
+            <a href="{% url 'edit-email' object.pk %}">Edit</a>
+            {% block nav %}{% endblock %}
+            <button name="action">Send</button>
+        </nav>
+        <article>
+            <p><strong>To:</strong> &lt;{{ object.list_title }} ({{ object.recipients.count }} recipients)&gt;</p>
+
+            <h1>[Pyweek] {{ object.subject }}</h1>
+
+            {% block content %}
+            {% endblock %}
+        </article>
+    </body>
+</html>

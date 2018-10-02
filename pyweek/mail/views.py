@@ -57,3 +57,7 @@ class EditEmail(PermissionRequiredMixin, UpdateView):
 class PreviewEmail(PermissionRequiredMixin, DetailView):
     permission_required = 'mail.add_draftemail'
     model = DraftEmail
+
+
+class PreviewEmailText(PreviewEmail):
+    template_name = 'mail/draftemail_preview_text.html'
