@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Draft Emails{% endblock %}
+
+{% block scripts %}
+    {% include "trumbowyg-scripts.html" %}
+{% endblock %}
+
+{% block content %}
+<h2>Compose Email</h2>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>Save Draft</button>
+</form>
+{% endblock %}

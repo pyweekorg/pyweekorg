@@ -420,12 +420,17 @@ dl#entry-list dd {
 }
 
 .award {
-    float: left;
+    display: inline-block;
     text-align: center;
     margin: 4px;
     width: 128px;
     /* height: 128px; */
     overflow: hidden;
+    border: outset #ddd 1px;
+    padding: 15px 5px;
+    border-radius: 4px;
+    vertical-align: top;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .award em {
@@ -979,4 +984,13 @@ form label.option {
 form p label:not(.option) {
     display: inline-block;
     width: 10em;
+}
+
+li.endsection {
+    border-bottom: dotted silver 1px;
+}
+
+li.sectiontitle {
+    margin: 0.4em 1em;
+    text-align: center;
 }

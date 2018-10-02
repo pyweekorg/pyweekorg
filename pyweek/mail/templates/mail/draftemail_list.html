@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load gravatar %}
+
+{% block title %}Draft Emails{% endblock %}
+
+{% block scripts %}
+    {% include "trumbowyg-scripts.html" %}
+{% endblock %}
+
+{% block content %}
+<h2>Draft Emails</h2>
+
+<p><a href="{% url 'compose-email'%}">Compose a new e-mail</a></p>
+
+<table class="grid">
+    <tr>
+        <th>Subject</th>
+        <th>Recipients</th>
+        <th>Edited</th>
+    </tr>
+{% for email in object_list %}
+    <tr>
+        <td><a href="{{ email.get_absolute_url }}">{{ email.subject }}</a></td>
+        <td>{{ email.list_title }}</td>
+	<td>{{ email.edited }}</td>
+    </tr>
+{% empty %}
+    <tr><td colspan="3">No draft e-mails.</td></tr>
+{% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ object.subject }}</title>
+<style>
+nav {
+    font-family: sans-serif;
+    background-color: #eee;
+    border-bottom: solid #ccc 1px;
+
+    height: 1.4em;
+    line-height: 1.4em;
+    padding: 0.6em;
+}
+
+nav a {
+    margin-right: 0.6em;
+}
+
+nav button {
+    float: right;
+}
+
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+article {
+    width: 960px;
+    margin: 0 auto;
+}
+</style>
+    </head>
+    <body>
+        <nav>
+            <a href="{% url 'draft-emails' %}">Back to e-mails</a>
+            <a href="{% url 'edit-email' object.pk %}">Edit</a>
+            <button name="action">Send</button>
+        </nav>
+        <article>
+            <p><strong>To:</strong> &lt;{{ object.list_title }} ({{ object.recipients.count }} recipients)&gt;</p>
+
+            <h1>{{ object.subject }}</h1>
+
+            {{ object.body|safe }}
+        </article>
+    </body>
+</html>

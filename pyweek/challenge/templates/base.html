@@ -74,17 +74,23 @@ jQuery(function ($) {
                 {% gravatar user.email 32 %}
                 {{user.username}} <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="/profile/">Your Account</a></li>
-                <li><a href="/profile_description/">Your Profile</a></li>
+                <li><a href="/u/{{ user.username }}/">View Profile</a></li>
+                <li><a href="/profile_description/">Edit Profile</a></li>
+                <li class="endsection"><a href="/profile/">Account Settings</a></li>
+
+            {% if user.is_staff %}
+            <li><a href="/admin/">Site Admin</a></li>
+            <li class="endsection"><a href="{% url 'draft-emails' %}">E-mail users</a></li>
+            {% endif %}
 
            {% if challenge %}
             {% if not challenge.isCompFinished %}
-             <li><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
+             <li class="endsection"><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
             {% endif %}
            {% endif %}
 
            {% if user_entries %}
-            <li><strong style="margin-left: 1em">Your Entries:</strong></li>
+           <li class="sectiontitle">Your Latest Entries:</li>
             {% for e in user_entries %}
               <li><a href="/e/{{e.name}}/">{{e.challenge_id}}) {{e.display_title}}</a></li>
             {% endfor %}

@@ -3,20 +3,24 @@
 All list providers should return an iterable of EmailAddress objects.
 
 """
-from django.db.models import Q, F
+from collections import OrderedDict
+from django.db.models import Q, F, Count
 from pyweek.challenge.models import Challenge
 from pyweek.users.models import EmailAddress
 
 
-LISTS = {}
+LISTS = OrderedDict()
+
 
 def register(name):
     """Decorator to register the list provider."""
     def dec(f):
+        LISTS[f.__name__] = (name, f)
         return f
     return dec
 
 
+@register('All users')
 def all_users():
     """A list of all users."""
     return filter_verified(EmailAddress.objects.filter(
@@ -24,6 +28,16 @@ def all_users():
     ).distinct())
 
 
+@register('Previous participants')
+def previous_participants():
+    """A list of users who have participated in any previous challenge."""
+    return filter_verified(EmailAddress.objects.filter(
+        user__entry__has_final=True,
+        user__settings__email_news=True,
+    ).distinct())
+
+
+@register('Latest challenge participants')
 def latest_challenge_users(challenge=None):
     """E-mail participants in the latest challenge."""
     challenge = challenge or Challenge.objects.latest()
@@ -31,6 +45,19 @@ def latest_challenge_users(challenge=None):
         user__entry__challenge=challenge,
         user__settings__email_contest_updates=True,
     ).distinct())
+
+
+@register('Frequent entrants')
+def frequent_entrants():
+    """E-mail participants who have participated 3 times or more."""
+    return filter_verified(
+    	EmailAddress.objects.annotate(
+            num_entries=Count('user__entry')
+    	).filter(
+	    num_entries__gte=3,
+            user__settings__email_contest_updates=True,
+        ).distinct()
+    )
 
 
 def filter_verified(addresses):

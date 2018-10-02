@@ -1,0 +1,4 @@
+----
+You are receiving this email because you have signed up to the PyWeek
+challenge as an entrant. If you do not wish to receive emails of this
+kind please edit your e-mail settings at https://pyweek.org/profile/

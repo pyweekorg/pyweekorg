@@ -1,0 +1,17 @@
+PyWeek {{ challenge.number }} is over!
+
+PyWeek {{ challenge.number }} - "{{ challenge.getTheme }}" is over, the scores are in and the winners are:
+
+{% for e in latest.individualWinners %}
+Individual: {{ e.display_title }} (https://pyweek.org/{{e.get_absolute_url}})
+{% endfor %}{% for e in latest.teamWinners %}
+Team: {{ e.display_title }} (https://pyweek.org/{{e.get_absolute_url}})
+{% endfor %}
+
+Congratulations to everyone who entered!
+
+Now that judging is over you may upload updated versions of your games.
+
+See you in six months!
+
+{% include "emails/challenge-footer.txt" %}

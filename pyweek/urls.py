@@ -4,11 +4,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 import django.views.static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+import pyweek.mail.urls
+
 
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^emails/', include(pyweek.mail.urls)),
     url(r'', include('pyweek.challenge.urls')),
 ]
 
