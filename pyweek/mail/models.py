@@ -40,6 +40,17 @@ class DraftEmail(models.Model):
         name, list_func = LISTS[self.list_name]
         return list_func()
 
+    @property
+    def list_reason(self):
+        """Get a description of why the user was e-mailed.
+
+        These reasons are required to start with 'because ' and end with
+        a '.'. They may contain HTML.
+
+        """
+        name, list_func = LISTS[self.list_name]
+        return list_func.reason
+
     def __str__(self):
         return '<{self.list_name}: "{self.subject}">'.format(self=self)
 
