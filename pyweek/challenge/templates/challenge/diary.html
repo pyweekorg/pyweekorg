@@ -12,7 +12,7 @@
 
 <p class="diary-byline">
   <a href="/u/{{ diary.user.username }}/">
-      {% gravatar p.user.email 40 %}
+      {% gravatar diary.user.email 40 %}
       {{ diary.user }}</a> on {{ diary.created|date:"Y/m/d H:i" }}
   {% if entry %}
     of <a href="/e/{{ diary.entry.name }}/">{{ diary.entry.title }}</a>
