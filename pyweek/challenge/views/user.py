@@ -35,6 +35,8 @@ def user_display(request, user_id):
     received_awards = models.EntryAward.objects.filter(
         challenge__number__lt=1000, entry__users=user)
 
+    possible_spammer = entries.filter(has_final=True).count() == 0
+
     try:
         profile = user.userprofile_set.all().get()
     except ObjectDoesNotExist:
@@ -46,6 +48,7 @@ def user_display(request, user_id):
             'entries': entries,
             'given_awards': given_awards,
             'received_awards': received_awards,
+            'possible_spammer': possible_spammer,
         }
     )
 
