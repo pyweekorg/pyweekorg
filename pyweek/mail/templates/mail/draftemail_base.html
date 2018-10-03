@@ -46,7 +46,7 @@ article {
         <article>
             <p><strong>To:</strong> &lt;{{ object.list_title }} ({{ object.recipients.count }} recipients)&gt;</p>
 
-            <h1>{{ object.full_subject }}</h1>
+            <h1>{{ subject }}</h1>
 
             {% block content %}
             {% endblock %}

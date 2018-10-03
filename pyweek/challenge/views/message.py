@@ -3,13 +3,17 @@ import datetime
 import xml.sax.saxutils
 
 from django import forms
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
+
 from pyweek.challenge import models
 from pyweek import settings
+from pyweek.users.models import EmailAddress
+from pyweek.mail import sending
 
 from stripogram import html2text, html2safehtml
 
@@ -305,6 +309,28 @@ def diary_display(request, diary_id):
             diary.reply_count = diary.reply_count + 1
             diary.save()
             messages.success(request, 'Comment added!')
+
+            # Send notifies
+            addresses = EmailAddress.objects.filter(
+                user__settings__email_replies=True,
+            ).filter(
+                # TODO: filter by users who want to receive notifications
+                Q(user__diarycomment__diary_entry=diary) | Q(user=diary.user)
+            ).exclude(user=request.user).distinct().select_related('user')
+            sending.send_template(
+                subject='New comment from {} on "{}"'.format(
+                    request.user.username,
+                    diary.title
+                ),
+                template_name='diary-reply',
+                recipients=addresses,
+                params={
+                    'diary': diary,
+                    'comment': comment,
+                },
+                reason=sending.REASON_COMMENTS
+            )
+
             return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
                 comment.id))
     else:

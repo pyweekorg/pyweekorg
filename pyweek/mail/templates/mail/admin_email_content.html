@@ -1,4 +1,4 @@
-{{ object.body|safe }}
+{{ body_html|safe }}
 
 <br/>
 <br/>
@@ -8,7 +8,7 @@
             <a id="logo" href="https://pyweek.org/"><img src="https://pyweek.org/static/pyweek-new.png" alt="pyweek" height="50"></a>
         </td>
         <td align="right">
-            <p>You are receiving this email {{ object.list_reason|safe }}</p>
+            <p>You are receiving this email {{ reason|safe }}</p>
             <p>Please <a href="https://pyweek.org/profile/">update your e-mail settings</a> if you do not wish to receive these notifications.</p>
         </td>
         <td width="5"></td>

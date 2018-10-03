@@ -218,7 +218,7 @@ def _handle_resend_verification(request):
     addr.request_verification()
     messages.success(
         request,
-        'Please check your e-mail for a verification link.'
+        'Please check your e-mail inbox and spam folder for a verification link.'
     )
 
 

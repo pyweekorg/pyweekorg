@@ -1,0 +1,8 @@
+<p><a href="https://pyweek.org/u/{{ comment.user.username }}">{{ comment.user.username }}</a> posted a new comment on
+<a href="https://pyweek.org{{ diary.get_absolute_url }}">{% if diary.entry %}{{ diary.entry.display_title }} -{% endif %} {{ diary.title }}</a>:</p>
+
+<blockquote>
+    {{ comment.content|safe }}
+</blockquote>
+
+<p>Reply to this comment <a href="https://pyweek.org{{ diary.get_absolute_url }}#add-comment">using the website</a>.</p>

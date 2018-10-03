@@ -5,7 +5,6 @@ from django.db import models
 from django.core.urlresolvers import reverse
 
 from .lists import LISTS
-import html2text
 
 
 class DraftEmail(models.Model):
@@ -28,10 +27,6 @@ class DraftEmail(models.Model):
         ], editable=False,
         default=STATUS_DRAFT,
     )
-
-    @property
-    def full_subject(self):
-        return '[Pyweek] {}'.format(self.subject)
 
     @property
     def list_title(self):
