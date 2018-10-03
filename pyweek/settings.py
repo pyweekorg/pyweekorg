@@ -94,4 +94,4 @@ INSTALLED_APPS = [
 ]
 
 LOGIN_URL = '/login/'
-DEFAULT_FROM_EMAIL = 'dan@pyweek.org'
+DEFAULT_FROM_EMAIL = 'daniel@pyweek.org'
