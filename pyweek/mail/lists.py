@@ -5,6 +5,7 @@ All list providers should return an iterable of EmailAddress objects.
 """
 from __future__ import unicode_literals
 from collections import OrderedDict
+from django.conf import settings
 from django.db.models import Q, F, Count
 from pyweek.challenge.models import Challenge
 from pyweek.users.models import EmailAddress
@@ -78,12 +79,24 @@ def frequent_entrants():
 
 
 @address_list(
-    'Admins',
+    'Staff',
     reason="because you are a Pyweek organiser."
 )
-def admins():
+def staff():
     """E-mail staff."""
     return filter_verified(EmailAddress.objects.filter(user__is_staff=True))
+
+
+@address_list(
+    'Site admins',
+    reason="because you are listed in settings.ADMINS."
+)
+def admins():
+    admin_addresses = {addr for name, addr in settings.ADMINS}
+    return EmailAddress.objects.filter(
+        user__email__in=admin_addresses,
+        user__is_superuser=True,
+    )
 
 
 def filter_verified(addresses):

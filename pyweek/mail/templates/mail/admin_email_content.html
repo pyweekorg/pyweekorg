@@ -1,7 +1,16 @@
 {{ object.body|safe }}
 
-<footer>
-    <a id="logo" href="https://pyweek.org/"><img src="https://pyweek.org/static/pyweek-new.png" alt="pyweek"></a>
-    <p>You are receiving this email {{ object.list_reason|safe }}</p>
-    <p>Please <a href="https://pyweek.org/profile/">update your e-mail settings</a> if you do not wish to receive these notifications.</p>
-</footer>
+<br/>
+<br/>
+<table bgcolor="#eeeeee" border="0" cellpadding="8" width="100%">
+    <tr>
+        <td width="250" align="center">
+            <a id="logo" href="https://pyweek.org/"><img src="https://pyweek.org/static/pyweek-new.png" alt="pyweek" height="50"></a>
+        </td>
+        <td align="right">
+            <p>You are receiving this email {{ object.list_reason|safe }}</p>
+            <p>Please <a href="https://pyweek.org/profile/">update your e-mail settings</a> if you do not wish to receive these notifications.</p>
+        </td>
+        <td width="5"></td>
+    </tr>
+</table>
