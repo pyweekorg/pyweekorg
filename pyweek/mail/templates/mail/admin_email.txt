@@ -1,0 +1,10 @@
+{% autoescape off %}{{ object.body_text }}
+
+---
+Pyweek -- https://pyweek.org
+
+{% filter wordwrap:79 %}You are receiving this email {{ object.list_reason|striptags }}{% endfilter %}
+
+Please update your e-mail settings at https://pyweek.org/profile/ if you do not
+wish to receive these notifications.
+{% endautoescape %}

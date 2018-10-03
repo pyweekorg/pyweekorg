@@ -17,13 +17,11 @@ nav a {
     margin-right: 0.6em;
 }
 
-nav button {
+nav form {
     float: right;
 }
 
-
 body {
-    font-family: sans-serif;
     margin: 0;
 }
 
@@ -32,24 +30,7 @@ article {
     margin: 0 auto;
 }
 
-footer {
-    text-align: right;
-    margin-top: 3em;
-    background-color: #eee;
-    padding: 5px 2em;
-    font-size: 80%;
-}
-
-footer #logo {
-    float: left;
-    margin: 1em 1em 1em 0;
-}
-
-footer img {
-    border: none;
-    height: 3em;
-}
-
+{% include 'mail/admin_email_styles.css' %}
 </style>
     </head>
     <body>
@@ -57,12 +38,15 @@ footer img {
             <a href="{% url 'draft-emails' %}">Back to e-mails</a>
             <a href="{% url 'edit-email' object.pk %}">Edit</a>
             {% block nav %}{% endblock %}
-            <button name="action">Send</button>
+            <form action="{% url 'send-email' object.pk %}" method="post">
+            {% csrf_token %}
+            <button>Send</button>
+            </form>
         </nav>
         <article>
             <p><strong>To:</strong> &lt;{{ object.list_title }} ({{ object.recipients.count }} recipients)&gt;</p>
 
-            <h1>[Pyweek] {{ object.subject }}</h1>
+            <h1>{{ object.full_subject }}</h1>
 
             {% block content %}
             {% endblock %}

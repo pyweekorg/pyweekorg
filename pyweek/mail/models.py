@@ -30,6 +30,10 @@ class DraftEmail(models.Model):
     )
 
     @property
+    def full_subject(self):
+        return '[Pyweek] {}'.format(self.subject)
+
+    @property
     def list_title(self):
         """Get the title of the recipients list."""
         name, list_func = LISTS[self.list_name]
@@ -56,7 +60,7 @@ class DraftEmail(models.Model):
         """Convert the HTML body to text."""
         converter = html2text.HTML2Text()
         converter.inline_links = False
-        return converter.handle(self.body)
+        return converter.handle(self.body).strip()
 
     def __str__(self):
         return '<{self.list_name}: "{self.subject}">'.format(self=self)

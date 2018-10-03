@@ -5,12 +5,5 @@
 {% endblock %}
 
 {% block content %}
-            {{ object.body|safe }}
-
-            <footer>
-                <a id="logo" href="https://pyweek.org/"><img src="https://pyweek.org/static/pyweek-new.png" alt="pyweek"></a>
-                <p>You are receiving this email {{ object.list_reason|safe }}</p>
-                <p>Please <a href="https://pyweek.org/profile/">update your e-mail settings</a> if you do not wish to receive these notifications.</p>
-
-            </footer>
+{% include "mail/admin_email_content.html" %}
 {% endblock %}
