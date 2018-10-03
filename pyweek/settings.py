@@ -86,6 +86,7 @@ INSTALLED_APPS = [
 
     'snowpenguin.django.recaptcha2',
     'django_gravatar',
+    'mailer',
 
     'pyweek.challenge',
     'pyweek.mail',

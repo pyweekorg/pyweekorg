@@ -13,8 +13,9 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from django.template import Context
+from mailer import send_html_mail
+import mailer.models
 
 from .lists import LISTS
 from .models import DraftEmail
@@ -92,15 +93,25 @@ def send(request, pk):
     email.sent = datetime.utcnow()
     email.save()
     recips = 0
-    for addr in email.recipients.select_related('user'):
-        send_mail(
-            subject=email.full_subject,
-            message=text_body,
-            html_message=html_body,
-            from_email=settings.DEFAULT_FROM_EMAIL,  #TODO: identify sending user
-            recipient_list=['{} <{}>'.format(addr.user.username, addr.address)]
-        )
-        recips += 1
+    try:
+        for addr in email.recipients.select_related('user'):
+            to_email = '{} <{}>'.format(addr.user.username, addr.address)
+
+            #TODO: identify sending user rather than using default
+            from_email = settings.DEFAULT_FROM_EMAIL
+            send_html_mail(
+                subject=email.full_subject,
+                message=text_body,
+                message_html=html_body,
+                from_email=from_email,
+                recipient_list=[to_email],
+                priority=mailer.models.PRIORITY_LOW,
+            )
+            recips += 1
+    except BaseException:
+        email.status = DraftEmail.STATUS_DRAFT
+        email.save()
+        raise
     messages.success(
         request,
         "E-mail '{}' sent to {} recipients".format(email.subject, recips)

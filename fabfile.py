@@ -24,7 +24,7 @@ PYTHON = "/home/pyweek/.local/bin/python"
 
 
 def publish():
-    run('mkdir -p www')
+    run('mkdir -p www logs')
     rsync_project(local_dir='./', remote_dir='www/', exclude=rsync_exclusions)
     rsync_project(local_dir='./deploy/', remote_dir='www/')
     with cd('/home/pyweek/www/'):
