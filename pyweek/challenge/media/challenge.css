@@ -1032,7 +1032,24 @@ article#bio {
     border-bottom: solid #eee 1px;
 }
 
-#timeline datetime {
+#timeline time {
     float: right;
     color: silver;
+}
+
+#timeline article.ev-new-screenshot {
+    padding: 0;
+}
+
+#timeline article.ev-new-screenshot time,
+#timeline article.ev-new-screenshot .summary {
+    padding: 15px 15px 15px;
+    margin-bottom: 0;
+}
+
+#timeline img.screenshot {
+    vertical-align: top;
+    width: 100%;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }

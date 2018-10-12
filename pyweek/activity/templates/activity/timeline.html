@@ -7,8 +7,8 @@
 
 <section id="timeline">
     {% for ev in timeline %}
-    <article>
-        <datetime time="{{ ev.date }}">{{ ev.date }}</datetime>
+    <article class="ev-{{ ev.type }}">
+        <time datetime="{{ ev.date.isoformat }}">{{ ev.date }}</time>
         {% include ev.template_name %}
     </article>
     {% endfor %}

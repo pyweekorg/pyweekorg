@@ -12,6 +12,7 @@ rsync_exclusions = [
     '__pycache__',
     '.git',
     'venv',
+    'media',
     'dumps',
     'db.sqlite3',
     'dev_settings.py',

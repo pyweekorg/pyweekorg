@@ -6,5 +6,5 @@ from .models import Event
 
 
 def timeline(request):
-    events = Event.objects.order_by('-date')[:15]
+    events = Event.objects.order_by('-date')[:25]
     return render(request, 'activity/timeline.html', {'timeline': events})

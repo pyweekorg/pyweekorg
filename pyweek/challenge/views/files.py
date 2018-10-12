@@ -11,8 +11,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
 from pyweek import settings
 from pyweek.settings import MEDIA_ROOT
+from pyweek.activity.models import log_event
 
 from stripogram import html2text
+
 
 class FileForm(forms.Form):
     content = forms.FileField()
@@ -83,6 +85,17 @@ def entry_upload(request, entry_id):
             # XXX need feedback with custom error "file is not an image"
 	    messages.error(request, 'File is not an image')
             return render(request, 'challenge/entry_file.html', info)
+
+        log_event(
+            type='new-screenshot',
+            user=request.user,
+            target=file,
+            challenge=challenge.number,
+            game=entry.display_title,
+            name=entry.name,
+            description=file.description,
+            url='{}{}'.format(settings.MEDIA_URL, file.filename)
+        )
 
     messages.success(request, 'File added!')
     return HttpResponseRedirect('/e/%s/'%entry_id)

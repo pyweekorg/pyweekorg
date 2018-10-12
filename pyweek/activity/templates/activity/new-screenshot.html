@@ -1,0 +1,8 @@
+{% load gravatar %}
+<p class="summary">
+<a href="/u/{{ ev.user }}">
+    {% gravatar ev.user.email 40 %}
+    {{ ev.user }}</a>
+uploaded a new screenshot of <a href="/e/{{ ev.params.name }}/">{{ ev.params.game }}</a>.
+</p>
+<img class="screenshot" src="{{ ev.target.content.url }}">
