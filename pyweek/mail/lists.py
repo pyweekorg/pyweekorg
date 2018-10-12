@@ -38,6 +38,33 @@ def all_users():
 
 
 @address_list(
+    'Verified addresses',
+    reason="because you are a registered user at pyweek.org."
+)
+def verified_users(challenge=None):
+    """Verified e-mail accounts."""
+    return EmailAddress.objects.filter(
+        user__settings__email_contest_updates=True,
+        verified=True,
+    ).distinct()
+
+
+@address_list(
+    'Unverified addresses - DO NOT USE',
+    reason="because you are a registered user at pyweek.org."
+)
+def unverified_users(challenge=None):
+    """Unverified e-mail accounts.
+
+    Only use this to contact people to prompt them to verify their accounts.
+    """
+    return EmailAddress.objects.filter(
+        user__settings__email_contest_updates=True,
+        verified=False,
+    ).distinct()
+
+
+@address_list(
     'Previous participants',
     reason="because you are a previous Pyweek entrant."
 )
