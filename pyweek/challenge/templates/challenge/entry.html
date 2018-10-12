@@ -30,6 +30,10 @@
 </div>
 {% endif %}
 
+{% if entry.github_repo %}
+<p><a title="Github repository" id="github-link" href="https://github.com/{{ entry.github_repo }}">github.com/{{ entry.github_repo }}</a></p>
+{% endif %}
+
 <h3>Awards</h3>
 {% for award in awards %}
   <div class="award">

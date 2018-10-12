@@ -449,13 +449,21 @@ class Entry(models.Model):
         max_length=100,
         help_text="The name of the game itself."
     )
+    github_repo = models.CharField(
+        max_length=81,
+        blank=True,
+        null=True,
+        unique=True,
+    )
+    description = models.TextField()
+
     challenge = models.ForeignKey(Challenge, related_name='challenge')
     winner = models.ForeignKey(Challenge, blank=True, null=True, related_name='winner')
     user = models.ForeignKey(User, verbose_name='entry owner', related_name="owner")
     users = models.ManyToManyField(User)
-    description = models.TextField()
     is_upload_open = models.BooleanField(default=False)
     has_final = models.BooleanField(default=False)
+
 
     class Meta:
         ordering = ['-challenge', 'name']

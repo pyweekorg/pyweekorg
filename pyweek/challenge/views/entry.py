@@ -32,10 +32,27 @@ def isCommaSeparatedUserList(field_data):
 
 
 class AddEntryForm(forms.Form):
-    name = forms.CharField(max_length=15, validators=[validators.validate_slug, isUnusedEntryName], required=True)
-    title = forms.CharField(required=True, validators=[isUnusedEntryTitle])
-    description = forms.CharField(required=False, widget=forms.Textarea)
-    users = forms.CharField(validators=[isCommaSeparatedUserList])
+    name = forms.CharField(
+        max_length=15,
+        validators=[validators.validate_slug, isUnusedEntryName],
+        required=True
+    )
+    title = forms.CharField(
+        required=True,
+        label="Team name",
+        validators=[isUnusedEntryTitle]
+    )
+    description = forms.CharField(
+        required=False,
+        help_text=(
+            "If you wish, say something about your team and "
+            "goals for this contest."
+        ),
+        widget=forms.Textarea
+    )
+    users = forms.CharField(
+        validators=[isCommaSeparatedUserList]
+    )
 
 
 def entry_list(request, challenge_id):
@@ -276,11 +293,44 @@ def entry_ratings(request, entry_id):
     )
 
 
-class EntryForm(forms.Form):
+class EntryForm(forms.ModelForm):
     title = forms.CharField(required=True)
     game = forms.CharField(required=True)
+    github_repo = forms.RegexField(
+        regex=(
+            r'^[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}/'
+            r'[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}$'
+        ),
+        required=False,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'eg. my-username/my-project',
+            'size': '80',
+        })
+    )
     description = forms.CharField(required=False, widget=forms.Textarea)
-    users = forms.CharField(validators=[isCommaSeparatedUserList])
+    users = forms.CharField(
+        help_text="Enter a comma-separated list of the member usernames.",
+        validators=[isCommaSeparatedUserList]
+    )
+
+    def clean_description(self):
+        """Strip HTML from the description."""
+        return html2safehtml(self.cleaned_data['description'], safeTags)
+
+    def clean_users(self):
+        """Split users."""
+        users = {u.strip() for u in self.cleaned_data['users'].split(',')}
+        if self.current_user not in users:
+            raise forms.ValidationError(
+                "You cannot remove yourself from an entry. "
+                "Other team members will be able to remove you."
+            )
+        return users
+
+    class Meta:
+        model = models.Entry
+        fields = ['title', 'game', 'github_repo', 'description']
+
 
 def entry_manage(request, entry_id):
     if request.user.is_anonymous():
@@ -295,22 +345,30 @@ def entry_manage(request, entry_id):
         return HttpResponseRedirect('/e/%s/'%entry_id)
 
     if request.POST:
-        f = EntryForm(request.POST)
+        f = EntryForm(request.POST, instance=entry)
+        f.current_user = request.user.username
+
         if f.is_valid():
-            entry.description = html2safehtml(f.cleaned_data['description'], safeTags)
-            entry.title = f.cleaned_data['title']
-            entry.game = f.cleaned_data['game']
-            new_users = []
-            for user in [u.strip() for u in f.cleaned_data['users'].split(',')]:
-                new_users.append(models.User.objects.get(username__exact=user).id)
-            entry.users = new_users
+            entry = f.instance
             entry.save()
-            messages.success(request, 'Changes saved!')
-            return HttpResponseRedirect("/e/%s/"%entry_id)
+
+            team_members = f.cleaned_data['users']
+            new_users = list(models.User.objects.filter(
+                username__in=team_members,
+            ))
+            if len(new_users) != len(team_members):
+                messages.error(request, 'Invalid team members list')
+            else:
+                entry.users = new_users
+                messages.success(request, 'Changes saved!')
+            return HttpResponseRedirect("/e/%s/" % entry_id)
     else:
-        f = EntryForm(initial={'name': entry.name, 'title': entry.title,
-            'description': entry.description, 'game': entry.game,
-            'users': ', '.join(map(str, entry.users.all()))})
+        f = EntryForm(
+            instance=entry,
+            initial={
+                'users': ', '.join(map(str, entry.users.all()))
+            }
+        )
 
     challenge = entry.challenge
     #form = forms.FormWrapper(f, new_data, errors)

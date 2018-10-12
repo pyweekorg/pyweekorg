@@ -151,22 +151,24 @@ span.bronze {
 }
 
 ul.errorlist {
-    background: rgb(255,214,214);
-    margin: 0px;
-    list-style-type: none;
+    margin: 0 0 0.3em 10em;
+    list-style-type: square;
     padding: 2px;
+    color: #A00;
 }
 ul.errorlist li {
-    margin: 0px;
 }
 
 .form-error {
     margin-top: 0.3em;
     color: red;
 }
+
+.helptext,
 .form-help {
+    display: block;
     margin-top: 0.3em;
-    font-size: 75%;
+    font-size: 80%;
     color: #666;
 }
 
