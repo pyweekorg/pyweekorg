@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'pyweek.challenge',
     'pyweek.mail',
     'pyweek.users',
+    'pyweek.activity',
 ]
 
 LOGIN_URL = '/login/'

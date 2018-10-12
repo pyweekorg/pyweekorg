@@ -14,6 +14,7 @@ from pyweek.challenge import models
 from pyweek import settings
 from pyweek.users.models import EmailAddress
 from pyweek.mail import sending
+from pyweek.activity.models import log_event
 
 from stripogram import html2text, html2safehtml
 
@@ -183,6 +184,13 @@ def message_add(request):
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.created = datetime.datetime.utcnow()
             diary.save()
+            log_event(
+                type='new-thread',
+                user=request.user,
+                target=diary,
+                title=diary.title,
+                id=diary.id,
+            )
             messages.success(request, 'Entry saved!')
             return HttpResponseRedirect('/d/%s/'%diary.id)
     else:
@@ -236,6 +244,16 @@ def entry_diary(request, entry_id):
             if is_super:
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.save()
+            log_event(
+                type='new-diary',
+                user=request.user,
+                target=diary,
+                title=diary.title,
+                entry={
+                    'title': diary.entry.display_title,
+                    'name': diary.entry.name,
+                }
+            )
             messages.success(request, 'Entry saved!')
             return HttpResponseRedirect('/d/%s/'%diary.id)
     else:

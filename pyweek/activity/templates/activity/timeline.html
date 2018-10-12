@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Latest Activity{% endblock %}
+
+{% block content %}
+<h2>Latest Activity</h2>
+
+<section id="timeline">
+    {% for ev in timeline %}
+    <article>
+        <datetime time="{{ ev.date }}">{{ ev.date }}</datetime>
+        {% include ev.template_name %}
+    </article>
+    {% endfor %}
+</section>
+
+{% endblock %}
+
+
+
