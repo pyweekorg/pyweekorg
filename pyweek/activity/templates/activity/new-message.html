@@ -1,6 +1,0 @@
-{% load gravatar %}
-<a href="/u/{{ ev.user }}">
-    {% gravatar ev.user.email 40 %}
-    {{ ev.user }}</a>
-started a new discussion thread:
-<a href="/d/{{ ev.target_id }}/">{{ ev.params.title }}</a>.

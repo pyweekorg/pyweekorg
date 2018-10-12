@@ -10,6 +10,8 @@ from pyweek import settings
 from django.core import validators
 
 from stripogram import html2text, html2safehtml
+from pyweek.activity.models import log_event
+from pyweek.activity.summary import summarise
 
 safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
     ul ol li span div'''.split()
@@ -147,19 +149,33 @@ def entry_add(request, challenge_id):
     if request.method == 'POST':
         f = AddEntryForm(request.POST)
         if f.is_valid():
-            new_users = []
+            members = {request.user.username}
             if f.cleaned_data['users'].strip():
-                for user in [u.strip() for u in f.cleaned_data['users'].split(',')]:
-                    new_users.append(models.User.objects.get(username__exact=user).id)
-            if request.user.id not in new_users:
-                new_users.append(request.user.id)
-            entry = models.Entry(name=f.cleaned_data['name'],
-                challenge=challenge, user=request.user,
-                description=html2safehtml(f.cleaned_data['description'], safeTags),
-                title=f.cleaned_data['title'])
+                members.update(
+                    u.strip() for u in f.cleaned_data['users'].split(',')
+                )
+
+            full_description = html2safehtml(f.cleaned_data['description'], safeTags)
+            short_description, truncated = summarise(full_description)
+            entry = models.Entry(
+                name=f.cleaned_data['name'],
+                challenge=challenge,
+                user=request.user,
+                description=full_description,
+                title=f.cleaned_data['title']
+            )
             entry.save()
-            for u in new_users:
-                entry.users.add(u)
+            entry.users = models.User.objects.filter(username__in=members)
+            log_event(
+                type='new-entry',
+                challenge=entry.challenge.number,
+                team=entry.title,
+                members=list(members),
+                name=entry.name,
+                description=short_description,
+                description_truncated=truncated,
+            )
+
             messages.success(request, 'Entry created!')
             return HttpResponseRedirect("/e/%s/"%entry.name)
     else:

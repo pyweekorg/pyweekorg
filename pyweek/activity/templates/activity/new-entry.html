@@ -1,0 +1,21 @@
+<p class="summary">
+{% for u in ev.params.members %}{% if not forloop.first and not forloop.last %},{% endif %}
+{% if forloop.last %} and {% endif %}
+<a href="/u/{{ u }}">{{ u }}</a>{% endfor %}
+entered
+<a href="/{{ ev.params.challenge }}/">Pyweek {{ ev.params.challenge }}</a>
+as
+<a href="/e/{{ ev.params.name }}/">{{ ev.params.team }}</a>.
+</p>
+
+{% if ev.params.description %}
+<div class="description">
+    {{ ev.params.description|safe }}
+</div>
+{% endif %}
+<p>
+{% if ev.params.description_truncated %}
+    <a href="/e/{{ ev.params.name }}/">Read more</a> |
+{% endif %}
+<a href="/{{ ev.params.challenge }}/entries/">See all entries</a>
+</p>
