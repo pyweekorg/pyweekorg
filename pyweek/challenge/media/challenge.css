@@ -160,13 +160,14 @@ ul.errorlist li {
     margin: 0px;
 }
 
-p.form-error {
-    margin-top: 1px;
+.form-error {
+    margin-top: 0.3em;
     color: red;
 }
-p.form-help {
-    margin-top: 1px;
+.form-help {
+    margin-top: 0.3em;
     font-size: 75%;
+    color: #666;
 }
 
 ul.messages {
@@ -251,34 +252,28 @@ table.grid.auto {
 
 table.grid th,
 table.grid td {
-    padding: 0.2em 0.4em;
+    padding: 0.4em 0.7em;
 }
 
 table.grid th.section {
     text-align: center;
 }
 
+table.grid tr + tr td {
+    border-bottom: solid #eee 1px;
+}
+table.grid tr:last-child td {
+    border-bottom: none;
+}
+
 table.grid th {
     text-align: left;
     font-weight: normal;
-    background: #eee;
+    background: #eefafa;
     color: black;
-    border: thin solid silver;
+    border: thin solid #cdf;
     border-left-style: dotted;
     border-right-style: none;
-}
-table.grid th:first-child {
-    border-left: none;
-}
-table.grid td {
-    border-left: thin dotted silver;
-}
-table.grid td:first-child {
-    border-left: none;
-}
-
-table.grid tr.odd td {
-    background: #eef5ff;
 }
 
 table#top-entries {
@@ -993,4 +988,24 @@ li.endsection {
 li.sectiontitle {
     margin: 0.4em 1em;
     text-align: center;
+}
+
+#github-link::before,
+#twitter-link::before {
+    display: inline-block;
+    content: "";
+    width: 32px;
+    height: 32px;
+    background: url(simple-icons/twitter.svg) no-repeat center center;
+    color: white;
+    vertical-align: middle;
+    margin-right: 0.6em;
+}
+
+#github-link::before {
+    background-image: url(simple-icons/github.svg);
+}
+
+article#bio {
+    margin: 2em 0;
 }

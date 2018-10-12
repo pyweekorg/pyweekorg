@@ -12,7 +12,13 @@
 
 <h2>{% gravatar profile_user.email %} {{ profile_user }}</h2>
 
-{{profile.content|safe }}
+{% if profile.twitter_username %}
+<p><a title="Twitter account" id="twitter-link" href="https://twitter.com/{{ profile.twitter_username }}">@{{ profile.twitter_username }}</a></p>
+{% endif %}
+{% if profile.github_username %}
+<p><a title="Github account" id="github-link" href="https://github.com/{{ profile.github_username }}">github.com/{{ profile.github_username }}</a></p>
+{% endif %}
+
 
 {% if possible_spammer and user.is_staff and not profile_user.is_staff %}
 <form action="/u/{{ profile_user.username }}/delete_spam" method="POST">
@@ -21,15 +27,29 @@
 </form>
 {% endif %}
 
-<h3>{{profile_user}}'s entries</h3>
+{% if profile.content %}
+<article id="bio">
+{{profile.content|safe }}
+</article>
+{% endif %}
+
+<h3>Entries</h3>
 <table class="grid auto">
-    <tr><th>PyWeek</th><th>Game</th><th>Team</th><th>Rating</th></tr>
+    <tr>
+        <th>PyWeek</th>
+        <th style="width: 20em">Game</th>
+        <th style="width: 15em">Team</th>
+        <th>Rating</th>
+    </tr>
 {% for entry in entries %}
-<tr class="{% cycle 'even' 'odd' %}">
+<tr>
     <td align="center">{{ entry.challenge.number }}</td>
     <td><a href="/e/{{ entry.name }}/">{{ entry.game|default:entry.title }}</a></td>
     <td>{% if entry.is_team %}{{ entry.title }}{% endif %}</td>
-    <td>{% if entry.challenge.isCompFinished %}{% if entry.has_final %}{{ entry.ratingtally_set.all.0.overall }}{% else %}DNF{% endif %}{% endif %}</td>
+    <td>
+        <span class="prize {% if entry.winner %}gold{% endif %}">
+        {% if entry.challenge.isCompFinished %}{% if entry.has_final %}{{ entry.ratingtally_set.all.0.overall }}{% else %}DNF{% endif %}{% endif %}</td>
+        </span>
 </tr>
 {% endfor %}
 </table>

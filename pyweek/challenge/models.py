@@ -1019,4 +1019,18 @@ class Response(models.Model):
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
-    content = models.TextField()
+    twitter_username = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True,
+        unique=True,
+        help_text=u"The username of your Twitter account.",
+    )
+    github_username = models.CharField(
+        max_length=39,
+        blank=True,
+        null=True,
+        unique=True,
+        help_text=u"The username of your GitHub account.",
+    )
+    content = models.TextField(blank=True)

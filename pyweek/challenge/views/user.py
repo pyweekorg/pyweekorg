@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
+from django.core.validators import RegexValidator
 from pyweek.challenge import models
 
 from stripogram import html2safehtml
@@ -53,43 +54,74 @@ def user_display(request, user_id):
     )
 
 
-class ProfileForm(forms.Form):
-    content = SafeHTMLField(label='Text to appear on your profile page',
-        help_text='Basic HTML tags allowed: %s' % (', '.join(safeTags)))
+class ProfileForm(forms.ModelForm):
+    twitter_username = forms.RegexField(
+        regex=r'^@?\w{1,15}$',
+        required=False,
+        label="Twitter username",
+        help_text=(
+            "Add your Twitter username to show a link to your "
+            "Twitter timeline on your profile."
+        ),
+        widget=forms.TextInput(attrs={
+            'size': '20',
+        })
+    )
+    github_username = forms.RegexField(
+        regex=r'^[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}$',
+        required=False,
+        label="GitHub username",
+        help_text=(
+            "Add your GitHub username to show a link to your "
+            "GitHub account on your profile."
+        ),
+        widget=forms.TextInput(attrs={
+            'size': '40',
+        })
+    )
+    content = SafeHTMLField(
+        label='Text to appear on your profile page',
+        required=False,
+        help_text='Basic HTML tags allowed: %s' % (', '.join(safeTags))
+    )
+
+    def clean_twitter_username(self):
+        """Remove the @ from a Twitter username, if given."""
+        v = self.cleaned_data.get('twitter_username')
+        if not v:
+            return None
+        return v.strip('@')
+
+    def clean_github_username(self):
+        """Convert empty input to None."""
+        return self.cleaned_data.get('github_username') or None
+
+    class Meta:
+        model = models.UserProfile
+        fields = ['twitter_username', 'github_username', 'content']
 
 
 def profile_description(request):
     if request.user.is_anonymous():
         return HttpResponseRedirect('/login/')
 
-    profile = request.user.userprofile_set.all()
-    if profile:
-        profile = profile[0]
-        data = {'content': profile.content}
-    else:
-        data = {}
-        profile = None
+    try:
+        profile = request.user.userprofile_set.get()
+    except models.UserProfile.DoesNotExist:
+        profile = models.UserProfile(user=request.user)
 
     if request.POST:
-        form = ProfileForm(request.POST)
+        form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
-            content = form.cleaned_data['content']
-
-            # do the save
-            if profile is None:
-                profile = models.UserProfile(content=content,
-                    user=request.user)
-            else:
-                profile.content = content
-            profile.save()
+            form.instance.save()
             messages.success(request, 'Description saved!')
-            return HttpResponseRedirect('/profile_description/')
+            return HttpResponseRedirect('/u/{}/'.format(request.user.username))
     else:
-        form = ProfileForm()
-    return render(request, 'challenge/profile_description.html',
-        {
-            'form': form,
-        }
+        form = ProfileForm(instance=profile)
+    return render(
+        request,
+        'challenge/profile_description.html',
+        {'form': form}
     )
 
 
