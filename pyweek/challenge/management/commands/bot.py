@@ -1,3 +1,4 @@
+import re
 import time
 import datetime
 import smtplib
@@ -9,41 +10,36 @@ from django.core.management.base import BaseCommand, CommandError
 
 from pyweek.users.models import EmailAddress
 from pyweek.challenge.models import Challenge, Entry, UTC
+from pyweek.activity.models import log_event
 from pyweek.mail.lists import latest_challenge_users
+from pyweek.mail import sending
+from django.template.defaultfilters import urlize, linebreaks
 
 
 def send_email(challenge, message, **info):
     info.update(dict(
         ch=challenge.title,
-        chnum=challenge.number
+        chnum=challenge.number,
+        to='',
     ))
+    message = message % info
+    hdrs, body = message.split('\n\n', 1)
 
-    message += '''
+    mo = re.match(r'^Subject: *([^\n]+)', hdrs)
+    if not mo:
+        raise Exception('Failed to parse message')
 
-     Daniel Pope
-     https://pyweek.org/
-
-----
-You are receiving this email because you have signed up to the PyWeek
-challenge as an entrant. If you do not wish to receive emails of this
-kind please reply to the message asking to be removed. And accept my
-apologies in advance.
-'''
     mailing_list = set(e.address for e in latest_challenge_users(challenge))
 
-    for email in mailing_list:
-        info['to'] = email
-        # send email
-        s = smtplib.SMTP()
-        s.connect('localhost')
-        try:
-             s.sendmail('richard@pyweek.org', [email], message%info)
-             s.close()
-        except EnvironmentError, e:
-             print 'EMAIL %s: %s' % (email, e)
-        else:
-             print 'EMAIL %s' % (email, )
-        time.sleep(.1)
+    html_body = linebreaks(urlize(body))
+
+    sending.send(
+        subject=mo.group(1),
+        html_body=html_body,
+        recipients=mailing_list,
+        reason=latest_challenge_users.reason,
+        priority=sending.PRIORITY_HIGH,
+    )
 
 
 CHALLENGE_DONE = '''Subject: PyWeek %(ch)s is over!
@@ -129,6 +125,14 @@ Stay a while ... stay forever!
 '''
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            '--force-date',
+            dest='date',
+            help='Override the date we are running for.'
+        )
+
     def handle(self, *args, **options):
         latest = Challenge.objects.latest()
 
@@ -137,26 +141,20 @@ class Command(BaseCommand):
         sv = sd - datetime.timedelta(7)
         dd = ed + datetime.timedelta(14)
 
-        now = datetime.datetime.now(UTC)
-
-        # just in case cron fires us before 00:00:00
-        while now.hour != 0:
-            time.sleep(1)
+        date = options.get('date')
+        if date:
+            nd = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        else:
+            # No date given, use current date and wait till midnight
             now = datetime.datetime.now(UTC)
-
-        nd = now.date()
+            # just in case cron fires us before 00:00:00
+            while now.hour != 0:
+                time.sleep(1)
+                now = datetime.datetime.now(UTC)
+            nd = now.date()
 
         if nd == sv.date():
-            latest.theme_poll.is_open = True
-            latest.theme_poll.is_hidden = False
-            latest.theme_poll.save()
-            options = list(latest.theme_poll.option_set.all())
-            random.shuffle(options)
-            themes = '\n'.join(['- %s'%o.text for o in options])
-            url = 'http://pyweek.org/p/%s/'%latest.theme_poll.id
-            print 'PYWEEK BOT: SENDING VOTING EMAIL'
-            send_email(latest, VOTING_START, themes=themes, poll_url=url)
-            print 'PYWEEK BOT: SENT VOTING EMAIL'
+            self.begin_theme_voting(latest)
         elif nd == sd.date():
             # this also closes the poll
             theme = latest.setTheme()
@@ -182,3 +180,23 @@ class Command(BaseCommand):
         else:
             print 'PYWEEK BOT: DID NOTHING'
 
+
+    def begin_theme_voting(self, latest):
+        latest.theme_poll.is_open = True
+        latest.theme_poll.is_hidden = False
+        latest.theme_poll.save()
+        options = list(latest.theme_poll.option_set.all())
+
+        themes = '\n'.join(['- %s'%o.text for o in options])
+        url = 'http://pyweek.org/p/%s/'%latest.theme_poll.id
+        print 'PYWEEK BOT: SENDING VOTING EMAIL'
+        send_email(latest, VOTING_START, themes=themes, poll_url=url)
+        print 'PYWEEK BOT: SENT VOTING EMAIL'
+        log_event(
+            type="theme-voting",
+            target=latest.theme_poll,
+            challenge_number=latest.number,
+            challenge_title=latest.title,
+            options=[o.text for o in options],
+        )
+        print 'PYWEEK BOT: Posted to activity log'

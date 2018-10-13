@@ -1,0 +1,13 @@
+<p class="summary">Theme voting has commenced in the
+<a href="/{{ ev.params.challenge_number }}/">{{ ev.params.challenge_title }}</a> contest!</p>
+
+<p>The possible themes are:</p>
+<ul>
+    {% for option in ev.params.options %}
+    <li>{{ option }}</li>
+    {% endfor %}
+</ul>
+
+<p>
+    <a href="/p/{{ ev.target_id }}/">Cast your votes here!</a>
+</p>

@@ -8,8 +8,11 @@ pushed {{ ev.params.commits|length}} commit{{ ev.params.commits|length|pluralize
 </p>
 
 <ul class="commits">
-    {% for commit in ev.params.commits %}
+    {% for commit in ev.params.commits|slice:":10" %}
     <li><a href="https://github.com/{{ ev.params.github_repo}}/commit/{{ commit.sha }}">{{ commit.sha|slice:":8"}}</a> {{ commit.msg }}</li>
     {% endfor %}
+    {% if ev.params.commits|length > 10 %}
+    <li>... and {{ ev.params.commits|slice:"10:"|length }} more</li>
+    {% endif %}
 </ul>
 

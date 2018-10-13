@@ -35,7 +35,7 @@ def poll_view(request, poll_id):
     ok = False
     if request.user.is_superuser:
         ok = True
-    elif poll.is_hidden:
+    elif poll.is_hidden or not poll.is_open:
         ok = False
     elif not poll.is_ongoing:
         ok = True
