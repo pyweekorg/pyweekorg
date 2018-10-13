@@ -34,7 +34,12 @@ def view_award(request, award_id):
 
 
 class GiveAwardForm(forms.Form):
-    award = forms.ModelChoiceField(models.Award)
+    award = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, user, *args, **kwargs):
+        super(GiveAwardForm, self).__init__(*args, **kwargs)
+        self.user = user
+        self.fields['award'].queryset = user.award_set.all()
 
 
 def give_award(request, entry_id):
@@ -60,13 +65,11 @@ def give_award(request, entry_id):
 
     # Display form
     if request.method != 'POST':
-        f = GiveAwardForm()
-        f.fields['award'].queryset = creator.award_set.all()
+        f = GiveAwardForm(creator)
         info['give_form'] = f
         return render(request, 'challenge/upload_award.html', info)
 
-    f = GiveAwardForm(request.POST)
-    f.fields['award'].queryset = creator.award_set.all()
+    f = GiveAwardForm(creator, request.POST)
     info['give_form'] = f
     if not f.is_valid():
         return render(request, 'challenge/upload_award.html', info)
@@ -99,9 +102,8 @@ def upload_award(request, entry_id):
         challenge=challenge,
         entry=entry,
         awards=creator.award_set.all(),
-        give_form=GiveAwardForm(),
+        give_form=GiveAwardForm(creator),
     )
-    info['give_form'].fields['award'].queryset = creator.award_set.all()
     errors = None
 
     if request.method == 'POST':

@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
 from pyweek import settings
 from django.core import validators
+from django.contrib.auth.decorators import login_required
 
 from stripogram import html2text, html2safehtml
 from pyweek.activity.models import log_event
@@ -138,12 +139,12 @@ def entry_list(request, challenge_id):
     )
 
 
+@login_required
 def entry_add(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
 
     if challenge.isCompFinished():
-        if not request.user.is_anonymous():
-            messages.error(request, 'Entry registration closed')
+        messages.error(request, 'Entry registration closed')
         return HttpResponseRedirect("/%s/"%challenge_id)
 
     if request.method == 'POST':

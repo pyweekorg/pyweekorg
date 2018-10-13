@@ -18,7 +18,7 @@ instructions = {
 }
 
 def poll_display(request, poll_id):
-    poll = get_object_or_404(Poll, pk=poll_id, hidden=False)
+    poll = get_object_or_404(Poll, pk=poll_id, is_hidden=False)
     info = {
         'num_choices': len(poll.option_set.all()),
     }

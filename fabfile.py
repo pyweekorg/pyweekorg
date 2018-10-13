@@ -9,6 +9,7 @@ env.hosts = ['pyweek@pyweek.org:6185']
 rsync_exclusions = [
     '*.pyc',
     '*.pyo',
+    '*.swp',
     '__pycache__',
     '.git',
     'venv',

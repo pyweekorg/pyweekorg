@@ -218,7 +218,7 @@ def entry_diary(request, entry_id):
     entry = get_object_or_404(models.Entry, pk=entry_id)
     is_member = request.user in entry.users.all()
     if not is_member:
-        message.error(request, "You're not allowed to add diary entries!")
+        messages.error(request, "You're not allowed to add diary entries!")
         return HttpResponseRedirect('/e/%s/'%entry_id)
     challenge = entry.challenge
 
