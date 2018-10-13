@@ -4,3 +4,4 @@ MAILTO=lord.mauve@gmail.com
 *       * * * * (/home/pyweek/www/manage.sh send_mail >> ~/logs/cron_mail.log 2>&1)
 0,20,40 * * * * (/home/pyweek/www/manage.sh retry_deferred >> ~/logs/cron_mail_deferred.log 2>&1)
 0 0 * * * (/home/pyweek/www/manage.sh purge_mail_log 7 >> ~/logs/cron_mail_purge.log 2>&1)
+*/10 * * * * /home/pyweek/www/manage.sh syncgithub
