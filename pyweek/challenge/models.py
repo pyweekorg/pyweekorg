@@ -455,6 +455,13 @@ class Entry(models.Model):
         null=True,
         unique=True,
     )
+    # sha1 of the HEAD commit
+    head_sha = models.CharField(
+        max_length=40,
+        blank=True,
+        null=True,
+    )
+
     description = models.TextField()
 
     challenge = models.ForeignKey(Challenge, related_name='challenge')

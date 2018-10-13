@@ -1,6 +1,6 @@
 <p class="summary">
 {% for u in ev.params.members %}{% if not forloop.first and not forloop.last %},{% endif %}
-{% if forloop.last %} and {% endif %}
+{% if forloop.last and not forloop.first %} and {% endif %}
 <a href="/u/{{ u }}">{{ u }}</a>{% endfor %}
 entered
 <a href="/{{ ev.params.challenge }}/">Pyweek {{ ev.params.challenge }}</a>
