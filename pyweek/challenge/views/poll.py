@@ -18,7 +18,7 @@ instructions = {
 }
 
 def poll_display(request, poll_id):
-    poll = get_object_or_404(Poll, pk=poll_id)
+    poll = get_object_or_404(Poll, pk=poll_id, hidden=False)
     info = {
         'num_choices': len(poll.option_set.all()),
     }
@@ -35,6 +35,8 @@ def poll_view(request, poll_id):
     ok = False
     if request.user.is_superuser:
         ok = True
+    elif poll.is_hidden:
+        ok = False
     elif not poll.is_ongoing:
         ok = True
     if not ok:

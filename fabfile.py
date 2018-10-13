@@ -12,13 +12,13 @@ rsync_exclusions = [
     '__pycache__',
     '.git',
     'venv',
-    'media',
+    '/media',
     'dumps',
     'db.sqlite3',
     'dev_settings.py',
     'source',
     'fabfile.py',
-    'deploy'
+    '/deploy'
 ]
 
 PYTHON = "/home/pyweek/.local/bin/python"

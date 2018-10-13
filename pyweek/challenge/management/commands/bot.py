@@ -104,7 +104,7 @@ Good luck!
 
 
 VOTING_START = '''Subject: Theme voting for PyWeek %(ch)s has commenced!
-From: Richard Jones <richard@pyweek.org>
+From: Daniel Pope <daniel@pyweek.org>
 To: %(to)s
 
 Welcome to %(ch)s!

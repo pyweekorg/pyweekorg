@@ -868,7 +868,10 @@ class Poll(models.Model):
     is_open = models.BooleanField()
     is_hidden = models.BooleanField()
     is_ongoing = models.BooleanField()
-    type = models.IntegerField(choices=POLL_CHOICES)
+    type = models.IntegerField(
+        choices=POLL_CHOICES,
+        help_text="Instant-runoff is the type for challenge theme polls."
+    )
 
     BEST_TEN=BEST_TEN
     SELECT_MANY=SELECT_MANY

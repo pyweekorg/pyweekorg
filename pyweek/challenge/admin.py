@@ -4,6 +4,7 @@ from pyweek.challenge import models
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from .views.user import delete_spammer
+from . import models
 
 
 admin.site.unregister(User)
@@ -28,9 +29,17 @@ class ResponseAdmin(admin.ModelAdmin):
     list_display = ['poll', 'option', 'user', 'created', 'value']
 
 
+
+class OptionInline(admin.TabularInline):
+    model = models.Option
+    max_num = 5
+    min_num = 5
+
+
 class PollAdmin(admin.ModelAdmin):
     field = ['challenge', 'title', 'created', 'is_open',
              'is_hidden', 'is_ongoing', 'type']
+    inlines = [OptionInline]
 
 
 class ChecksumAdmin(admin.ModelAdmin):
