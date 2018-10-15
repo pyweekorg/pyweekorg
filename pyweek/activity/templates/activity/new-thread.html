@@ -14,9 +14,7 @@ started a new discussion thread:
 {% endif %}
 <p>
 <a href="/d/{{ ev.target_id }}/">
-{% if ev.params.description_truncated %}Read more and comment
-{% else %}{% if ev.target.reply_count %}
-{{ ev.target.reply_count }} comments{% else %}Add a comment{% endif %}
-{% endif %}
+    {% if ev.params.description_truncated %}Read more / {% endif %}
+{% if ev.target.reply_count %}{{ ev.target.reply_count }} comments{% else %}Add a comment{% endif %}
 </a>
 </p>

@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Latest Activity{% endblock %}
+
+{% block scripts %}
+<script src="{% static "timeline.js" %}"></script>
+{% endblock %}
 
 {% block content %}
 <h2>Latest Activity</h2>

@@ -7,6 +7,6 @@ dev_media
 dev_settings.py
 prod_settings.py
 development
-static
+/static
 dumps
 media
