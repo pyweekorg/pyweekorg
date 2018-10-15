@@ -11,12 +11,7 @@
 <h2>Latest Activity</h2>
 
 <section id="timeline">
-    {% for ev in timeline %}
-    <article class="ev-{{ ev.type }}">
-        <time datetime="{{ ev.date.isoformat }}">{{ ev.date }}</time>
-        {% include ev.template_name %}
-    </article>
-    {% endfor %}
+    {% include "activity/timeline-events.html" %}
 </section>
 
 {% endblock %}

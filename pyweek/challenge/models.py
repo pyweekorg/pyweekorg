@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models.signals import pre_save
 
+from ..activity.models import EventRelation
+
 
 from stripogram import html2text
 import datetime
@@ -656,6 +658,7 @@ class DiaryEntry(models.Model):
     is_pyggy = models.BooleanField(default=False)
 
     objects = DiaryEntryManager()
+    activity_log_events = EventRelation()
 
     class Meta:
         get_latest_by = 'activity'

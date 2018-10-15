@@ -1077,3 +1077,28 @@ article#bio {
     display: inline-block;
     min-width: 5em;
 }
+
+#more-events {
+    background: url('throbber.gif') no-repeat center center;
+    height: 32px;
+}
+
+#new-events {
+    position: fixed;
+
+    top: 150px;
+
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+#new-events .but {
+    width: 15em;
+    background-color: #589cbb;
+    border-radius: 6px;
+    color: white;
+    padding: 1em;
+    font-size: 1.2em;
+    cursor: pointer;
+}

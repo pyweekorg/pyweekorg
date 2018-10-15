@@ -4,7 +4,9 @@ import json
 
 from django.conf import settings
 from django.db import models
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey, GenericRelation
+)
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -61,3 +63,13 @@ def log_event(type, user=None, target=None, **kwargs):
         data=json.dumps(kwargs),
     )
     ev.save()
+
+
+def EventRelation():
+    """A reverse relation for the event."""
+    return GenericRelation(
+        Event,
+        content_type_field='target_content_type',
+        object_id_field='target_id',
+    )
+

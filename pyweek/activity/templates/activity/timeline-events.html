@@ -1,0 +1,8 @@
+{% for ev in timeline %}
+<article class="ev-{{ ev.type }}" data-id="{{ ev.id }}">
+    <time datetime="{{ ev.date.isoformat }}">{{ ev.date }}</time>
+    {% include ev.template_name %}
+</article>
+{% endfor %}
+{% if more %}<div id="more-events"></div>{% endif %}
+
