@@ -8,6 +8,9 @@
     {% endfor %}
 </ul>
 
+{% if request.user.is_authenticated %}
 <p>
-    <a href="/p/{{ ev.target_id }}/">Cast your votes here!</a>
+    <a href="/p/{{ ev.target_id }}/">Cast your votes here!</a> |
+    <a href="/{{ ev.params.challenge_number }}/entry_add/">Register a new entry</a>
 </p>
+{% endif %}

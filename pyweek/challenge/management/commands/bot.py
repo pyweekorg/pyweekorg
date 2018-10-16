@@ -156,10 +156,7 @@ class Command(BaseCommand):
         if nd == sv.date():
             self.begin_theme_voting(latest)
         elif nd == sd.date():
-            # this also closes the poll
-            theme = latest.setTheme()
-            send_email(latest, CHALLENGE_START, theme=theme)
-            print 'PYWEEK BOT: SENT CHALLENGE START EMAIL'
+            self.start_challenge(latest)
         elif nd == ed.date():
             theme = latest.getTheme()
             send_email(latest, CHALLENGE_END, theme=theme)
@@ -198,5 +195,19 @@ class Command(BaseCommand):
             challenge_number=latest.number,
             challenge_title=latest.title,
             options=[o.text for o in options],
+        )
+        print 'PYWEEK BOT: Posted to activity log'
+
+    def start_challenge(self, latest):
+        theme = latest.setTheme()  # this also closes the poll
+        send_email(latest, CHALLENGE_START, theme=theme)
+        print 'PYWEEK BOT: SENT CHALLENGE START EMAIL'
+        log_event(
+            type="challenge-start",
+            target=latest,
+            challenge_number=latest.number,
+            challenge_title=latest.title,
+            theme=theme,
+            poll_id=latest.theme_poll.id,
         )
         print 'PYWEEK BOT: Posted to activity log'

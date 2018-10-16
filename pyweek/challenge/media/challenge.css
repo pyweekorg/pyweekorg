@@ -1102,3 +1102,10 @@ article#bio {
     font-size: 1.2em;
     cursor: pointer;
 }
+
+.theme-announce {
+    text-align: center;
+    color: #589cbb;
+    font-size: 300%;
+    margin: 0.5em 0;
+}
