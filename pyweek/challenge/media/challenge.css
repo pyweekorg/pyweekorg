@@ -1078,7 +1078,7 @@ article#bio {
     min-width: 5em;
 }
 
-#more-events {
+#more-events.loading {
     background: url('throbber.gif') no-repeat center center;
     height: 32px;
 }

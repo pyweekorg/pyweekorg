@@ -65,13 +65,14 @@ jQuery(function ($) {
         if (!ev.length || !isScrolledIntoView(ev)) {
             return;
         }
-        $(window).off('scroll', checkScroll);
+        stopScrollCheck();
 
         let last_id = $('#timeline article:last').attr('data-id');
         if (!last_id) {
             ev.remove();
             return;
         }
+        ev.addClass('loading');
 
         $.ajax(location.pathname + '?before=' + last_id, {
             dataType: 'html',
@@ -80,12 +81,26 @@ jQuery(function ($) {
                 $('#timeline').append(html);
 
                 if ($('#more-events').length) {
-                    $(window).on('scroll', checkScroll);
+                    startScrollCheck();
                 }
             }
         });
     }
-    $(window).on('scroll', checkScroll);
+
+    var pollScroll;
+
+    function startScrollCheck() {
+        $(window).on('scroll', checkScroll);
+        pollScroll = setInterval(checkScroll, 500);
+    }
+    function stopScrollCheck() {
+        $(window).off('scroll', checkScroll);
+        if (pollScroll) {
+            clearInterval(pollScroll);
+            pollScroll = null;
+        }
+    }
+    startScrollCheck();
 
     var new_html;
 
