@@ -56,6 +56,8 @@ def log_event(type, user=None, target=None, **kwargs):
                    available in the template for the event.
 
     """
+    if len(type) > 16:
+        raise ValueError("type must be less than 16 characters")
     ev = Event(
         type=type,
         user=user,

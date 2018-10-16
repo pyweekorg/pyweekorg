@@ -158,9 +158,9 @@ class Command(BaseCommand):
         elif nd == sd.date():
             self.start_challenge(latest)
         elif nd == ed.date():
-            theme = latest.getTheme()
-            send_email(latest, CHALLENGE_END, theme=theme)
-            print 'PYWEEK BOT: SENT CHALLENGE END EMAIL'
+            self.end_challenge(latest)
+        elif ed.date() > nd > sd.date():
+            self.challenge_countdown(latest, nd)
         elif nd == dd.date():
             latest.generate_tallies()
             theme = latest.getTheme()
@@ -176,7 +176,6 @@ class Command(BaseCommand):
             print 'PYWEEK BOT: SENT CHALLENGE ALL DONE'
         else:
             print 'PYWEEK BOT: DID NOTHING'
-
 
     def begin_theme_voting(self, latest):
         latest.theme_poll.is_open = True
@@ -209,5 +208,29 @@ class Command(BaseCommand):
             challenge_title=latest.title,
             theme=theme,
             poll_id=latest.theme_poll.id,
+        )
+        print 'PYWEEK BOT: Posted to activity log'
+
+    def challenge_countdown(self, latest, current_date):
+        remaining = (latest.end_utc().date() - current_date).days
+        log_event(
+            type="challenge-day",
+            target=latest,
+            days_remaining=remaining,
+            challenge_number=latest.number,
+            challenge_title=latest.title,
+            theme=latest.theme,
+        )
+        print 'PYWEEK BOT: Posted to activity log'
+
+    def end_challenge(self, latest):
+        send_email(latest, CHALLENGE_END, theme=latest.theme)
+        print 'PYWEEK BOT: SENT CHALLENGE END EMAIL'
+        log_event(
+            type="challenge-end",
+            target=latest,
+            challenge_number=latest.number,
+            challenge_title=latest.title,
+            theme=latest.theme,
         )
         print 'PYWEEK BOT: Posted to activity log'

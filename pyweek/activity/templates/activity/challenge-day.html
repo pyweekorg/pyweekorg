@@ -1,0 +1,5 @@
+{% with days_remaining=ev.params.days_remaining %}
+<p>{% if days_remaining < 3 %}Only {% endif %}{{days_remaining}} day{{ days_remaining|pluralize }}
+left in the
+<a href="/{{ ev.params.challenge_number }}/">{{ ev.params.challenge_title }}</a> challenge, <strong>{{ ev.params.theme }}</strong>! {% if days_remaining == 1 %}Crunch time! Don't panic!{% endif %}</p>
+{% endwith %}
