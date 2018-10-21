@@ -1,7 +1,8 @@
 <p class="summary">
+{% if not ev.params.users %}Someone {% endif %}
 {% for u in ev.params.users %}{% if not forloop.first and not forloop.last %},{% endif %}
 {% if forloop.last and not forloop.first %} and {% endif %}
-<a href="/u/{{ u }}">{{ u }}</a>{% else %}Someone{% endfor %}
+<a href="/u/{{ u }}">{{ u }}</a>{% endfor %}
 pushed {{ ev.params.commits|length}} commit{{ ev.params.commits|length|pluralize }} to
 <a href="https://github.com/{{ ev.params.repo }}/">{{ ev.params.repo }}</a> for
 <a href="/e/{{ ev.params.name }}/">{{ ev.params.game }}</a>:
