@@ -41,6 +41,7 @@ def timeline(request):
         return JsonResponse({
             'num': num,
             'html': html,
+            'more': num > PER_PAGE,
         })
     else:
         events = Event.objects.order_by('-id')

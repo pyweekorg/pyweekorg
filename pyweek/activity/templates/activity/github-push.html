@@ -1,7 +1,7 @@
 <p class="summary">
 {% for u in ev.params.users %}{% if not forloop.first and not forloop.last %},{% endif %}
 {% if forloop.last and not forloop.first %} and {% endif %}
-<a href="/u/{{ u }}">{{ u }}</a>{% endfor %}
+<a href="/u/{{ u }}">{{ u }}</a>{% else %}Someone{% endfor %}
 pushed {{ ev.params.commits|length}} commit{{ ev.params.commits|length|pluralize }} to
 <a href="https://github.com/{{ ev.params.repo }}/">{{ ev.params.repo }}</a> for
 <a href="/e/{{ ev.params.name }}/">{{ ev.params.game }}</a>:
@@ -9,7 +9,7 @@ pushed {{ ev.params.commits|length}} commit{{ ev.params.commits|length|pluralize
 
 <ul class="commits">
     {% for commit in ev.params.commits|slice:":10" %}
-    <li><a href="https://github.com/{{ ev.params.github_repo}}/commit/{{ commit.sha }}">{{ commit.sha|slice:":8"}}</a> {{ commit.msg }}</li>
+    <li><a href="https://github.com/{{ ev.params.repo}}/commit/{{ commit.sha }}">{{ commit.sha|slice:":8"}}</a> {{ commit.msg }}</li>
     {% endfor %}
     {% if ev.params.commits|length > 10 %}
     <li>... and {{ ev.params.commits|slice:"10:"|length }} more</li>

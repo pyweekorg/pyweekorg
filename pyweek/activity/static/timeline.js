@@ -125,7 +125,11 @@ jQuery(function ($) {
                     but.prependTo('#timeline');
 
                     but.on('click', () => {
+                        if (json.more) {
+                            $('#timeline article').remove();
+                        }
                         $('#timeline').prepend(new_html);
+                        updateTimestamps();
                         $(but).remove();
                         window.scrollTo(0, 0);
                     });
