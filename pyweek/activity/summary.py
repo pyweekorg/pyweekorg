@@ -48,7 +48,7 @@ class Summarizer(HTMLParser):
         words = data.split()
         take = []
         if data[:1].isspace():
-            take.append('')
+            take.append(b'')
         for w in words:
             if self.chars + len(w) > self.maxchars:
                 self.out.write(u' '.join(take) + u'...')
@@ -57,8 +57,8 @@ class Summarizer(HTMLParser):
             take.append(w)
             self.chars += len(w)
         if data[-1:].isspace():
-            take.append('')
-        self.out.write(' '.join(take))
+            take.append(b'')
+        self.out.write(b' '.join(take))
 
 
 
