@@ -729,6 +729,8 @@ class File(models.Model):
     is_final = models.BooleanField(default=False)
     is_screenshot = models.BooleanField(default=False)
 
+    activity_log_events = EventRelation()
+
     class Meta:
         get_latest_by = 'created'
         ordering = ['-created']
@@ -802,6 +804,8 @@ class EntryAward(models.Model):
     challenge = models.ForeignKey(Challenge)
     entry = models.ForeignKey(Entry)
     award = models.ForeignKey(Award)
+
+    activity_log_events = EventRelation()
 
     class Meta:
         get_latest_by = 'created'

@@ -1,0 +1,14 @@
+<p class="summary">
+<a href="/u/{{ ev.user }}">{{ ev.user }}</a>
+gave an award to
+<a href="/d/{{ ev.params.entry_id }}/">{{ ev.params.entry_name }}</a>.
+</p>
+
+<div class="center">
+  <div class="award">
+    <img src="{{ ev.params.award_url }}">
+    <br>
+    <strong>{{ ev.params.award_name }}</strong><br>
+    <em>Presented by <a href="/u/{{ ev.user.username }}">{{ ev.user.username }}</a></em>
+  </div>
+</div>

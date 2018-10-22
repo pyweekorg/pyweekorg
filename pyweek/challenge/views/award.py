@@ -13,6 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from pyweek.challenge import models
 from pyweek import settings
 from pyweek.settings import MEDIA_ROOT
+from pyweek.activity.models import log_event
 
 from stripogram import html2text
 
@@ -154,6 +155,15 @@ def _give_award(challenge, user, entry, award):
     entryaward = models.EntryAward(challenge=challenge, creator=user,
         entry=entry, award=award)
     entryaward.save()
+    log_event(
+        'gave-award',
+        user=user,
+        target=entryaward,
+        entry_id=entry.name,
+        entry_name=entry.display_title,
+        award_name=award.description,
+        award_url=award.content.url,
+    )
 
     return True
 
