@@ -735,6 +735,29 @@ class File(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
+    def get_image_role(self):
+        """Return a string indicating the role of the image.
+
+        * screenshot - if the image looks like a screenshot
+        * graphic - if the image looks like a smaller graphic
+        * animation - if the image contains multiple frames
+
+        """
+        from PIL import Image
+        try:
+            im = Image.open(self.content)
+            width, height = im.size
+            try:
+                im.seek(1)
+            except EOFError:
+                pass
+            else:
+                return 'animation'
+            return 'screenshot' if width * height > 3e5 else 'graphic'
+        except Exception:
+            import traceback
+            traceback.print_exc()
+            return 'screenshot'
 
     def __repr__(self):
        return 'file for %r (%r)'%(self.entry, self.description)

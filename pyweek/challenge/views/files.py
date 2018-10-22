@@ -94,6 +94,7 @@ def entry_upload(request, entry_id):
             game=entry.display_title,
             name=entry.name,
             description=file.description,
+            role=file.get_image_role(),
             url='{}{}'.format(settings.MEDIA_URL, file.filename)
         )
 

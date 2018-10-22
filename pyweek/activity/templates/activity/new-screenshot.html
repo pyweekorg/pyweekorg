@@ -1,8 +1,20 @@
 {% load gravatar %}
+{% with role=ev.params.role|default:"screenshot" %}
 <p class="summary">
 <a href="/u/{{ ev.user }}">
     {% gravatar ev.user.email 40 %}
     {{ ev.user }}</a>
-uploaded a new screenshot of <a href="/e/{{ ev.params.name }}/">{{ ev.params.game }}</a>.
+uploaded a new
+{% if role == "screenshot" %}{{ role }} of{% else %}
+{{ role }} to
+{% endif %}
+<a href="/e/{{ ev.params.name }}/">{{ ev.params.game }}</a>.
 </p>
+{% if role == "screenshot" %}
 <img class="screenshot" src="{{ ev.target.content.url }}">
+{% else %}
+<div class="imagebox center">
+    <img src="{{ ev.target.content.url }}">
+</div>
+{% endif %}
+{% endwith %}

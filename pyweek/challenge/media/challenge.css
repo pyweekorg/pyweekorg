@@ -1116,3 +1116,11 @@ article#bio {
 .center {
     text-align: center;
 }
+
+.imagebox {
+    padding: 10px;
+}
+.imagebox img {
+    max-width: 100%;
+    max-height: 800px;
+}
