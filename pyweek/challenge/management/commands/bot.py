@@ -174,8 +174,6 @@ class Command(BaseCommand):
             winner = '\n'.join(winner)
             send_email(latest, CHALLENGE_DONE, theme=theme, winner=winner)
             print 'PYWEEK BOT: SENT CHALLENGE ALL DONE'
-        else:
-            print 'PYWEEK BOT: DID NOTHING'
 
     def begin_theme_voting(self, latest):
         latest.theme_poll.is_open = True
