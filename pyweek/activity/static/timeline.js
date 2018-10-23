@@ -1,7 +1,7 @@
 function isScrolledIntoView(elem)
 {
     var docViewTop = $(window).scrollTop();
-    var docViewBottom = docViewTop + $(window).height();
+    var docViewBottom = docViewTop + window.innerHeight;
 
     var elemTop = $(elem).offset().top;
     var elemBottom = elemTop + $(elem).height();
@@ -79,10 +79,14 @@ jQuery(function ($) {
             success: (html) => {
                 ev.remove();
                 $('#timeline').append(html);
+                updateTimestamps();
 
                 if ($('#more-events').length) {
                     startScrollCheck();
                 }
+            },
+            error: () => {
+                startScrollCheck();
             }
         });
     }
@@ -90,11 +94,11 @@ jQuery(function ($) {
     var pollScroll;
 
     function startScrollCheck() {
-        $(window).on('scroll', checkScroll);
+        $(window).on('scroll resize touchmove', checkScroll);
         pollScroll = setInterval(checkScroll, 500);
     }
     function stopScrollCheck() {
-        $(window).off('scroll', checkScroll);
+        $(window).off('scroll resize touchmove', checkScroll);
         if (pollScroll) {
             clearInterval(pollScroll);
             pollScroll = null;
