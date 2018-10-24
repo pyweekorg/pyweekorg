@@ -234,7 +234,7 @@ def entry_display(request, entry_id):
                     rating.fun = f.cleaned_data['fun']
                     rating.innovation = f.cleaned_data['innovation']
                     rating.production = f.cleaned_data['production']
-                    rating.comment = html2text(f.cleaned_data['comment'])
+                    rating.comment = f.cleaned_data['comment']
                 else:
                     # create new
                     rating = models.Rating(
@@ -245,7 +245,7 @@ def entry_display(request, entry_id):
                         fun=f.cleaned_data['fun'],
                         innovation=f.cleaned_data['innovation'],
                         production=f.cleaned_data['production'],
-                        comment=html2text(f.cleaned_data['comment']),
+                        comment=f.cleaned_data['comment'],
                     )
                 rating.save()
                 messages.info(request, 'Ratings saved!')
