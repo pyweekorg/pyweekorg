@@ -21,8 +21,10 @@ class Summarizer(HTMLParser):
         if tag not in self.self_closing:
             self.stack.append(tag)
         attrtext = u' '.join(
-            u'{}="{}"'.format(escape(k), escape(v))
-            for k, v in attrs
+            (
+                u'{}="{}"'.format(escape(k), escape(v))
+                if v is not None else escape(k)
+            ) for k, v in attrs
         )
         self.out.write(
             u'<{} {}>'.format(tag, attrtext)
