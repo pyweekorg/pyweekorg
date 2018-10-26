@@ -59,8 +59,8 @@ class Summarizer(HTMLParser):
             take.append(w)
             self.chars += len(w)
         if data[-1:].isspace():
-            take.append(b'')
-        self.out.write(b' '.join(take))
+            take.append(u'')
+        self.out.write(u' '.join(take))
 
 
 
