@@ -77,7 +77,7 @@ def previous_participants():
 
 
 @address_list(
-    'Latest challenge participants',
+    'Latest challenge entrants',
     reason="because you are an entrant in the latest Pyweek challenge."
 )
 def latest_challenge_users(challenge=None):
@@ -85,6 +85,20 @@ def latest_challenge_users(challenge=None):
     challenge = challenge or Challenge.objects.latest()
     return filter_verified(EmailAddress.objects.filter(
         user__entry__challenge=challenge,
+        user__settings__email_contest_updates=True,
+    ).distinct())
+
+
+@address_list(
+    'Latest challenge finalists',
+    reason="because you are an entrant in the latest Pyweek challenge."
+)
+def latest_challenge_finalists(challenge=None):
+    """E-mail participants in the latest challenge with a final entry."""
+    challenge = challenge or Challenge.objects.latest()
+    return filter_verified(EmailAddress.objects.filter(
+        user__entry__challenge=challenge,
+        user__entry__has_final=True,
         user__settings__email_contest_updates=True,
     ).distinct())
 
