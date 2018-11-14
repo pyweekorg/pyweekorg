@@ -9,4 +9,4 @@ prod_settings.py
 development
 /static
 dumps
-media
+/media
