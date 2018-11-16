@@ -5,12 +5,14 @@
 {% block content %}
 <h2>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h2>
 
+{% if challenge.isRegoOpen %}
 <ul class="nav nav-tabs">
     <li class="active"><a href="#">Timetable</a></li>
     <li><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
     <li><a href="/{{ challenge.number}}/entries">Entries</a></li>
     {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
 </ul>
+{% endif %}
 
 {% if screenie %}
 <div id="thumb" style="width: {{ screenie.thumb_width }}px">

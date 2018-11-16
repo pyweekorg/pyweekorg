@@ -143,6 +143,9 @@ def entry_list(request, challenge_id):
 def entry_add(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
 
+    if not challenge.isRegoOpen:
+        return HttpResponseRedirect("/%s/" % challenge_id)
+
     if challenge.isCompFinished():
         messages.error(request, 'Entry registration closed')
         return HttpResponseRedirect("/%s/"%challenge_id)

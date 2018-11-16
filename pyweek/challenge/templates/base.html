@@ -84,7 +84,7 @@ jQuery(function ($) {
             <li class="endsection"><a href="{% url 'draft-emails' %}">E-mail users</a></li>
             {% endif %}
 
-           {% if challenge %}
+           {% if challenge and challenge.isRegoOpen %}
             {% if not challenge.isCompFinished %}
              <li class="endsection"><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
             {% endif %}
@@ -95,8 +95,8 @@ jQuery(function ($) {
             {% for e in user_entries %}
               <li><a href="/e/{{e.name}}/">{{e.challenge_id}}) {{e.display_title}}</a></li>
             {% endfor %}
-           {% endif %}
             <li class="divider"></li>
+           {% endif %}
             <li><a href="/logout/">Logout</a></li>
           </ul>
           {% endif %}
@@ -105,7 +105,7 @@ jQuery(function ($) {
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 
-	{% if latest and latest.summary %}
+	{% if latest and latest.summary and latest.isRegoOpen %}
 	<div id="flash" style="text-align: center; border-top: solid #ec8 1px; border-bottom: solid #ec8 1px; background-color: #ffe6c0; padding: 0.3em;">
 		<a href="{{ latest.get_absolute_url }}">{{ latest.title }}</a>: {{ latest.summary|safe }}
 	</div>
