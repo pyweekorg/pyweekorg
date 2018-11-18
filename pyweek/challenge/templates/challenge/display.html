@@ -5,7 +5,7 @@
 {% block content %}
 <h2>{{ challenge.title }} challenge{% if challenge.theme %}: &ldquo;{{challenge.theme}}&rdquo;{% endif %}</h2>
 
-{% if challenge.isRegoOpen %}
+{% if not challenge.isCompComing %}
 <ul class="nav nav-tabs">
     <li class="active"><a href="#">Timetable</a></li>
     <li><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
