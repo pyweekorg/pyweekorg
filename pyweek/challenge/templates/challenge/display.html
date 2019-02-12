@@ -26,10 +26,8 @@
 
 {% if challenge.isCompComing %}
  <p>The <b>next challenge</b> is <a href="/{{ challenge.number }}/">{{ challenge.title }}</a>.</p>
- <p>Registration will be open 30 days before it starts.</p>
-{% endif %}
-
-{% if challenge.isRegoOpen %}
+ <p>Registration will be open {{ REGISTRATION_OPENS }} days before it starts.</p>
+{% elif challenge.isRegoOpen %}
 <p>The next challenge is <a href="/{{ challenge.number }}/">{{ challenge.title }}</a>.</p>
 <p>Registration is now open.</p>
 {% endif %}

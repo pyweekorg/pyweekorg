@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
@@ -140,7 +141,14 @@ class Challenge(models.Model):
     start = models.DateField()
     end = models.DateField()
     motd = models.TextField()
-    is_rego_open = models.BooleanField(default=False)
+    is_rego_open = models.BooleanField(
+        default=False,
+        help_text=(
+            "Set to True to open registration for this competition now. "
+            "Otherwise, registration opens {days} days before the "
+            "competition.".format(days=settings.REGISTRATION_OPENS)
+        )
+    )
     theme_poll = models.ForeignKey('Poll', null=True, blank=True, related_name='poll_challenge')
     theme = models.CharField(max_length=100, null=True, blank=True, default='')
     torrent_url = models.CharField(max_length=255, null=True, blank=True, default='')
@@ -243,20 +251,28 @@ class Challenge(models.Model):
         else:
             return 'PyWeek &mdash; %s'%self.title
 
+    def registration_start(self):
+        """The date on which registration opens."""
+        DAY = datetime.timedelta(days=1)
+        return self.start_utc() - settings.REGISTRATION_OPENS * DAY
+
     def isCompComing(self):
-        if self.is_rego_open: return True
-        rego_date = self.start_utc() - datetime.timedelta(30)
+        """Competition has been created but is still long in the future."""
+        if self.is_rego_open:  # overridden by admin
+            return False
+        rego_date = self.registration_start()
         now = datetime.datetime.utcnow()
         return now < rego_date
 
     def isRegoOpen(self):
         """Are we in the registration window for this challenge?"""
-        if self.is_rego_open: return True
+        if self.is_rego_open:  # overridden by admin
+            return True
         now = datetime.datetime.utcnow()
         sd = self.start_utc()
         ed = self.end_utc()
-        rego_date = sd - datetime.timedelta(30)
-        end_rego_date = ed  # - datetime.timedelta(1)
+        rego_date = self.registration_start()
+        end_rego_date = ed
         return rego_date <= now <= end_rego_date
 
     def isVotingOpen(self):
@@ -345,9 +361,10 @@ class Challenge(models.Model):
                     date, event))
             else:
                 l.append('<tr><td>%s</td><td>%s</td>'%(date, event))
+        rego_date = self.registration_start()
         sd = self.start_utc()
         ed = self.end_utc()
-        this, next = sd - datetime.timedelta(30), sd - datetime.timedelta(7)
+        this, next = rego_date, sd - datetime.timedelta(7)
         add(this, next, 'Pre-registration open')
         this, next = next, sd
         add(this, next, 'Theme voting commences')

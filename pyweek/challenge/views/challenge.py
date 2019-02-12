@@ -12,12 +12,12 @@ from django.template import RequestContext
 from django.core.paginator import Paginator, InvalidPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from pyweek.challenge import models
-from pyweek import settings
 from django.contrib import auth
 from django.core import validators
-from pyweek.settings import MEDIA_ROOT
 from django.db import connection
+
+from pyweek.challenge import models
+from django.conf import settings
 
 from stripogram import html2safehtml
 
@@ -36,9 +36,7 @@ class SafeHTMLField(forms.CharField):
 
 
 def index(request):
-    return render(request, 'challenge/index.html', {
-        'django_version': django.__version__
-    })
+    return render(request, 'challenge/index.html', {'django_version': django.__version__})
 
 
 def stats(request):
@@ -149,7 +147,8 @@ def challenge_display(request, challenge_id):
             'screenie': screenie,
             'finished': finished and 'finished' or '',
             'all_done': all_done,
-            'recent_entryawards': challenge.entryaward_set.all()[:10]
+            'recent_entryawards': challenge.entryaward_set.all()[:10],
+            'REGISTRATION_OPENS': settings.REGISTRATION_OPENS,
         }
     )
 

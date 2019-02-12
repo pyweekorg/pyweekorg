@@ -97,3 +97,7 @@ INSTALLED_APPS = [
 LOGIN_URL = '/login/'
 DEFAULT_FROM_EMAIL = 'daniel@pyweek.org'
 FILE_UPLOAD_PERMISSIONS = 0o644
+
+
+# Number of days before the competition that registration opens
+REGISTRATION_OPENS = 45  # days
