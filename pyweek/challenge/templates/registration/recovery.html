@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Account Recovery{% endblock %}
+
+{% block content %}
+<h2>Account recovery</h2>
+
+
+<p>You are resetting the password for {{ user.username }} on pyweek.org.
+
+Please enter the new password twice, to confirm.</p>
+
+
+<form class="form" method="post" action="">
+    {{ form.as_p }}
+    <input type="submit" value="Reset my password" />
+</form>
+</fieldset>
+
+{% endblock %}
+
+

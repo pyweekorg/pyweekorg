@@ -53,6 +53,7 @@ urlpatterns = [
 
     # Registration views
     url(r'^login/', registration.login_page ),
+    url(r'^recover$', registration.recovery),
     url(r'^logout/', registration.logout ),
     url(r'^profile/$', registration.profile ),
     url(r'^profile/verify$', registration.verify_email),

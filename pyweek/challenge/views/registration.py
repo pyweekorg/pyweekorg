@@ -1,4 +1,5 @@
 from inspect import cleandoc
+from urllib import quote
 
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -10,10 +11,12 @@ from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.core import signing
 
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
+from pyweek.mail import sending
 from ..forms import LoginForm
 from ..models import Challenge
 from ...users.models import EmailAddress, UserSettings
@@ -338,8 +341,14 @@ def login_page(request, message=None, error=None):
         'next': redirect_to,
         'site_name': Site.objects.get_current().name,
     }
+
+    messages = info['messages'] = []
     if message:
-        info['messages'] = [message]
+        message.append(message)
+    url_message = request.GET.get('message')
+    if url_message:
+        messages.append(url_message)
+
     if error:
         info['reset_error'] = error
     return render(request, 'registration/login.html', info)
@@ -350,39 +359,113 @@ def logout(request, next_page=None):
     return HttpResponseRedirect('/')
 
 
+SIGNER = signing.TimestampSigner()
+
+
+def redirect_to_login(message):
+    """Redirect to the login page, with a message."""
+    if message:
+        params = '?message=' + quote(message)
+    else:
+        params = ''
+    return HttpResponseRedirect('/login/' + params)
+
+
 def resetpw(request):
+    """Send a password reset e-mail to a user's e-mail addresses."""
     if request.method != 'POST':
         return redirect(login_page)
 
-    email_address = request.POST.get('email_address')
-    if not email_address:
-        return login_page(request, error='No email address supplied!')
+    username = request.POST.get('username')
+    if not username:
+        return redirect_to_login('No username supplied!')
 
     try:
-        user = User.objects.get(email__exact=email_address)
+        user = User.objects.get(username__exact=username)
     except User.DoesNotExist:
-        return login_page(request, error='Email address not recognised.')
+        return login_page(
+            request,
+            error='{} is not a valid username.'.format(username)
+        )
+
+    addresses = user.emailaddress_set.all()
+
+    secret = SIGNER.sign(username.encode('rot13'))
+
+    sending.send_template(
+        subject='Account recovery',
+        template_name='account-recovery',
+        recipients=[addr.address for addr in addresses],
+        params={
+            'user': username,
+            'secret': secret,
+        },
+        priority=sending.PRIORITY_IMMEDIATE,
+        reason='because someone, possibly you, requested account recovery ' +
+               'at pyweek.org.',
+    )
+
+    return redirect_to_login(
+        "Please check your inbox for an account recovery e-mail."
+    )
+
+
+class RecoveryForm(forms.Form):
+    new_password = forms.CharField(
+        label="New password:",
+        widget=forms.PasswordInput()
+    )
+    new_password_confirm = forms.CharField(
+        label="Confirm password:",
+        help_text="Please re-enter the new password again to confirm.",
+        widget=forms.PasswordInput()
+    )
+
+    def clean(self):
+        passwd1 = self.cleaned_data['new_password']
+        passwd2 = self.cleaned_data['new_password_confirm']
+        if passwd1 != passwd2:
+            raise forms.ValidationError(
+                "The passwords you entered do not match."
+            )
+
+
+def recovery(request):
+    """Show a page allowing the user to enter a new password."""
+    key = request.GET.get('key', '')
+
+    try:
+        username = SIGNER.unsign(key, max_age=3600 * 4).encode('rot13')
+    except signing.BadSignature:
+        return redirect_to_login(
+            "You followed an invalid account recovery link."
+        )
+    except signing.SignatureExpired:
+        return redirect_to_login(
+            "The account recovery link you followed has expired."
+        )
+
+    try:
+        user = User.objects.get(username__exact=username)
+    except User.DoesNotExist:
+        return login_page(
+            request,
+            error='{} is not a valid username.'.format(username)
+        )
+
+    if request.method == 'POST':
+        form = RecoveryForm(request.POST)
+        if form.is_valid():
+            user.set_password(form.cleaned_data['new_password'])
+            user.save()
+            auth.login(request, user)
+            messages.success(request, "Your password was successfully reset.")
+            return HttpResponseRedirect('/')
     else:
-        new_password = User.objects.make_random_password()
-        user.set_password(new_password)
-        user.save()
+        form = RecoveryForm()
 
-        from django.conf import settings
-        admin = settings.ADMINS[0]
-
-        message = '''
-        This message is from the PyWeek system. It is in response to
-        a request to reset the password in the login "%s".
-
-        The new password is: %s
-
-        Please visit http://pyweek.org/ to log in.
-
-        ---
-        PyWeek Admin - %s <%s>
-        ''' % (user.username, new_password, admin[0], admin[1])
-
-        send_mail('Your PyWeek login details', cleandoc(message.strip()),
-            '%s <%s>' % admin, [email_address])
-
-        return login_page(request, message='Email sent to %s' % email_address)
+    return render(request, 'registration/recovery.html', {
+        'user': user,
+        'key': key,
+        'form': form,
+    })
