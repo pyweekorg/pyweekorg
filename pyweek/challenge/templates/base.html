@@ -105,7 +105,12 @@ jQuery(function ($) {
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 
-	{% if latest and latest.summary and latest.isRegoOpen %}
+        {% if unverified_emails %}
+	<div id="flash" style="text-align: center; border-top: solid #e88 1px; border-bottom: solid #e88 1px; background-color: #ffc0c0; padding: 0.3em;">
+            You have {{ unverified_emails }} unverified e-mail address{{ unverified_emails|pluralize:"es" }}.
+            Visit <a href="/profile/">your account settings</a> to update and re-send verification.
+	</div>
+	{% elif latest and latest.summary and latest.isRegoOpen %}
 	<div id="flash" style="text-align: center; border-top: solid #ec8 1px; border-bottom: solid #ec8 1px; background-color: #ffe6c0; padding: 0.3em;">
 		<a href="{{ latest.get_absolute_url }}">{{ latest.title }}</a>: {{ latest.summary|safe }}
 	</div>
