@@ -9,16 +9,16 @@
 
 {% block content %}
 
-{% if form.has_errors %}
-<div class="form-error">Sorry, there's been an error</div>
-{% endif %}
+<h2>Register for PyWeek</h2>
 
 <p>By signing up to this challenge, you agree to its
 <a href="{{ STATIC_URL }}conditions.html">conditions of use</a>.</p>
 
+<form class="form" method="post" action="">
+{% comment %}
+
 <fieldset>
 <legend>Registration Form</legend>
-<form class="form" method="post" action=".">
 <table>
 
 <tr{% if form.name.errors %} class="form-error"{% endif %}>
@@ -72,12 +72,13 @@ Pyweek events and will not be shared with third parties.
 </tr>
 
 <tr><td></td><td>
-<input type="submit" value="Register">
 </td></tr>
 </table>
+{% endcomment %}
+{{ form.as_p }}
 
+<input type="submit" value="Register">
 <input type="hidden" name="next" value="{{ next|urlencode }}">
 </form>
-</fieldset>
 
 {% endblock %}

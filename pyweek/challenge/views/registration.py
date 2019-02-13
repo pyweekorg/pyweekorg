@@ -12,10 +12,11 @@ from django.contrib.sites.models import Site
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
 from django.core import signing
-
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
+from django.contrib.auth import password_validation
 
+from pyweek.users.models import EmailAddress
 from pyweek.mail import sending
 from ..forms import LoginForm
 from ..models import Challenge
@@ -29,11 +30,59 @@ def is_registration_open():
 
 
 class RegistrationForm(forms.Form):
-    name = forms.CharField(max_length=15, required=True)
-    email = forms.EmailField(required=True)
+    name = forms.RegexField(
+        label="Chosen username",
+        regex=r'^[A-Za-z0-9_-]+$',
+        help_text="Your username may consist of letters, numbers, hyphens " +
+                  "and underscores.",
+        strip=True,
+        max_length=15,
+        required=True
+    )
+    email = forms.EmailField(
+        required=True,
+        label="E-mail address",
+        help_text="The e-mail address you provide will be used to send you " +
+                  "notifications about PyWeek events and will not be shared " +
+                  "with third parties."
+    )
     password = forms.CharField(widget=forms.PasswordInput)
-    again = forms.CharField(widget=forms.PasswordInput)
-    captcha = ReCaptchaField(widget=ReCaptchaWidget())
+    again = forms.CharField(
+        widget=forms.PasswordInput,
+        label="Confirm password",
+        help_text="Please re-enter the new password again to confirm.",
+    )
+    captcha = ReCaptchaField(
+        widget=ReCaptchaWidget(),
+        help_text="Please confirm you are a human person made of bone and cells."
+    )
+
+    def clean_name(self):
+        username = self.cleaned_data['name']
+        if User.objects.filter(username__iexact=username):
+            raise forms.ValidationError(
+                "This username is already taken."
+            )
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if EmailAddress.objects.filter(address__iexact=email):
+            raise forms.ValidationError(
+                'This e-mail address is already registered to another account.'
+            )
+        return email
+
+    def clean(self):
+        passwd1 = self.cleaned_data['password']
+        passwd2 = self.cleaned_data['again']
+        if passwd1 != passwd2:
+            raise forms.ValidationError(
+                "The passwords you entered do not match."
+            )
+
+        # Run standard Django password validators
+        password_validation.validate_password(passwd1)
 
 
 def register(request):
@@ -47,22 +96,11 @@ def register(request):
     if request.POST:
         f = RegistrationForm(request.POST)
         if f.is_valid():
-            if not f.cleaned_data['password']:
-                f.errors['password'] = ['This field is required.']
-            if f.cleaned_data['password'] != f.cleaned_data['again']:
-                f.errors['again'] = ['Does not match password.']
-            if User.objects.filter(username__exact=f.cleaned_data['name']):
-                f.errors['name'] = ['Username already registered']
-            if User.objects.filter(email__exact=f.cleaned_data['email']):
-                f.errors['email'] = ['Email address already registered']
-            if not f.errors:
-                User.objects.create_user(f.cleaned_data['name'],
-                    f.cleaned_data['email'], f.cleaned_data['password'])
-                user = auth.authenticate(username=f.cleaned_data['name'],
-                    password=f.cleaned_data['password'])
-                auth.login(request, user)
-                messages.info(request, 'Welcome to the Challenge!')
-                return HttpResponseRedirect(redirect_to or '/')
+            user = User.objects.create_user(f.cleaned_data['name'],
+                f.cleaned_data['email'], f.cleaned_data['password'])
+            auth.login(request, user)
+            messages.info(request, 'Welcome to the Challenge!')
+            return HttpResponseRedirect(redirect_to or '/')
     else:
         f = RegistrationForm()
     return render(request, 'registration/register.html', {'form': f})
@@ -100,14 +138,20 @@ class PasswordForm(forms.ModelForm):
             raise forms.ValidationError(
                 "You must enter the old password."
             )
-        if not self.cleaned_data['password'] and not self.cleaned_data['again']:
+
+        passwd1 = self.cleaned_data['password']
+        passwd2 = self.cleaned_data['again']
+        if not passwd1 and not passwd2:
             raise forms.ValidationError(
                 "You must enter the new password."
             )
-        if self.cleaned_data['password'] != self.cleaned_data['again']:
+        if passwd1 != passwd2:
             raise forms.ValidationError(
                 "Supplied passwords did not match."
             )
+
+        # Run standard Django password validators
+        password_validation.validate_password(passwd1, user=self.instance)
 
     def save(self):
         if not self.cleaned_data:
@@ -429,6 +473,9 @@ class RecoveryForm(forms.Form):
                 "The passwords you entered do not match."
             )
 
+        # Run standard Django password validators
+        password_validation.validate_password(passwd1, user=self.user)
+
 
 def recovery(request):
     """Show a page allowing the user to enter a new password."""
@@ -455,6 +502,7 @@ def recovery(request):
 
     if request.method == 'POST':
         form = RecoveryForm(request.POST)
+        form.user = user
         if form.is_valid():
             user.set_password(form.cleaned_data['new_password'])
             user.save()
