@@ -416,38 +416,50 @@ def redirect_to_login(message):
 
 
 def resetpw(request):
-    """Send a password reset e-mail to a user's e-mail addresses."""
+    """Send a password reset e-mail to a user's e-mail addresses.
+
+    We support recovery in two modes:
+
+    * By username, in which we e-mail all the e-mail addresses associated with
+      an account.
+    * By e-mail, in which we e-mail the given e-mail address, once for each
+      username associated with an account.
+
+    """
     if request.method != 'POST':
         return redirect(login_page)
 
-    username = request.POST.get('username')
-    if not username:
-        return redirect_to_login('No username supplied!')
+    username_email = request.POST.get('username_email')
+    if not username_email:
+        return redirect_to_login('No username/email supplied!')
 
-    try:
-        user = User.objects.get(username__exact=username)
-    except User.DoesNotExist:
-        return login_page(
-            request,
-            error='{} is not a valid username.'.format(username)
+    if '@' in username_email:
+        users = User.objects.filter(
+            emailaddress__address=username_email
+        ).distinct()
+        addresses = [username_email]
+    else:
+        users = User.objects.filter(username__exact=username_email)
+        try:
+            user = users.get()
+        except User.DoesNotExist:
+            return redirect_to_login('No such user {}!'.format(username_email))
+        addresses = [a.address for a in user.emailaddress_set.all()]
+
+    for u in users:
+        secret = SIGNER.sign(u.username.encode('rot13'))
+        sending.send_template(
+            subject='Account recovery',
+            template_name='account-recovery',
+            recipients=addresses,
+            params={
+                'username': u.username,
+                'secret': secret,
+            },
+            priority=sending.PRIORITY_IMMEDIATE,
+            reason='because someone, possibly you, requested account ' +
+                   'recovery at pyweek.org.',
         )
-
-    addresses = user.emailaddress_set.all()
-
-    secret = SIGNER.sign(username.encode('rot13'))
-
-    sending.send_template(
-        subject='Account recovery',
-        template_name='account-recovery',
-        recipients=[addr.address for addr in addresses],
-        params={
-            'user': username,
-            'secret': secret,
-        },
-        priority=sending.PRIORITY_IMMEDIATE,
-        reason='because someone, possibly you, requested account recovery ' +
-               'at pyweek.org.',
-    )
 
     return redirect_to_login(
         "Please check your inbox for an account recovery e-mail."

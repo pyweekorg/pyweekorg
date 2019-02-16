@@ -19,13 +19,14 @@
 
 <fieldset>
     <legend>Account recovery</legend>
-    <p>If you've forgotten your login details, just enter your PyWeek.org
-    username below and we'll send you an e-mail with instructions to reset.</p>
+    <p>If you've forgotten your login details, just enter your
+    username or e-mail address below and we'll send you an e-mail with
+    instructions to reset.</p>
 
     <form class="form" method="post" action="/resetpw/">
         <p>
-            <label for="#id_reset_username">Username:</label>
-            <input id="id_reset_username" type="text" name="username" width="30"/>
+            <label for="#id_reset">Username/Email:</label>
+            <input id="id_reset" type="text" name="username_email" width="30"/>
             <input type="submit" value="Request reset instructions" />
         </p>
         {% if reset_error %}
