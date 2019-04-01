@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}PyWeek {{ challenge.number }} rating dashboard{% endblock %}
+
+{% block content %}
+<h2>PyWeek {{ challenge.number }} rating dashboard</h2>
+
+<ul class="nav nav-tabs">
+    <li><a href="{{challenge.get_absolute_url}}">Timetable</a></li>
+    <li><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
+    <li><a href="/{{ challenge.number}}/entries">Entries</a></li>
+    <li class="active"><a>Rating Dashboard</a></li>
+</ul>
+
+{% if not_rated %}
+<section>
+    <h3>Not Yet Rated</h3>
+    <p>You have not entered any rating for these entries yet.</p>
+<table class="grid">
+<tr>
+    <th>Game</th>
+    <th>Category</th>
+</tr>
+{% for info in not_rated %}
+<tr>
+    <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</a></td>
+    <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+</section>
+{% endif %}
+
+
+{% if not_working %}
+<section>
+    <h3>Not working</h3>
+    <p>You might want to look at these again later.</p>
+<table class="grid">
+<tr>
+    <th>Game</th>
+    <th>Category</th>
+    <th>Overall non-working percentage</th>
+</tr>
+{% for info in not_working %}
+<tr>
+    <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</td>
+    <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
+    <td>{{ info.nw_pct }}%</td>
+</tr>
+{% endfor %}
+</table>
+</section>
+{% endif %}
+
+
+{% if rated %}
+<section>
+    <h3>Rated</h3>
+    <p>
+        You have rated these entries, but you may review and update
+        your ratings.
+    </p>
+    <table class="grid">
+    <tr>
+        <th>Game</th>
+        <th>Category</th>
+        <th>Fun</th>
+        <th>Production</th>
+        <th>Innovation</th>
+        <th>Disqualify?</th>
+    </tr>
+    {% for info in rated %}
+    <tr>
+        <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</a></td>
+        <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
+        <td>{{ info.fun }}</td>
+        <td>{{ info.prod }}</td>
+        <td>{{ info.inno }}</td>
+        <td>{% if info.dq %}Disqualify{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+</section>
+{% endif %}
+
+<section>
+    <h3>Your entries</h3>
+    <p>You may not rate entries you have worked on.</p>
+<table class="grid">
+<tr>
+    <th>Game</th>
+    <th>Category</th>
+</tr>
+{% for info in yours %}
+<tr>
+    <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</a></td>
+    <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+</section>
+
+{% endblock %}
+

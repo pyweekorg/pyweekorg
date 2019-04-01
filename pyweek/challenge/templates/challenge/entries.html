@@ -10,17 +10,12 @@
     <li><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
     <li class="active"><a href="/{{ challenge.number}}/entries">Entries</a></li>
     {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
+    {% if user_may_rate %}<li><a href="/{{ challenge.number }}/rating-dashboard">Rating Dashboard</a></li>{% endif %}
 </ul>
 
 <p style="float: right; color: #888">{{ entries|length }} entr{{entries|length|pluralize:"y,ies"}}</p>
 
 {% if finished %}
-<p>To play the games listed here, you may need to install <a
-href="http://www.python.org/">Python</a> (typically 2.5+).
-<a href="http://www.pygame.org/">PyGame</a>, <a href="http://www.pyglet.org/">pyglet</a> or
-<a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>. See the game's
-README file for specific requirements. Windows or OS X users
-downloading the versions of games specific to them shouldn't need to install anything.</p>
 
 {% if challenge.torrent_url %}
 <p>Please use <a href="http://btfaq.com/">BitTorrent</a> to download all the games if

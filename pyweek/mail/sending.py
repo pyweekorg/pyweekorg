@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import pkgutil
+import re
 
 import django.core.mail
 from django.conf import settings
@@ -44,6 +45,14 @@ def _make_payload(body_html, reason):
     return html_part, text_part
 
 
+WS_RE = re.compile(r'[\r\n]+')
+
+
+def clean_header(v):
+    """Clean a header value, removing illegal characters."""
+    return WS_RE.replace(' ', v)
+
+
 def send(
         subject,
         html_body,
@@ -61,9 +70,13 @@ def send(
             to_email = '{} <{}>'.format(recip.user.username, recip.address)
         else:
             to_email = recip
+
+        to_email = clean_header(to_email)
+        subject = clean_header(subject.strip())
+
         if priority == PRIORITY_IMMEDIATE:
             django.core.mail.send_mail(
-                subject=subject.strip(),
+                subject=subject,
                 message=text_part,
                 html_message=html_part,
                 from_email=settings.DEFAULT_FROM_EMAIL,

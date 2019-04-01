@@ -37,6 +37,7 @@ urlpatterns = [
     # Entry views
     url(r'^(\d+)/entry_add/$', entry.entry_add),
     url(r'^(\d+)/entries/$', entry.entry_list),
+    url(r'^(\d+)/rating-dashboard$', entry.rating_dashboard),
     url(r'^e/([\w-]+)/$', entry.entry_display),
     url(r'^e/([\w-]+)/manage/$', entry.entry_manage),
     url(r'^e/([\w-]+)/ratings/$', entry.entry_ratings),

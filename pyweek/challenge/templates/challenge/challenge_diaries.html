@@ -11,6 +11,7 @@
     <li class="active"><a href="/{{ challenge.number}}/diaries/">Diaries</a></li>
     <li><a href="/{{ challenge.number}}/entries">Entries</a></li>
     {% if challenge.isAllDone %}<li><a href="/{{ challenge.number}}/ratings/">Rankings</a></li>{% endif %}
+    {% if user_may_rate %}<li><a href="/{{ challenge.number }}/rating-dashboard">Rating Dashboard</a></li>{% endif %}
 </ul>
 
 {% if page.object_list %}

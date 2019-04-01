@@ -1,10 +1,13 @@
 import cgi, urllib, random, hashlib
 
 from django import forms
+from django.db import models as md
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import (
+    HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+)
 from pyweek.challenge import models
 from pyweek import settings
 from django.core import validators
@@ -65,6 +68,7 @@ def entry_list(request, challenge_id):
     finished = challenge.isCompFinished()
     all_done = challenge.isAllDone()
 
+    may_rate = user_may_rate(challenge, request.user)
     # may rate at all
     may_rate = False
     if not all_done and not request.user.is_anonymous() and challenge.isRatingOpen():
@@ -135,6 +139,110 @@ def entry_list(request, challenge_id):
             'limited': finished,
             'finished': finished,
             'all_done': all_done,
+            'user_may_rate': may_rate,
+        }
+    )
+
+
+def user_may_rate(challenge, user):
+    """Return True if the user may rate challenge entries at this time."""
+    finished = challenge.isCompFinished()
+    all_done = challenge.isAllDone()
+
+    # may rate at all
+    may_rate = False
+
+    if not finished or all_done or not challenge.isRatingOpen():
+        # Not in the rating period
+        return False
+
+    if user.is_anonymous():
+        # Only logged-in users may rate
+        return False
+
+    # User may rate only iff they have final entries
+    user_has_final = models.Entry.objects.filter(
+        challenge__number=challenge.number,
+        users__username__exact=user.username,
+        has_final=True,
+    ).count() > 0
+    return user_has_final
+
+
+def rating_dashboard(request, challenge_id):
+    """A view of entries organised by which have been rated."""
+    challenge = get_object_or_404(models.Challenge, pk=challenge_id)
+
+    if not user_may_rate(challenge, request.user):
+        return HttpResponseForbidden()
+
+    final_entries = models.Entry.objects.filter(
+        challenge=challenge_id,
+        has_final=True,
+    ).annotate(
+        author_count=md.Count('users'),
+        ratings_count=md.Count('rating'),
+        ratings_nw=md.Count('rating', nonworking=True),
+    )
+    user_ratings = models.Rating.objects.filter(
+        user__username__exact=request.user.username,
+        entry__challenge=challenge_id,
+    )
+    ratings_by_entry = {r.entry.pk: r for r in user_ratings}
+
+    your_entries = set(models.Entry.objects.filter(
+        challenge=challenge_id,
+        users__username__exact=request.user.username,
+    ).values_list('pk', flat=True))
+
+    rated = []
+    not_rated = []
+    not_working = []
+    yours = []
+    for entry in final_entries:
+        r = ratings_by_entry.get(entry.pk)
+        if r:
+            fun = r.fun
+            prod = r.production
+            inno = r.innovation
+            nw = r.nonworking
+            dq = r.disqualify
+        else:
+            fun = prod = inno = None
+            dq = nw = False
+        info = {
+            'name': entry.name,
+            'game': entry.game,
+            'title': entry.title,
+            'is_team': entry.author_count > 1,
+            'sortname': hash((request.user.username, entry.pk)),
+            'fun': fun,
+            'prod': prod,
+            'inno': inno,
+            'dq': dq,
+            'nw_pct': (
+                (entry.ratings_nw * 100.0 / entry.ratings_count)
+                if entry.ratings_count != 0 else 0
+            ),
+        }
+        if entry.pk in your_entries:
+            yours.append(info)
+        elif nw:
+            not_working.append(info)
+        elif r:
+            rated.append(info)
+        else:
+            not_rated.append(info)
+
+    for es in (rated, not_rated, yours):
+        es.sort(key=lambda e: hash((request.user.username, e['name'])))
+
+    return render(request, 'challenge/rating-dash.html', {
+            'challenge': challenge,
+            'rated': rated,
+            'not_rated': not_rated,
+            'not_working': not_working,
+            'yours': yours,
         }
     )
 

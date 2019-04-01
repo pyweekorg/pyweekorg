@@ -21,6 +21,8 @@ from django.conf import settings
 
 from stripogram import html2safehtml
 
+from .entry import user_may_rate
+
 
 class SafeHTMLField(forms.CharField):
     SAFE_TAGS = '''b a i br blockquote table tr td img pre p dl dd dt
@@ -149,6 +151,7 @@ def challenge_display(request, challenge_id):
             'all_done': all_done,
             'recent_entryawards': challenge.entryaward_set.all()[:10],
             'REGISTRATION_OPENS': settings.REGISTRATION_OPENS,
+            'user_may_rate': user_may_rate(challenge, request.user),
         }
     )
 
@@ -168,7 +171,8 @@ def challenge_diaries(request, challenge_id):
     return render(request, 'challenge/challenge_diaries.html', {
         'challenge': challenge,
         'pages': pages,
-        'page': page
+        'page': page,
+        'user_may_rate': user_may_rate(challenge, request.user),
     })
 
 
