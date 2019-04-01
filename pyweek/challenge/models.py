@@ -547,10 +547,16 @@ class Entry(models.Model):
         if user.is_anonymous():
             return False
         if user in self.users.all():
+            # Users may not rate their own entry
             return False
         username = user.username
         if challenge is None:
             challenge = self.challenge
+        if not self.has_final:
+            # Cannot rate an entry that does not have a final submission
+            return False
+
+        # Check that the rating user has their own final entry
         for e in Entry.objects.filter(challenge=self.challenge, users__username__exact=username):
             if e.has_final:
                 return True
