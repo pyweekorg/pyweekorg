@@ -50,7 +50,7 @@ WS_RE = re.compile(r'[\r\n]+')
 
 def clean_header(v):
     """Clean a header value, removing illegal characters."""
-    return WS_RE.replace(' ', v)
+    return WS_RE.sub(' ', v)
 
 
 def send(

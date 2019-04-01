@@ -33,6 +33,9 @@ class EmailAddress(models.Model):
         default=default_verification_key,
     )
 
+    class Meta:
+        verbose_name_plural = "email addresses"
+
     def __repr__(self):
         return '<EmailAddress {!r} {}>'.format(
             self.address,
@@ -89,6 +92,9 @@ class UserSettings(models.Model):
                   "upcoming competitions?",
         default=True
     )
+
+    class Meta:
+        verbose_name_plural = "user settings"
 
 
 @receiver(post_save, sender=django.contrib.auth.get_user_model())
