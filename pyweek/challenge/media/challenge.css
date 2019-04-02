@@ -1135,3 +1135,7 @@ article#bio {
     max-width: 100%;
     max-height: 800px;
 }
+
+td.awards img {
+    height: 1em;
+}

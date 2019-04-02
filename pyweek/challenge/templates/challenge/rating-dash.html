@@ -19,12 +19,16 @@
 <table class="grid">
 <tr>
     <th>Game</th>
+    <th>By</th>
     <th>Category</th>
+    <th>Your awards</th>
 </tr>
 {% for info in not_rated %}
 <tr>
     <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</a></td>
+    <td>{{ info.owner }}</td>
     <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
+    <td class="awards">{% for a in info.awards %}<img src="{{ a.content.url }}" title="{{ a.description }}">{% endfor %}</td>
 </tr>
 {% endfor %}
 </table>
@@ -39,14 +43,18 @@
 <table class="grid">
 <tr>
     <th>Game</th>
+    <th>By</th>
     <th>Category</th>
     <th>Overall non-working percentage</th>
+    <th>Your awards</th>
 </tr>
 {% for info in not_working %}
 <tr>
     <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</td>
+    <td>{{ info.owner }}</td>
     <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
     <td>{{ info.nw_pct }}%</td>
+    <td class="awards">{% for a in info.awards %}<img src="{{ a.content.url }}" title="{{ a.description }}">{% endfor %}</td>
 </tr>
 {% endfor %}
 </table>
@@ -64,20 +72,24 @@
     <table class="grid">
     <tr>
         <th>Game</th>
+        <th>By</th>
         <th>Category</th>
         <th>Fun</th>
         <th>Production</th>
         <th>Innovation</th>
         <th>Disqualify?</th>
+        <th>Your awards</th>
     </tr>
     {% for info in rated %}
     <tr>
         <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</a></td>
+        <td>{{ info.owner }}</td>
         <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
         <td>{{ info.fun }}</td>
         <td>{{ info.prod }}</td>
         <td>{{ info.inno }}</td>
         <td>{% if info.dq %}Disqualify{% endif %}</td>
+        <td class="awards">{% for a in info.awards %}<img src="{{ a.content.url }}" title="{{ a.description }}">{% endfor %}</td>
     </tr>
     {% endfor %}
 </table>
@@ -90,11 +102,13 @@
 <table class="grid">
 <tr>
     <th>Game</th>
+    <th>By</th>
     <th>Category</th>
 </tr>
 {% for info in yours %}
 <tr>
     <td><a href="/e/{{ info.name }}">{{ info.game|default:info.title }}</a></td>
+    <td>{{ info.owner }}</td>
     <td>{% if info.is_team %}Team{% else %}Individual{% endif %}</td>
 </tr>
 {% endfor %}

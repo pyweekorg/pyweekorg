@@ -183,6 +183,11 @@ def rating_dashboard(request, challenge_id):
         author_count=md.Count('users', distinct=True),
         ratings_count=md.Count('rating'),
         ratings_nw=md.Count('rating', nonworking=True),
+    ).select_related('user').prefetch_related(
+        md.Prefetch(
+            'entryaward_set',
+            queryset=request.user.entryaward_set.all()
+        )
     )
     user_ratings = models.Rating.objects.filter(
         user__username__exact=request.user.username,
@@ -210,15 +215,18 @@ def rating_dashboard(request, challenge_id):
         else:
             fun = prod = inno = None
             dq = nw = False
+        is_team = entry.author_count > 1
         info = {
             'name': entry.name,
             'game': entry.game,
             'title': entry.title,
-            'is_team': entry.author_count > 1,
+            'owner': entry.title if is_team else entry.user.username,
+            'is_team': is_team,
             'sortname': hash((request.user.username, entry.pk)),
             'fun': fun,
             'prod': prod,
             'inno': inno,
+            'awards': entry.entryaward_set.filter(creator=request.user),
             'dq': dq,
             'nw_pct': (
                 (entry.ratings_nw * 100.0 / entry.ratings_count)

@@ -832,8 +832,10 @@ class Award(models.Model):
     def __str__(self):
         return 'award from %s (%s)'%(self.creator, self.description)
     def __unicode__(self):
-        return u'award from %s (%s)'%(self.creator.name.decode('utf8', 'replace'),
-            self.description.decode('utf8', 'replace'))
+        return u'award from {} ({})'.format(
+            self.creator.username,
+            self.description
+        )
 
     def filename(self):
         return os.path.basename(self.get_content_filename())
