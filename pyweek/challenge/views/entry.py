@@ -180,7 +180,7 @@ def rating_dashboard(request, challenge_id):
         challenge=challenge_id,
         has_final=True,
     ).annotate(
-        author_count=md.Count('users'),
+        author_count=md.Count('users', distinct=True),
         ratings_count=md.Count('rating'),
         ratings_nw=md.Count('rating', nonworking=True),
     )
