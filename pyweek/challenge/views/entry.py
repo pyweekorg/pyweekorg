@@ -367,7 +367,13 @@ def entry_display(request, entry_id):
                         comment=f.cleaned_data['comment'],
                     )
                 rating.save()
-                messages.info(request, 'Ratings saved!')
+                messages.info(
+                    request,
+                    'Rating saved! &emsp; <a href="/{}/rating-dashboard">'
+                    'Return to rating dashboard</a>'.format(
+                        entry.challenge.number,
+                    )
+                )
                 return HttpResponseRedirect("/e/%s/"%entry.name)
         elif rating is not None:
             data = dict(
