@@ -1,7 +1,8 @@
 from django.conf.urls import url, include
 from pyweek.challenge.views.message import DiaryFeed
 from .views import (
-    challenge, message, user, entry, files, poll, registration, award, pages
+    challenge, message, user, entry, files, poll, registration, award, pages,
+    api
 )
 
 urlpatterns = [
@@ -14,11 +15,12 @@ urlpatterns = [
     url(r'^challenges/$', challenge.previous_challenges),
 
     url(r'^(\d+)/$', challenge.challenge_display, name="challenge"),
-    url(r'^(\d+)/downloads\.json$', challenge.challenge_downloads),
     url(r'^(\d+)/diaries/$', challenge.challenge_diaries),
     url(r'^(\d+)/ratings/$', challenge.challenge_ratings),
     url(r'^(\d+)/calculate_rating_tallies/', challenge.calculate_rating_tallies),
     url(r'^(\d+)/fix_winners/', challenge.fix_winners),
+
+    url(r'^(\d+)/downloads\.json$', api.challenge_downloads),
 
     # Message views
     url(r'^messages/$', message.list_messages),

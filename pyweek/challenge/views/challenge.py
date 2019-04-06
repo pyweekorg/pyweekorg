@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.core.paginator import Paginator, InvalidPage
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.core import validators
@@ -226,38 +226,3 @@ def challenge_ratings(request, challenge_id):
     )
 
 
-def challenge_downloads(request, challenge_id):
-    """Get a view of all downloads for the challenge."""
-    challenge = get_object_or_404(models.Challenge, pk=challenge_id)
-    all_done = challenge.isAllDone()
-    if not all_done:
-        resp = {}
-    entries = (
-        models.Entry.objects.filter(
-            challenge__number=challenge_id,
-            has_final=True,
-        )
-        .prefetch_related(
-            md.Prefetch(
-                'file_set',
-                queryset=models.File.objects.filter(
-                    is_final=True,
-                    is_screenshot=False,
-                )
-            )
-        )
-    )
-    resp = {
-        e.game or e.title: [
-            {
-                'name': posixpath.basename(f.content.path),
-                'url': urljoin(
-                    'https://' + request.META.get('HTTP_HOST', ''),
-                    f.content.url,
-                )
-            }
-            for f in e.file_set.all()
-        ]
-        for e in entries
-    }
-    return JsonResponse(resp)
