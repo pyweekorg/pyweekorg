@@ -37,7 +37,8 @@ def challenge_downloads(request, challenge_id):
                 'url': urljoin(
                     'https://' + request.META.get('HTTP_HOST', ''),
                     f.content.url,
-                )
+                ),
+                'size': f.content.size,
             }
             for f in e.file_set.all()
         ]
