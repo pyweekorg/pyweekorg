@@ -6,6 +6,7 @@
 <h2>Previous Challenges</h2>
 
 {% for challenge in challenges %}
+{% if challenge.isAllDone %}
 <h3><a href="{% url "challenge" challenge.number %}">Pyweek {{challenge.number}} - {{challenge.theme}}</a></h3>
 <p>This challenge ran in {{challenge.start|date:"F Y"}}. The winners were:</p>
 
@@ -17,6 +18,10 @@
     <li>Team: <a href="/e/{{ e.name }}/">{% if e.game %}{{ e.game }}{% else %}{{ e.title }}{% endif %}</a></li>
  {% endfor %}
 </ul>
+{% else %}
+<h3><a href="{% url "challenge" challenge.number %}">Pyweek {{challenge.number}}</a></h3>
+<p>This is the current challenge!</p>
+{% endif %}
 {% endfor %}
 
 {# The first couple are hard-coded. #}
