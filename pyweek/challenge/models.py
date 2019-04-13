@@ -375,6 +375,7 @@ class Challenge(models.Model):
         add(next, None, 'Judging closes, winners announced')
         return '\n'.join(l)
 
+    @transaction.atomic
     def generate_tallies(self):
         # set up the rating tallies table for a challenge
         team = []
@@ -411,6 +412,7 @@ class Challenge(models.Model):
                     e.winner = self
                     e.save()
 
+    @transaction.atomic
     def fix_winners(self):
         # set up the rating tallies table for a challenge
         team = []
