@@ -1,5 +1,7 @@
 import os
 
+from enum import IntEnum
+
 from django.conf import settings
 from django.core import validators
 from django.db import models, connection, transaction
@@ -134,6 +136,17 @@ class ChallengeManager(models.Manager):
         return self.filter(number__lt=1000)
 
 
+class ChallengeState(IntEnum):
+    """The states that challenges go through."""
+
+    UPCOMING = 0
+    REGISTRATION = 1
+    THEME_VOTING = 2
+    PROGRAMMING = 3
+    UPLOAD = 4
+    JUDGING = 5
+    FINISHED = 6
+
 
 class Challenge(models.Model):
     number = models.IntegerField(primary_key=True)
@@ -255,6 +268,46 @@ class Challenge(models.Model):
         """The date on which registration opens."""
         DAY = datetime.timedelta(days=1)
         return self.start_utc() - settings.REGISTRATION_OPENS * DAY
+
+    def state(self):
+        """Get a ChallengeState indicating the current state of the challenge.
+
+        This replaces all of the previous "isRegoOpen" etc.
+
+        """
+        DAY = datetime.timedelta(days=1)
+
+        start = self.start_utc()
+        end = self.end_utc()
+        now = datetime.datetime.utcnow()
+
+        registration_opens = start - settings.REGISTRATION_OPENS * DAY
+        voting_opens = start - 7 * DAY
+        upload_finishes = end + DAY
+        winners_announced = end + 14 * DAY
+
+        rego_date = self.registration_start()
+
+        if now < registration_opens and not self.is_rego_open:
+            return ChallengeState.UPCOMING
+
+        if now < voting_opens or not self.theme_poll:
+            return ChallengeState.REGISTRATION
+
+        if now < start:
+            return ChallengeState.THEME_VOTING
+
+        if now < end:
+            return ChallengeState.PROGRAMMING
+
+        if now < upload_finishes:
+            return ChallengeState.UPLOAD
+
+        # TODO: make this conditional on having winners
+        if now < winners_announced:
+            return ChallengeState.JUDGING
+
+        return ChallengeState.FINISHED
 
     def isCompComing(self):
         """Competition has been created but is still long in the future."""

@@ -9,3 +9,4 @@ django-gravatar2==1.4.2
 html2text==2018.1.9
 django-mailer==1.2.5
 requests==2.20.0
+enum34==1.1.6
