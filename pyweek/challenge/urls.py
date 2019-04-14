@@ -17,8 +17,6 @@ urlpatterns = [
     url(r'^(\d+)/$', challenge.challenge_display, name="challenge"),
     url(r'^(\d+)/diaries/$', challenge.challenge_diaries),
     url(r'^(\d+)/ratings/$', challenge.challenge_ratings),
-    url(r'^(\d+)/calculate_rating_tallies/', challenge.calculate_rating_tallies),
-    url(r'^(\d+)/fix_winners/', challenge.fix_winners),
 
     url(r'^(\d+)/downloads\.json$', api.challenge_downloads),
 

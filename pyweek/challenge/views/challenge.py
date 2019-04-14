@@ -179,21 +179,6 @@ def challenge_diaries(request, challenge_id):
         'user_may_rate': user_may_rate(challenge, request.user),
     })
 
-
-def calculate_rating_tallies(request, challenge_id):
-    challenge = get_object_or_404(models.Challenge, pk=challenge_id)
-    all_done = challenge.isAllDone()
-    if not all_done:
-        return HttpResponse('NOT FINISHED')
-    challenge.generate_tallies()
-    return HttpResponse('DONE')
-
-def fix_winners(request):
-    for challenge in models.Challenge.objects.all():
-        if challenge.isAllDone():
-            challenge.fix_winners()
-    return HttpResponse('DONE')
-
 def challenge_ratings(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
     all_done = challenge.isAllDone()

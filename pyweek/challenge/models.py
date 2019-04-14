@@ -375,13 +375,24 @@ class Challenge(models.Model):
         add(next, None, 'Judging closes, winners announced')
         return '\n'.join(l)
 
+    @property
+    def challenge(self):
+        """The related name for 'entries' used to be set as 'challenge'.
+
+        This alias is for backwards compatibility now that has been fixed.
+        """
+        return self.entries
+
     @transaction.atomic
     def generate_tallies(self):
-        # set up the rating tallies table for a challenge
+        """Recalculate rating tallies for this challenge."""
         team = []
         individual = []
-        for entry in Entry.objects.filter(challenge=self.number):
-            if not entry.has_final: continue
+        for entry in self.entries.all():
+            entry.ratingtally_set.all().delete()
+            if not entry.has_final:
+                continue
+
             ratings = entry.tally_ratings()
             ratingtally = RatingTally(
                 challenge=self,
@@ -391,44 +402,24 @@ class Challenge(models.Model):
                 innovation=ratings['innovation'],
                 production=ratings['production'],
                 overall=ratings['overall'],
-                nonworking=int(ratings['nonworking']*100),
-                disqualify=int(ratings['disqualify']*100),
+                nonworking=int(ratings['nonworking'] *100),
+                disqualify=int(ratings['disqualify'] * 100),
                 respondents=ratings['respondents'],
             )
             ratingtally.save()
 
             if entry.is_team():
-                team.append((int(ratings['overall']*100), entry))
+                team.append((int(ratings['overall'] * 100), entry))
             else:
-                individual.append((int(ratings['overall']*100), entry))
+                individual.append((int(ratings['overall'] * 100), entry))
 
         # figure the winners
         team.sort()
         individual.sort()
         for l in (team, individual):
-            n = l[-1][0]
-            for s, e in l:
-                if s == n:
-                    e.winner = self
-                    e.save()
+            if not l:
+                continue
 
-    @transaction.atomic
-    def fix_winners(self):
-        # set up the rating tallies table for a challenge
-        team = []
-        individual = []
-        for entry in Entry.objects.filter(challenge=self.number):
-            if not entry.has_final: continue
-            ratingtally = entry.ratingtally_set.all()[0]
-            if entry.is_team():
-                team.append((int(ratingtally.overall*100), entry))
-            else:
-                individual.append((int(ratingtally.overall*100), entry))
-
-        # figure the winners
-        team.sort()
-        individual.sort()
-        for l in (team, individual):
             n = l[-1][0]
             for s, e in l:
                 if s == n:
@@ -485,7 +476,7 @@ class Entry(models.Model):
 
     description = models.TextField()
 
-    challenge = models.ForeignKey(Challenge, related_name='challenge')
+    challenge = models.ForeignKey(Challenge, related_name='entries')
     winner = models.ForeignKey(Challenge, blank=True, null=True, related_name='winner')
     user = models.ForeignKey(User, verbose_name='entry owner', related_name="owner")
     users = models.ManyToManyField(User)
