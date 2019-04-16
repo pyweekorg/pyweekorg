@@ -90,6 +90,21 @@ def latest_challenge_users(challenge=None):
 
 
 @address_list(
+    'Latest challenge non-finishers',
+    reason="because you entered the latest Pyweek challenge."
+)
+def latest_challenge_dnf(challenge=None):
+    """E-mail participants in the latest challenge who have never finished."""
+    challenge = challenge or Challenge.objects.latest()
+    return filter_verified(EmailAddress.objects.filter(
+        user__entry__challenge=challenge,
+        user__settings__email_contest_updates=True,
+    ).exclude(
+        user__entry__has_final=True,
+    ).distinct())
+
+
+@address_list(
     'Latest challenge finalists',
     reason="because you are an entrant in the latest Pyweek challenge."
 )
