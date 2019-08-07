@@ -1,0 +1,10 @@
+<p><a href="https://pyweek.org/u/{{ user.username }}">{{ user.username }}</a>
+requested to join your PyWeek team
+<a href="https://pyweek.org{{ entry.get_absolute_url }}">
+{{ entry.title|default:entry.name }}</a></p>
+
+<p>To approve or reject this request, visit
+<a href="https://pyweek.org/e/{{ entry.name }}/members/">your membership requests page</a>.</p>
+
+<p>To stop receiving membership requests, deactivate the "Is Open" setting
+on <a href="https://pyweek.org/e/{{ entry.name }}/manage/">your entry management page</a>.</p>

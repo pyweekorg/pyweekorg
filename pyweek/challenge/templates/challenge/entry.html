@@ -44,10 +44,11 @@
 {% if entry.is_open and user.is_authenticated and not is_member %}
 <h3>Open team</h3>
 <p>This team is accepting membership applications.</p>
-<form action="?action=join" method="POST">
+<form action="" method="POST">
     {% if join_requested %}
     <button disabled>Your membership request is pending</button>
     {% else %}
+    <input type="hidden" name="action" value="join">
     <input type="submit" value="Request to join {{ entry.title }}">
     {% endif %}
 </form>

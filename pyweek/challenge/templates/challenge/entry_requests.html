@@ -9,12 +9,14 @@
 {% if requesters %}
 <p>Below are users requesting to join your team.</p>
 
+<p>To stop receiving membership requests, deactivate the "Is Open" setting
+on <a href="../manage/">your entry management page</a>.</p>
 
 <form class="form" method="post" action=".">
 <table class="grid">
 {% for u in requesters %}
 <tr>
-    <td width="50%"><a href="/u/{{ u.username }}">{{ u.username }}</a></td>
+    <td width="70%"><a href="/u/{{ u.username }}">{{ u.username }}</a></td>
     <td>
         <input
             type="radio"
@@ -23,6 +25,7 @@
             value="approve">
         <label for="id_{{u.username}}_approve">Approve</label>
     </td>
+{% comment %}
     <td>
         <input
             type="radio"
@@ -31,13 +34,15 @@
             value="reject">
         <label for="id_{{u.username}}_reject">Decline</label>
     </td>
+{% endcomment %}
     <td>
         <input
             type="radio"
             id="id_{{u.username}}_undecided"
             name="user:{{ u.username }}"
+            checked
             value="">
-        <label for="id_{{u.username}}_undecided">Undecided</label>
+        <label for="id_{{u.username}}_undecided">Ignore</label>
     </td>
 </tr>
 {% endfor %}

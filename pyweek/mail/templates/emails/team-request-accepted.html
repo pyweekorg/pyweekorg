@@ -1,0 +1,13 @@
+<p>
+Your request to join
+<a href="https://pyweek.org{{ entry.get_absolute_url }}">
+{{ entry.title|default:entry.name }}</a>
+has been accepted by
+{% with entry.user as user %}
+<a href="https://pyweek.org/u/{{ user.username }}">{{ user.username }}</a>!
+{% endwith %}
+Welcome to the team!
+</p>
+
+<p>The private URL for this group is
+<a href="{{ entry.group_url }}">{{ entry.group_url }}</a>.

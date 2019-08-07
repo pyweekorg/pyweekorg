@@ -16,6 +16,9 @@ from django.contrib.auth.decorators import login_required
 from stripogram import html2text, html2safehtml
 from pyweek.activity.models import log_event
 from pyweek.activity.summary import summarise
+from pyweek.mail import sending
+from pyweek.users.models import EmailAddress
+
 
 safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
     ul ol li span div'''.split()
@@ -472,8 +475,20 @@ def entry_display(request, entry_id):
                     "You are already a member of this team."
                 )
             else:
-                # TODO: send e-mail
+                owner = entry.user
+                addresses = [a.address for a in owner.emailaddress_set.all()]
                 entry.join_requests.add(request.user)
+
+                sending.send_template(
+                    subject='Team membership request',
+                    template_name='team-request',
+                    recipients=addresses,
+                    params={
+                        'user': request.user,
+                        'entry': entry,
+                    },
+                    reason='because you created an open team on pyweek.org.',
+                )
                 messages.success(request, "Request sent!")
                 return HttpResponseRedirect(entry.get_absolute_url())
 
@@ -603,26 +618,45 @@ def entry_requests(request, entry_id):
 
     if request.method == 'POST':
         data = request.POST
-        added = 0
-        rejected = 0
+        added = set()
+        rejected = set()
         for u in list(entry.join_requests.all()):
             action = request.POST.get(u'user:' + u.username)
             if action == 'approve':
                 # TODO: send e-mail
                 entry.users.add(u)
                 entry.join_requests.remove(u)
-                added += 1
+                added.add(u)
             elif action == 'reject':
                 # TODO: send e-mail
                 entry.join_requests.remove(u)
-                rejected += 1
+                rejected.add(u)
+
+        team_name = entry.title or entry.name
+
+        if added:
+            addresses = [
+                a.address for a in
+                EmailAddress.objects.filter(user__in=added)
+            ]
+            sending.send_template(
+                subject='{} team membership accepted'.format(team_name),
+                template_name='team-request-accepted',
+                recipients=addresses,
+                params={
+                    'entry': entry,
+                },
+                reason='because you requested to join this team.',
+            )
 
         if added or rejected:
             msgs = []
             if added:
-                msgs.append('added {} new team members'.format(added))
+                msgs.append('added {} new team members'.format(len(added)))
             if rejected:
-                msgs.append('rejected {} membership requests'.format(rejected))
+                msgs.append(
+                    'rejected {} membership requests'.format(len(rejected))
+                )
             messages.success(request, ' and '.join(msgs).capitalize())
             return back_to_entry
         else:
