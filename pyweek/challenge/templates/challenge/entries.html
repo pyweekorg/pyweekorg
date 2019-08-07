@@ -32,7 +32,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
 <a href="{{ entry.thumb.content.url }}"><img border="0" width="150" src="{{ entry.thumb.content.url }}-thumb.png"></a>
 {% endif %}
 <div class="details">
-<h3><a href="/e/{{ entry.name }}/">{{ entry.game|default:entry.title }}</a>
+<h3><a href="{{ entry.entry.get_absolute_url }}">{{ entry.game|default:entry.title }}</a>
   {% if entry.may_rate %}&mdash;
   {% if entry.has_rated %}<span style="color: green">rated</span>{% else %}<span style="color: red">not rated</span>{% endif %}
   {% endif %}
@@ -62,6 +62,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
   {% else %}
    Entrant: <a href="{% url 'user_display' e.user.username %}">{{ e.user.username }}</a>
   {% endif %}
+  {% if e.is_open and user.is_authenticated %}&emsp;(<a href="{{ e.get_absolute_url }}" title="Open Team">Join this team?</a>){% endif %}
   </p>
 {% endwith %}
 </div>

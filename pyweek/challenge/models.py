@@ -476,12 +476,27 @@ class Entry(models.Model):
 
     description = models.TextField()
 
+    is_open = models.BooleanField(
+        default=False,
+        help_text="Can people request to join the team?"
+    )
+    group_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="Chat/group URL, visible only to participants."
+    )
+
     challenge = models.ForeignKey(Challenge, related_name='entries')
     winner = models.ForeignKey(Challenge, blank=True, null=True, related_name='winner')
     user = models.ForeignKey(User, verbose_name='entry owner', related_name="owner")
     users = models.ManyToManyField(User)
     is_upload_open = models.BooleanField(default=False)
     has_final = models.BooleanField(default=False)
+
+    join_requests = models.ManyToManyField(
+        User,
+        related_name='join_request_entries'
+    )
 
 
     class Meta:
@@ -499,7 +514,7 @@ class Entry(models.Model):
         return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
 
     def get_absolute_url(self):
-        return '/e/{}'.format(self.name)
+        return '/e/{}/'.format(self.name)
 
     @property
     def display_title(self):

@@ -34,6 +34,25 @@
 <p><a title="Github repository" id="github-link" href="https://github.com/{{ entry.github_repo }}">github.com/{{ entry.github_repo }}</a></p>
 {% endif %}
 
+{% if is_member and entry.group_url %}
+<p>
+    <strong>Group URL:</strong>
+    <a href="{{ entry.group_url }}">{{ entry.group_url }}</a>
+</p>
+{% endif %}
+
+{% if entry.is_open and user.is_authenticated and not is_member %}
+<h3>Open team</h3>
+<p>This team is accepting membership applications.</p>
+<form action="?action=join" method="POST">
+    {% if join_requested %}
+    <button disabled>Your membership request is pending</button>
+    {% else %}
+    <input type="submit" value="Request to join {{ entry.title }}">
+    {% endif %}
+</form>
+{% endif %}
+
 <h3>Awards</h3>
 {% for award in awards %}
   <div class="award">

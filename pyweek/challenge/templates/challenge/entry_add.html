@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>PyWeek - Add Entry</h1>
+<h2>PyWeek - Add Entry</h2>
 
 <p>Use this page to register an entry in the challenge. You may enter as
 either an individual or as a team. By registering a team you will become
@@ -15,49 +15,100 @@ that team's "admin" user. You will be able to change the title and team
 roster after you've added it.</p>
 
 {% if form.has_errors %}
-<div class="form-error">Sorry, there's been an error</div>
+<div class="form-error">Sorry, there's been an error.</div>
+{{ form.non_field_errors }}
 {% endif %}
 
-<b>Entry Profile</b>
 <form class="form" method="post" action=".">
 
+<section>
+<h3>Entry Profile</h3>
+
 <div {% if form.name.errors %} class="form-error"{% endif %}>
-	<label for="id_name">Short Name:</label><br>
- {{ form.name }}
+	<label for="id_name">Entry URL:</label>
+    http://pyweek.org/e/{{ form.name }}/
+  <p class="form-help">This should be less than 15 characters and only
+  contain letters, numbers, dash or underscore, and must be unique.</p>
   {% if form.name.errors %}
    <p class="form-error">{{ form.name.errors|join:", " }}</p>
   {% endif %}
-  <p class="form-help">This should be less than 15 characters and only
-  contain letters, numbers, dash or underscore.</p>
 </div>
 
 <div {% if form.title.errors %} class="form-error"{% endif %}>
-	<label for="id_title">Name:</label><br>
+	<label for="id_title">Team Name:</label>
  {{ form.title }}
+ <p class="form-help">
+    The name by which your team will be known.
+    The title of your entry can be set later.
+ </p>
   {% if form.title.errors %}
    <p class="form-error">{{ form.title.errors|join:", " }}</p>
   {% endif %}
 </div>
 
-<div {% if form.description.errors %} class="form-error"{% endif %}>
-	<label for="id_description">Description:</label><br>
+<div id="description" {% if form.description.errors %} class="form-error"{% endif %}>
+    <label for="{{ form.description.id_for_label }}">Description:</label><br>
  {{ form.description }}
   {% if form.description.errors %}
    <p class="form-error">{{ form.description.errors|join:", " }}</p>
   {% endif %}
 </div>
+</section>
 
-<div {% if form.users.errors %} class="form-error"{% endif %}>
- <label for="id_users">Team Members:</label><br>
+<section>
+<h3>Participants</h3>
+<p>If you have other team members, please ensure all of them have signed up for
+pyweek.org accounts, and then enter their usernames here.</p>
+
+<div class="indent {% if form.users.errors %} form-error"{% endif %}>
+ <label for="id_users">Initial team members:</label><br>
  {{ form.users }}
   {% if form.users.errors %}
    <p class="form-error">{{ form.users.errors|join:", " }}</p>
   {% endif %}
-  <p class="form-help">Enter a comma-separated list of the member
-  usernames.</p>
-<br>
+  <p class="form-help">
+      Enter a comma-separated list of the member usernames.
+  </p>
+</div>
 
-<input type="submit" value="Save Changes">
+<p>Listing multiple team members will put you into the team competition. You
+can also add members any time during the competition.</p>
+</section>
+
+<section>
+<h3>Open team</h3>
+
+<p>An open team lets other PyWeek users join you to collaborate on a game.</p>
+
+<p class="indent">
+    {{form.is_open}}&ensp;
+    <label class="option" for="{{form.is_open.id_for_label}}">
+        Allow requests to join this team.
+    </label>
+</p>
+
+<p>As long as this box is checked, users will be able to request to join. The
+team leader will be able to approve or reject them. Be sure to fill out
+<a href="#description">the description field</a> above to describe who you
+are, who you're looking for, and what you'd like
+to work on.</p>
+
+<p>When approved, members will be able given this URL:</p>
+
+<div class="indent {% if form.group_url.errors %} form-error{% endif %}">
+    <p>{{form.group_url.label_tag}} {{form.group_url}}</p>
+    <p class="form-help">{{form.group_url.help_text}}</p>
+  {% if form.group_url.errors %}
+   <p class="form-error">{{ form.group_url.errors|join:", " }}</p>
+  {% endif %}
+</div>
+
+<p>Use this to communicate a channel that you will use to convene, such as the
+URL for a <a href="https://discordapp.com/">Discord</a> channel.</p>
+
+</section>
+
+<input type="submit" value="Create entry">
 
 </form>
 

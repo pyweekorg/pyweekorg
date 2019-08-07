@@ -21,6 +21,12 @@ safeTags = '''b a i br blockquote table tr td img pre p dl dd dt
     ul ol li span div'''.split()
 
 
+GITHUB_REGEX = (
+    r'^[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}/'
+    r'[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}$'
+)
+
+
 def isUnusedEntryName(field_data):
     if models.Entry.objects.filter(name__exact=field_data):
         raise validators.ValidationError('"%s" already taken'%field_data)
@@ -37,16 +43,22 @@ def isCommaSeparatedUserList(field_data):
             raise validators.ValidationError('No such user %s'%name)
 
 
-class AddEntryForm(forms.Form):
-    name = forms.CharField(
-        max_length=15,
-        validators=[validators.validate_slug, isUnusedEntryName],
-        required=True
-    )
+class BaseEntryForm(forms.ModelForm):
     title = forms.CharField(
         required=True,
         label="Team name",
-        validators=[isUnusedEntryTitle]
+        widget=forms.TextInput(attrs={
+            'size': '50',
+        })
+    )
+    github_repo = forms.RegexField(
+        regex=GITHUB_REGEX,
+        required=False,
+        empty_value=None,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'eg. my-username/my-project',
+            'size': '80',
+        })
     )
     description = forms.CharField(
         required=False,
@@ -57,8 +69,63 @@ class AddEntryForm(forms.Form):
         widget=forms.Textarea
     )
     users = forms.CharField(
+        help_text="Enter a comma-separated list of the member usernames.",
         validators=[isCommaSeparatedUserList]
     )
+    group_url = forms.CharField(
+        label='Group URL',
+        help_text=models.Entry._meta.get_field('group_url').help_text,
+        widget=forms.TextInput(attrs={
+            'size': '80',
+        })
+    )
+
+    def clean_description(self):
+        """Strip HTML from the description."""
+        return html2safehtml(self.cleaned_data['description'], safeTags)
+
+    def clean_users(self):
+        """Split users."""
+        users = {u.strip() for u in self.cleaned_data['users'].split(',')}
+        if self.current_user not in users:
+            raise forms.ValidationError(
+                "You cannot remove yourself from an entry. "
+                "Other team members will be able to remove you."
+            )
+        return users
+
+    def clean(self):
+        """Validate fields that depend on each other.
+
+        Here we just require open teams to provide a group URL.
+        """
+        data = super(BaseEntryForm, self).clean()
+        if data.get('is_open') and not data.get('group_url'):
+            self.add_error('group_url', "Open teams must provide a Group URL.")
+
+    class Meta:
+        model = models.Entry
+        fields = [
+            'title',
+            'github_repo',
+            'description',
+            'is_open',
+            'group_url',
+        ]
+
+
+class AddEntryForm(BaseEntryForm):
+    """Form for creating a new competition entry (game)."""
+    name = forms.CharField(
+        max_length=15,
+        validators=[validators.validate_slug, isUnusedEntryName],
+        required=True,
+    )
+
+    class Meta(BaseEntryForm.Meta):
+        fields = BaseEntryForm.Meta.fields + [
+            'name',
+        ]
 
 
 def entry_list(request, challenge_id):
@@ -264,28 +331,22 @@ def entry_add(request, challenge_id):
 
     if challenge.isCompFinished():
         messages.error(request, 'Entry registration closed')
-        return HttpResponseRedirect("/%s/"%challenge_id)
+        return HttpResponseRedirect("/%s/" % challenge_id)
 
     if request.method == 'POST':
         f = AddEntryForm(request.POST)
-        if f.is_valid():
-            members = {request.user.username}
-            if f.cleaned_data['users'].strip():
-                members.update(
-                    u.strip() for u in f.cleaned_data['users'].split(',')
-                )
+        f.current_user = request.user.username
 
-            full_description = html2safehtml(f.cleaned_data['description'], safeTags)
-            short_description, truncated = summarise(full_description)
-            entry = models.Entry(
-                name=f.cleaned_data['name'],
-                challenge=challenge,
-                user=request.user,
-                description=full_description,
-                title=f.cleaned_data['title']
-            )
+        if f.is_valid():
+            entry = f.instance
+            entry.challenge = challenge
+            entry.user = request.user
+            members = f.cleaned_data['users']
+
             entry.save()
             entry.users = models.User.objects.filter(username__in=members)
+
+            short_description, truncated = summarise(entry.description)
             log_event(
                 type='new-entry',
                 challenge=entry.challenge.number,
@@ -395,6 +456,32 @@ def entry_display(request, entry_id):
         d['dp'] = '%d%%'%(d.get('disqualify', 0)*100)
         d['dnwp'] = '%d%%'%(d.get('nonworking', 0)*100)
 
+    join_requested = False
+
+    if request.user.is_authenticated:
+        if request.POST.get('action') == 'join':
+            if not entry.is_open:
+                messages.error(request,
+                    "Sorry, {} is no longer accepting join requests.".format(
+                        entry.title or entry.name
+                    )
+                )
+            elif is_member:
+                messages.error(
+                    request,
+                    "You are already a member of this team."
+                )
+            else:
+                # TODO: send e-mail
+                entry.join_requests.add(request.user)
+                messages.success(request, "Request sent!")
+                return HttpResponseRedirect(entry.get_absolute_url())
+
+        join_requested = (
+            entry.is_open and
+            request.user in entry.join_requests.all()
+        )
+
     return render(request, 'challenge/entry.html', {
             'challenge': challenge,
             'entry': entry,
@@ -405,6 +492,7 @@ def entry_display(request, entry_id):
             'is_member': is_member,
             'is_team': len(user_list) > 1,
             'is_owner': entry.user == request.user,
+            'join_requested': join_requested,
             'form': f,
             'rating': rating_results,
             'awards': entry.entryaward_set.all(),
@@ -435,44 +523,11 @@ def entry_ratings(request, entry_id):
     )
 
 
-class EntryForm(forms.ModelForm):
-    title = forms.CharField(required=True)
-    game = forms.CharField(required=True)
-    github_repo = forms.RegexField(
-        regex=(
-            r'^[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}/'
-            r'[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}$'
-        ),
-        required=False,
-        empty_value=None,
-        widget=forms.TextInput(attrs={
-            'placeholder': 'eg. my-username/my-project',
-            'size': '80',
-        })
-    )
-    description = forms.CharField(required=False, widget=forms.Textarea)
-    users = forms.CharField(
-        help_text="Enter a comma-separated list of the member usernames.",
-        validators=[isCommaSeparatedUserList]
-    )
-
-    def clean_description(self):
-        """Strip HTML from the description."""
-        return html2safehtml(self.cleaned_data['description'], safeTags)
-
-    def clean_users(self):
-        """Split users."""
-        users = {u.strip() for u in self.cleaned_data['users'].split(',')}
-        if self.current_user not in users:
-            raise forms.ValidationError(
-                "You cannot remove yourself from an entry. "
-                "Other team members will be able to remove you."
-            )
-        return users
-
-    class Meta:
-        model = models.Entry
-        fields = ['title', 'game', 'github_repo', 'description']
+class EntryForm(BaseEntryForm):
+    class Meta(BaseEntryForm.Meta):
+        fields = BaseEntryForm.Meta.fields + [
+            'game',
+        ]
 
 
 def entry_manage(request, entry_id):
@@ -525,3 +580,60 @@ def entry_manage(request, entry_id):
         }
     )
 
+
+def entry_requests(request, entry_id):
+    """Approve or reject join requests for a team."""
+    back_to_entry = HttpResponseRedirect('/e/{}/'.format(entry_id))
+
+    if request.user.is_anonymous():
+        return back_to_entry
+
+    entry = get_object_or_404(models.Entry, pk=entry_id)
+
+    if not entry.is_open:
+        messages.error(request, "This is not an open team.")
+        return back_to_entry
+
+    if entry.user != request.user:
+        messages.error(
+            request,
+            "Only the team owner can accept membership requests."
+        )
+        return back_to_entry
+
+    if request.method == 'POST':
+        data = request.POST
+        added = 0
+        rejected = 0
+        for u in list(entry.join_requests.all()):
+            action = request.POST.get(u'user:' + u.username)
+            if action == 'approve':
+                # TODO: send e-mail
+                entry.users.add(u)
+                entry.join_requests.remove(u)
+                added += 1
+            elif action == 'reject':
+                # TODO: send e-mail
+                entry.join_requests.remove(u)
+                rejected += 1
+
+        if added or rejected:
+            msgs = []
+            if added:
+                msgs.append('added {} new team members'.format(added))
+            if rejected:
+                msgs.append('rejected {} membership requests'.format(rejected))
+            messages.success(request, ' and '.join(msgs).capitalize())
+            return back_to_entry
+        else:
+            messages.error(request, 'No changes made.')
+
+
+    return render(
+        request,
+        'challenge/entry_requests.html',
+        {
+            'entry': entry,
+            'requesters': entry.join_requests.all()
+        }
+    )

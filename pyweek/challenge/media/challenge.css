@@ -1139,3 +1139,11 @@ article#bio {
 td.awards img {
     height: 24px;
 }
+
+.indent {
+    padding: 1.5em;
+}
+
+button[disabled] {
+    color: gray;
+}

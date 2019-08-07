@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^(\d+)/rating-dashboard$', entry.rating_dashboard),
     url(r'^e/([\w-]+)/$', entry.entry_display),
     url(r'^e/([\w-]+)/manage/$', entry.entry_manage),
+    url(r'^e/([\w-]+)/members/$', entry.entry_requests),
     url(r'^e/([\w-]+)/ratings/$', entry.entry_ratings),
 
     # Files views
