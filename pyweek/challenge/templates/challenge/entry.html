@@ -41,11 +41,13 @@
 </p>
 {% endif %}
 
-{% if entry.is_open and user.is_authenticated and not is_member %}
+{% if entry.is_open and not is_member %}
 <h3>Open team</h3>
 <p>This team is accepting membership applications.</p>
 <form action="" method="POST">
-    {% if join_requested %}
+    {% if not user.is_authenticated %}
+    <button disabled>Log in to join this team</button>
+    {% elif join_requested %}
     <button disabled>Your membership request is pending</button>
     {% else %}
     <input type="hidden" name="action" value="join">

@@ -62,7 +62,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
   {% else %}
    Entrant: <a href="{% url 'user_display' e.user.username %}">{{ e.user.username }}</a>
   {% endif %}
-  {% if e.is_open and user.is_authenticated %}&emsp;(<a href="{{ e.get_absolute_url }}" title="Open Team">Join this team?</a>){% endif %}
+  {% if e.is_open %}&emsp;(<a href="{{ e.get_absolute_url }}" title="Open Team">Join this team?</a>){% endif %}
   </p>
 {% endwith %}
 </div>
