@@ -219,6 +219,9 @@ class Challenge(models.Model):
             diff = ed - now
             event = ['"%s" challenge underway;'%self.getTheme(),
                 '', 'to go']
+        elif now < ed + datetime.timedelta(1):
+            diff = ed - now + datetime.timedelta(1)
+            event = ['"%s" challenge is finished;'%self.getTheme(), '', 'to upload your entry']
         elif now < ed + datetime.timedelta(14):
             diff = ed - now + datetime.timedelta(14)
             event = ['Judging ends in', '', '']
