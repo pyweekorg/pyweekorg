@@ -4,7 +4,7 @@ from pyweek.challenge.models import Challenge, Entry
 def challenges(request):
     latest, previous = Challenge.objects.get_latest_and_previous()
 
-    challenge = latest if latest.isRegoOpen() else previous
+    challenge = latest if latest and latest.isRegoOpen() else previous
 
     unverified_emails = 0
     if not request.user.is_anonymous():
