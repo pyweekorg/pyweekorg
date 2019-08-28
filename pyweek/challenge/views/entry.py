@@ -329,7 +329,7 @@ def rating_dashboard(request, challenge_id):
 def entry_add(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
 
-    if not challenge.isRegoOpen:
+    if not challenge.isRegoOpen():
         return HttpResponseRedirect("/%s/" % challenge_id)
 
     if challenge.isCompFinished():
