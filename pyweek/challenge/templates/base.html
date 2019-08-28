@@ -84,11 +84,9 @@ jQuery(function ($) {
             <li class="endsection"><a href="{% url 'draft-emails' %}">E-mail users</a></li>
             {% endif %}
 
-           {% if challenge and challenge.isRegoOpen %}
-            {% if not challenge.isCompFinished %}
-             <li class="endsection"><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
+            {% if challenge and challenge.isRegoOpen %}
+            <li class="endsection"><a href="/{{ challenge.number }}/entry_add/">Register Entry</a></li>
             {% endif %}
-           {% endif %}
 
            {% if user_entries %}
            <li class="sectiontitle">Your Latest Entries:</li>
