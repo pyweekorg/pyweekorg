@@ -80,7 +80,8 @@ class BaseEntryForm(forms.ModelForm):
         help_text=models.Entry._meta.get_field('group_url').help_text,
         widget=forms.TextInput(attrs={
             'size': '80',
-        })
+        }),
+        required=False,
     )
 
     def clean_description(self):
