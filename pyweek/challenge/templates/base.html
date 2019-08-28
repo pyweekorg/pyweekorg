@@ -110,7 +110,7 @@ jQuery(function ($) {
             You have {{ unverified_emails }} unverified e-mail address{{ unverified_emails|pluralize:"es" }}.
             Visit <a href="/profile/">your account settings</a> to update and re-send verification.
 	</div>
-	{% elif latest and latest.summary and latest.isRegoOpen %}
+	{% elif latest and latest.summary and not latest.isCompComing %}
 	<div id="flash" style="text-align: center; border-top: solid #ec8 1px; border-bottom: solid #ec8 1px; background-color: #ffe6c0; padding: 0.3em;">
 		<a href="{{ latest.get_absolute_url }}">{{ latest.title }}</a>: {{ latest.summary|safe }}
 	</div>

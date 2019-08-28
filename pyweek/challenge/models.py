@@ -266,7 +266,7 @@ class Challenge(models.Model):
 
     def isRegoOpen(self):
         """Are we in the registration window for this challenge?"""
-        if self.is_rego_open:  # overridden by admin
+        if self.is_rego_open and not self.isCompFinished():  # overridden by admin
             return True
         now = datetime.datetime.utcnow()
         sd = self.start_utc()
