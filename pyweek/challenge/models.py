@@ -347,7 +347,7 @@ class Challenge(models.Model):
         return now > end_date
 
     def timetableHTML(self):
-        ''' Generate HTML rows for a timodels.Modelble display. '''
+        ''' Generate HTML rows for a timetable display. '''
         l = []
         now = datetime.datetime.utcnow()
         def add(this, next, event):
