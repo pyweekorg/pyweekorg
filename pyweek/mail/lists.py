@@ -135,6 +135,23 @@ def frequent_entrants():
 
 
 @address_list(
+    'Infrequent entrants',
+    reason="because you are a previous Pyweek entrant."
+)
+def infrequent_entrants():
+    """E-mail participants who have participated once or twice."""
+    return filter_verified(
+    	EmailAddress.objects.annotate(
+            num_entries=Count('user__entry__challenge', distinct=True)
+    	).filter(
+	    num_entries__gte=1,
+	    num_entries__lt=3,
+            user__settings__email_contest_updates=True,
+        ).distinct()
+    )
+
+
+@address_list(
     'Staff',
     reason="because you are a Pyweek organiser."
 )
