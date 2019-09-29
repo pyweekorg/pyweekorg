@@ -592,7 +592,7 @@ def entry_manage(request, entry_id):
             'entry': entry,
             'form': f,
             'is_member': True,
-            'is_owner': True,
+            'is_owner': entry.user == request.user,
         }
     )
 
