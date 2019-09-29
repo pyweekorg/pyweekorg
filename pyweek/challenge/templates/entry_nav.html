@@ -7,10 +7,10 @@
             <li><a href="/e/{{ entry.name }}/upload/">Upload File</a></li>
             <li><a href="/e/{{ entry.name }}/upload/">Add Screenshot</a></li>
             {% endif %}
-            {% if is_owner %}
-            {% if entry.is_open %}
+            {% if is_owner and entry.is_open %}
             <li><a href="/e/{{ entry.name }}/members/">Membership Requests</a></li>
             {% endif %}
+            {% if is_member %}
             <li><a href="/e/{{ entry.name }}/manage/">Manage This Entry</a></li>
             {% endif %}
         </ul>

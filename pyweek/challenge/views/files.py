@@ -43,7 +43,7 @@ def entry_upload(request, entry_id):
         'entry': entry,
         'files': entry.file_set.all(),
         'is_member': True,
-        'is_owner': True,
+        'is_owner': entry.user == request.user,
         'form': f,
     }
 
