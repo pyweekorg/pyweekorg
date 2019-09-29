@@ -470,6 +470,12 @@ def entry_display(request, entry_id):
                         entry.title or entry.name
                     )
                 )
+            elif not entry.challenge.isRegoOpen():
+                messages.error(request,
+                    "You cannot join {} as the respective PyWeek challenge has ended.".format(
+                        entry.title or entry.name
+                    )
+                )
             elif is_member:
                 messages.error(
                     request,
