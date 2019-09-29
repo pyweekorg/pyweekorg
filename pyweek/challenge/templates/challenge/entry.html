@@ -41,7 +41,7 @@
 </p>
 {% endif %}
 
-{% if entry.is_open and not is_member %}
+{% if entry.is_open and not is_member and entry.challenge.isRegoOpen %}
 <h3>Open team</h3>
 <p>This team is accepting membership applications.</p>
 <form action="" method="POST">
