@@ -182,6 +182,10 @@ def challenge_diaries(request, challenge_id):
 def challenge_ratings(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
     all_done = challenge.isAllDone()
+    if not all_done:
+        messages.error(request, 'Cannot view the ratings until the judging period is over!')
+        return HttpResponseRedirect("/%s/" % challenge_id)
+
     individual = []
     team = []
     for rating in models.RatingTally.objects.filter(challenge=challenge).order_by('-overall'):
