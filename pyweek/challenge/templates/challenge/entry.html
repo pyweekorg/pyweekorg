@@ -68,10 +68,11 @@
   </div>
 {% endfor %}
 
+{% if not is_member %}
 <p style="clear:left">
   <a href="/e/{{entry.name}}/give_award/">Give this entry an award</a>
 </p>
-
+{% endif %}
 
 {% if rating %}
 <h3>Scores</h3>
