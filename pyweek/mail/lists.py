@@ -4,7 +4,9 @@ All list providers should return an iterable of EmailAddress objects.
 
 """
 from __future__ import unicode_literals
+import datetime
 from collections import OrderedDict
+
 from django.conf import settings
 from django.db.models import Q, F, Count
 from pyweek.challenge.models import Challenge
@@ -73,6 +75,20 @@ def previous_participants():
     return filter_verified(EmailAddress.objects.filter(
         user__entry__has_final=True,
         user__settings__email_news=True,
+    ).distinct())
+
+
+@address_list(
+    'Last completed challenge entrants',
+    reason="because you are an entrant in the latest Pyweek challenge."
+)
+def last_completed_challenge_users():
+    """E-mail participants in the latest completed challenge."""
+    today = datetime.date.today()
+    challenge = Challenge.objects.filter(end__lte=today).order_by('-end')[0]
+    return filter_verified(EmailAddress.objects.filter(
+        user__entry__challenge=challenge,
+        user__settings__email_contest_updates=True,
     ).distinct())
 
 
