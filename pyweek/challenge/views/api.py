@@ -33,11 +33,8 @@ def challenge_downloads(request, challenge_id):
     resp = {
         e.game or e.title: [
             {
-                'name': posixpath.basename(f.content.path),
-                'url': urljoin(
-                    'https://' + request.META.get('HTTP_HOST', ''),
-                    f.content.url,
-                ),
+                'name': posixpath.basename(f.content.name),
+                'url': f.content.url,
                 'size': f.content.size,
             }
             for f in e.file_set.all()
