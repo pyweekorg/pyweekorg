@@ -162,7 +162,7 @@ def _give_award(challenge, user, entry, award):
         entry_id=entry.name,
         entry_name=entry.display_title,
         award_name=award.description,
-        award_url=award.content.url,
+        award_url=award.content.name,
     )
 
     return True

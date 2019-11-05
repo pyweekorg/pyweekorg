@@ -81,8 +81,11 @@ def entry_upload(request, entry_id):
     if file.is_screenshot:
         try:
             _make_thumbnail(file)
-        except:
+        except IOError as e:
             # XXX need feedback with custom error "file is not an image"
+            msg = e.args[0]
+            if not e.startswith('cannot identify image file'):
+                raise
 	    messages.error(request, 'File is not an image')
             return render(request, 'challenge/entry_file.html', info)
 
@@ -95,11 +98,11 @@ def entry_upload(request, entry_id):
             name=entry.name,
             description=file.description,
             role=file.get_image_role(),
-            url='{}{}'.format(settings.MEDIA_URL, file.filename)
         )
 
     messages.success(request, 'File added!')
     return HttpResponseRedirect('/e/%s/'%entry_id)
+
 
 def oneshot_upload(request, entry_id):
     entry = models.Entry.objects.filter(name__exact=entry_id)
@@ -137,12 +140,13 @@ def oneshot_upload(request, entry_id):
             request.FILES['content_file'].name)):
         return HttpResponse('File with that filename already exists.')
 
+    upload_file = request.FILES['content_file']
     file = models.File(
         challenge=challenge,
         entry=entry,
         user=user,
         created=datetime.datetime.now(models.UTC),
-        content=request.FILES['content_file'],
+        content=upload_file,
         description=html2text(data.get('description', '')),
         is_final=bool(data.get('is_final', False)),
         is_screenshot=bool(data.get('is_screenshot', False)),
@@ -155,17 +159,30 @@ def oneshot_upload(request, entry_id):
 
     if data['is_screenshot']:
         try:
-            _make_thumbnail(file)
-        except:
-            return HttpResponse('Error: screenshot upload but not an image file')
+            _make_thumbnail(upload_file)
+        except IOError as e:
+            return HttpResponse(
+                'Error uploading screenshot: {}'.format(e)
+            )
     return HttpResponse('File added!')
 
+
+import io
+import posixpath
+from django.core.files.storage import get_storage_class
+
+
 def _make_thumbnail(file):
-    image = Image.open(file.content.path)
+    image = Image.open(io.BytesIO(file.content.read()))
     image.thumbnail((150, 150), Image.ANTIALIAS)
-    image.save(file.content.path + '-thumb.png', "PNG")
+    target = file.content.name + '-thumb.png'
+
+    storage = get_storage_class()
+    with storage().open(target, 'wb') as f:
+        image.save(f, "PNG")
     file.thumb_width = image.size[0]
     file.save()
+
 
 def file_delete(request, entry_id, filename):
     if request.user.is_anonymous():
@@ -181,17 +198,19 @@ def file_delete(request, entry_id, filename):
     if request.method == 'POST':
         if request.POST.get('confirm', ''):
             try:
-                ob = entry.file_set.get(content__exact=filename)
-                ob.delete()
-            except models.File.DoesNotExist:
+                ob = entry.file_set.filter(content__exact=filename)[0]
+            except (models.File.DoesNotExist, IndexError):
                 pass
-            abspath = os.path.join(MEDIA_ROOT, filename)
-            if os.path.exists(abspath):
-                os.remove(abspath)
-            if os.path.exists(abspath + '-thumb.png'):
-                os.remove(abspath + '-thumb.png')
-            messages.success(request, 'File deleted')
-            return HttpResponseRedirect('/e/%s/'%entry_id)
+            else:
+                filename = ob.content.name
+                ob.content.delete()
+                ob.delete()
+
+                storage = get_storage_class()()
+                storage.delete(filename + '-thumb.png')
+
+                messages.success(request, 'File deleted')
+                return HttpResponseRedirect('/e/%s/'%entry_id)
         else:
             messages.success(request, 'Cancelled')
             return HttpResponseRedirect('/e/%s/'%entry_id)

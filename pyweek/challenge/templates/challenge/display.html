@@ -111,7 +111,7 @@ to 00:00 UTC {{ challenge.end }}.</p>
   {% for entryaward in recent_entryawards %}
     <div class="award">
       <a href="/a/{{entryaward.award.id}}">
-        <img src="{{ MEDIA_URL }}{{entryaward.content}}">
+        <img src="{{ entryaward.content.url }}">
       </a>
       <br>
       <strong>{{entryaward.description|escape}}</strong><br>

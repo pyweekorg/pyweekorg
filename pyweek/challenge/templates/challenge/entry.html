@@ -60,7 +60,7 @@
 {% for award in awards %}
   <div class="award">
     <a href="/a/{{award.award.id}}">
-      <img src="{{ MEDIA_URL }}{{award.content}}">
+      <img src="{{award.content.url}}">
     </a>
     <br>
     <strong>{{award.description|escape}}</strong><br>
@@ -213,7 +213,6 @@ to compare games.</p>
 <table class="grid">
 <tr>
     <th>File</th>
-    <th>Size</th>
     <th>Uploader</th>
     <th>Date</th>
     {% if is_member %}<th>&nbsp;</th>{% endif %}
@@ -223,9 +222,6 @@ to compare games.</p>
   <a href="{{ file.content.url }}">{{ file.filename }}</a>
   {% if file.is_final %}&mdash; <b>final</b>{% endif %}
   <br />{{ file.description }}
-  </td>
-  <td style="whitespace: pre">
-  {{ file.content.size|filesizeformat }}
   </td>
   <td>{{ file.user }}</td>
   <td style="whitespace: pre">{{ file.created|date:"Y/m/d H:i" }}</td>
