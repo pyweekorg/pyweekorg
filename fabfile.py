@@ -26,6 +26,7 @@ PYTHON = "/home/pyweek/.local/bin/python"
 
 
 def publish():
+    """Redeploy the site."""
     run('mkdir -p www logs')
     rsync_project(local_dir='./', remote_dir='www/', exclude=rsync_exclusions)
     rsync_project(local_dir='./deploy/', remote_dir='www/')
@@ -50,6 +51,19 @@ def publish():
             run('python manage.py migrate')
             run('./runserver.sh reload')
         run('crontab crontab.txt')
+
+
+def quick_publish():
+    """Redeploy very minor code/template changes."""
+    rsync_project(local_dir='./', remote_dir='www/', exclude=rsync_exclusions)
+    with cd('/home/pyweek/www/'):
+        path = run('echo "${PATH}"', quiet=True)
+        with shell_env(
+                DJANGO_SETTINGS_MODULE='prod_settings',
+                VIRTUAL_ENV='/home/pyweek/www/venv',
+                PATH='/home/pyweek/www/venv/bin:' + path):
+            run('python manage.py collectstatic -v 0 -c --no-input')
+            run('./runserver.sh reload')
 
 
 def pg_dump():
