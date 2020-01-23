@@ -15,6 +15,13 @@
 
 <h2 style="margin-bottom: 1em">Discussion Threads</h2>
 
+<p id="motd">
+    <img src="{{ STATIC_URL }}/discord.svg" alt="Discord" style="height: 2em"/>
+    <strong>New:</strong> Join our
+<a href="https://discord.gg/narPHDq">Discord Server</a>
+    to chat with other PyWeekers!
+</p>
+
 {% for entry in diary_entries %}
 <div class="diary-entry">
     <h3>{% if entry.sticky %}<span class="label label-default">Sticky</span> {% endif %}<b><a href="/d/{{ entry.id }}/{%if entry.commid%}#comment-{{entry.commid}}{%endif%}">{% if entry.title %}{{ entry.title }}{% else %}[no title]{% endif %}</a></b></h3>
