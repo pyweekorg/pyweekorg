@@ -90,12 +90,10 @@ section h3 {
 }
 
 #motd {
-    clear: both;
     border: thin solid #B399FF;
     background: #E1F1FC;
     padding: 20px;
-    border-radius: 10px;
-    margin: 1em 0;
+    border-radius: 4px;
 }
 
 #motd p:first-child {

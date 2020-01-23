@@ -31,7 +31,17 @@
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
-    <div class="item active" style="background-image: url(/static/carousel/snowcrafter.jpg)">
+    <div class="item active" style="background-image: url(/static/carousel/hobots-ascent.jpg)">
+      <div class="carousel-caption">
+        Hobot's Ascent, Pyweek 28
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/static/carousel/souls-of-the-tower.jpg)">
+      <div class="carousel-caption">
+        Souls Of The Tower, Pyweek 28
+      </div>
+    </div>
+    <div class="item" style="background-image: url(/static/carousel/snowcrafter.jpg)">
       <div class="carousel-caption">
         Snowcrafter, Pyweek 27
       </div>
@@ -128,7 +138,14 @@
   </a>
 </div>
 
-{% include "motd.html" %}
+<div class="container" style="margin-top: 20px; max-width: 970px">
+  <div class="row">
+    <div class="col-md-6">
+
+<p>Welcome to <strong>PyWeek</strong>, a bi-annual
+<a href="https://en.wikipedia.org/wiki/Game_jam">game jam</a> to write games in
+<a href="https://www.python.org/">Python</a>.
+</p>
 
 <p>The PyWeek challenge:</p>
 <ol>
@@ -141,26 +158,18 @@
 <li>May inspire new projects (with ready made teams!)</li>
 </ol>
 
-<!--
-<p>
-<a href="/e/xasm_pw6/" title="invention"><img width="120" border="0" alt="invention" src="/media/dl/6/xasm_pw6/screenshot0.jpg-thumb.png"></a>
-<a href="/e/eevee_evolution/" title="Robot Underground"><img width="120" border="0" alt="Robot Underground" src="/media/dl/6/eevee_evolution/screenshot4.png-thumb.png"></a>
-<a href="/e/TTTT/" title="Disk Field"><img width="120" border="0" alt="Disk Field" src="/media/dl/5/TTTT/Shot4.png-thumb.png"></a>
-<a href="/e/psyduck_revenge/" title="Wound Up!"><img width="120" border="0" alt="Wound
-Up!" src="/media/dl/5/psyduck_revenge/Picture%202.png-thumb.png"></a>
-<a href="/e/Hectic/" title="Which was is up?"><img width="120" border="0" alt="Which way is up?" src="/media/dl/4/Hectic/screenshot3.jpg-thumb.png"></a>
-<a href="/e/toba4/" title="Barbie Seahorse Adventures"><img width="120" border="0" alt="Barbie Seahorse Adventures" src="/media/dl/4/toba4/shot5.png-thumb.png"></a>
-<a href="/e/bouncy/" title="Bouncy the Hungry Rabbit"><img width="120" border="0" alt="Bouncy the Hungry Rabbit" src="/media/dl/3/bouncy/final.jpg-thumb.png"></a>
-<a href="/e/PyAr2/" title="Typus Pocus"><img width="120" border="0" alt="Typus Pocus" src="/media/dl/3/PyAr2/pocus2.png-thumb.png"></a>
-<a href="/e/rushed/" title="Nelly's Rooftop Garden"><img width="120" border="0" alt="Nelly's Rooftop Garden" src="/media/dl/2/rushed/sc9.png-thumb.png"></a>
-<a href="/e/Pekuja/" title="Trip on the Funny Boat"><img width="120" border="0" alt="Trip on the Funny Boat" src="/media/dl/2/Pekuja/funnyboat-final.png-thumb.png"></a>
-</p>
--->
 <p>
 Entries must be developed in Python during the challenge, and must
 incorporate some theme decided at the start of the challenge. See the <a
 href="{{ STATIC_URL }}rules.html">challenge rules</a> for more information.
 </p>
+    </div>
+    <div class="col-md-6">
+        {% include "motd.html" %}
+    </div>
+  </div>
+</div>
+
 
 <div id="footer" style="width: auto">
 Contact &lt;daniel@pyweek.org&gt; with any enquiries.
