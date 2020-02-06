@@ -5,6 +5,6 @@ Pyweek -- https://pyweek.org
 
 {% filter wordwrap:79 %}You are receiving this email {{ reason|striptags }}{% endfilter %}
 
-Please update your e-mail settings at https://pyweek.org/profile/ if you do not
-wish to receive these notifications.
+Use this link to unsubscribe:
+https://pyweek.org/emails/unsubscribe?token=%%UNSUBSCRIBE_TOKEN%%
 {% endautoescape %}

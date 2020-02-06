@@ -5,6 +5,7 @@ import re
 import django.core.mail
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.core import signing
 from mailer import send_html_mail
 import mailer.models
 import html2text
@@ -26,6 +27,8 @@ REASON_COMMENTS = (
     "because you are set to receive replies to diary and discussion posts."
 )
 
+UNSUBSCRIBE_SIGNER = signing.Signer(salt='unsubscribe')
+
 
 class InvalidTemplate(Exception):
     """The selected template does not exist."""
@@ -46,7 +49,7 @@ def _make_payload(body_html, reason):
 
 
 WS_RE = re.compile(r'[\r\n]+')
-
+TOKEN_KEY = '%%UNSUBSCRIBE_TOKEN%%'
 
 def clean_header(v):
     """Clean a header value, removing illegal characters."""
@@ -68,17 +71,26 @@ def send(
     for recip in recipients:
         if isinstance(recip, EmailAddress):
             to_email = '{} <{}>'.format(recip.user.username, recip.address)
+            token_key = recip.user.username
         else:
-            to_email = recip
+            token_key = to_email = recip
+
+        token = UNSUBSCRIBE_SIGNER.sign(token_key.encode('rot13'))
 
         to_email = clean_header(to_email)
         subject = clean_header(subject.strip())
 
+        # FIXME: substituting a token into the generated output is not
+        # infallible, but this might be a lot faster than re-rendering a
+        # template for each user, which matters when sending to 1000+ users.
+        user_html = html_part.replace(TOKEN_KEY, token)
+        user_text = text_part.replace(TOKEN_KEY, token)
+
         if priority == PRIORITY_IMMEDIATE:
             django.core.mail.send_mail(
                 subject=subject,
-                message=text_part,
-                html_message=html_part,
+                message=user_text,
+                html_message=user_html,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[to_email],
                 fail_silently=False,
@@ -86,8 +98,8 @@ def send(
         else:
             send_html_mail(
                 subject=subject,
-                message=text_part,
-                message_html=html_part,
+                message=user_text,
+                message_html=user_html,
                 from_email=from_email,
                 recipient_list=[to_email],
                 priority=priority,

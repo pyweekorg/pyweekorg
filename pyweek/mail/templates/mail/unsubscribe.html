@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Unsubscribe{% endblock %}
+
+{% block content %}
+<h2>Unsubscribe</h2>
+
+<p>Uncheck the boxes for the types of e-mail you do not want to receive.</p>
+
+<form class="form" method="post" action="?token={{ token }}">
+    {{ form.as_p }}
+    <input type="submit" value="Save" />
+</form>
+{% endblock %}

@@ -12,9 +12,12 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
+from django.core import signing
 
+from ..challenge.views.registration import redirect_to_login
 from .lists import LISTS
 from .models import DraftEmail
+from ..users.models import UserSettings
 from . import sending
 
 
@@ -123,3 +126,42 @@ def send(request, pk):
         )
     )
     return redirect('draft-emails')
+
+
+class SettingsForm(forms.ModelForm):
+    class Meta:
+        model = UserSettings
+        fields = [
+            f.name for f in UserSettings._meta.fields
+            if f.name.startswith('email_')
+        ]
+
+
+def unsubscribe(request):
+    """Show a page letting users unsubscribe from e-mails without logging in.
+
+    Access will be authenticated using a signed token containing the user's
+    username.
+    """
+    try:
+        token = request.GET['token']
+        user = sending.UNSUBSCRIBE_SIGNER.unsign(token).encode('rot13')
+    except (KeyError, signing.BadSignature):
+        return redirect_to_login('Missing/invalid unsubscribe token')
+
+    profile = UserSettings.objects.get(user__username=user)
+
+    if request.method == 'POST':
+        form = SettingsForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect_to_login(
+                "Your e-mail preferences have been saved."
+            )
+    else:
+        form = SettingsForm(instance=profile)
+
+    return render(request, 'mail/unsubscribe.html', {
+        'token': token,
+        'form': form,
+    })
