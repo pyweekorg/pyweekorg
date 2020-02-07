@@ -44,8 +44,7 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
   {% if file.is_final %}
   <li><a href="{{ file.content.url }}">{{ file.filename }}</a>
    &mdash; {{ file.description }}
-   ({{ file.pretty_size }}
-   on {{ file.created|date:"Y/m/d" }})</li>
+  </li>
   {% endif %}
  {% endfor %}
 </ul>
