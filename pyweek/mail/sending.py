@@ -9,6 +9,7 @@ from django.core import signing
 from mailer import send_html_mail
 import mailer.models
 import html2text
+import string
 
 from pyweek.users.models import EmailAddress
 
@@ -28,6 +29,38 @@ REASON_COMMENTS = (
 )
 
 UNSUBSCRIBE_SIGNER = signing.Signer(salt='unsubscribe')
+
+
+def rot13(s):
+    """rot13 a string in order to obfuscate it.
+
+    This is not a crucial security measure because we use cryptographic
+    signing; really the only reason to do it is to discourage probing
+    of the system.
+
+    This implementation is intended to work with Python 2's unicode and byte
+    strings
+    """
+    if isinstance(s, unicode):
+        _chr = unichr
+        join = u''.join
+    else:
+        _chr = chr
+        join = b''.join
+    out = []
+    for c in s:
+        code = ord(c)
+        if 65 <= code <= 90:
+            # uppercase latin alphabet
+            code = (code - 65 + 13) % 26 + 65
+            c = chr(code)
+        if 97 <= code <= 122:
+            # uppercase latin alphabet
+            code = (code - 97 + 13) % 26 + 97
+            c = chr(code)
+        out.append(c)
+    return join(out)
+
 
 
 class InvalidTemplate(Exception):
@@ -75,7 +108,7 @@ def send(
         else:
             token_key = to_email = recip
 
-        token = UNSUBSCRIBE_SIGNER.sign(token_key.encode('rot13'))
+        token = UNSUBSCRIBE_SIGNER.sign(rot13(token_key))
 
         to_email = clean_header(to_email)
         subject = clean_header(subject.strip())

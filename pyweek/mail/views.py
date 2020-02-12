@@ -145,7 +145,7 @@ def unsubscribe(request):
     """
     try:
         token = request.GET['token']
-        user = sending.UNSUBSCRIBE_SIGNER.unsign(token).encode('rot13')
+        user = sending.rot13(sending.UNSUBSCRIBE_SIGNER.unsign(token))
     except (KeyError, signing.BadSignature):
         return redirect_to_login('Missing/invalid unsubscribe token')
 

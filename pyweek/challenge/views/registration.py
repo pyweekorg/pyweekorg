@@ -18,6 +18,7 @@ from django.contrib.auth import password_validation
 
 from pyweek.users.models import EmailAddress
 from pyweek.mail import sending
+from pyweek.mail.sending import rot13
 from ..forms import LoginForm
 from ..models import Challenge
 from ...users.models import EmailAddress, UserSettings
@@ -447,7 +448,7 @@ def resetpw(request):
         addresses = [a.address for a in user.emailaddress_set.all()]
 
     for u in users:
-        secret = SIGNER.sign(u.username.encode('rot13'))
+        secret = SIGNER.sign(rot13(u.username))
         sending.send_template(
             subject='Account recovery',
             template_name='account-recovery',
@@ -494,7 +495,7 @@ def recovery(request):
     key = request.GET.get('key', '')
 
     try:
-        username = SIGNER.unsign(key, max_age=3600 * 4).encode('rot13')
+        username = rot13(SIGNER.unsign(key, max_age=3600 * 4))
     except signing.BadSignature:
         return redirect_to_login(
             "You followed an invalid account recovery link."
