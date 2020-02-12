@@ -68,19 +68,19 @@ def unverified_users(challenge=None):
 
 @address_list(
     'Previous participants',
-    reason="because you are a previous Pyweek entrant."
+    reason="because you are a previous PyWeek entrant."
 )
 def previous_participants():
     """A list of users who have participated in any previous challenge."""
     return filter_verified(EmailAddress.objects.filter(
-        user__entry__has_final=True,
+        user__entry__isnull=False,
         user__settings__email_news=True,
     ).distinct())
 
 
 @address_list(
     'Last completed challenge entrants',
-    reason="because you are an entrant in the latest Pyweek challenge."
+    reason="because you are an entrant in the latest PyWeek challenge."
 )
 def last_completed_challenge_users():
     """E-mail participants in the latest completed challenge."""
@@ -94,7 +94,7 @@ def last_completed_challenge_users():
 
 @address_list(
     'Latest challenge entrants',
-    reason="because you are an entrant in the latest Pyweek challenge."
+    reason="because you are an entrant in the latest PyWeek challenge."
 )
 def latest_challenge_users(challenge=None):
     """E-mail participants in the latest challenge."""
@@ -107,7 +107,7 @@ def latest_challenge_users(challenge=None):
 
 @address_list(
     'Latest challenge non-finishers',
-    reason="because you entered the latest Pyweek challenge."
+    reason="because you entered the latest PyWeek challenge."
 )
 def latest_challenge_dnf(challenge=None):
     """E-mail participants in the latest challenge who have never finished."""
@@ -122,7 +122,7 @@ def latest_challenge_dnf(challenge=None):
 
 @address_list(
     'Latest challenge finalists',
-    reason="because you are an entrant in the latest Pyweek challenge."
+    reason="because you are an entrant in the latest PyWeek challenge."
 )
 def latest_challenge_finalists(challenge=None):
     """E-mail participants in the latest challenge with a final entry."""
@@ -136,7 +136,7 @@ def latest_challenge_finalists(challenge=None):
 
 @address_list(
     'Frequent entrants',
-    reason="because you have participated in several Pyweek challenges."
+    reason="because you have participated in several PyWeek challenges."
 )
 def frequent_entrants():
     """E-mail participants who have participated 3 times or more."""
@@ -152,7 +152,7 @@ def frequent_entrants():
 
 @address_list(
     'Infrequent entrants',
-    reason="because you are a previous Pyweek entrant."
+    reason="because you are a previous PyWeek entrant."
 )
 def infrequent_entrants():
     """E-mail participants who have participated once or twice."""
@@ -169,7 +169,7 @@ def infrequent_entrants():
 
 @address_list(
     'Staff',
-    reason="because you are a Pyweek organiser."
+    reason="because you are a PyWeek organiser."
 )
 def staff():
     """E-mail staff."""
