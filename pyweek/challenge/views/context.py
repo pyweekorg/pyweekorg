@@ -4,6 +4,8 @@ from pyweek.challenge.models import Challenge, Entry
 def challenges(request):
     latest, previous = Challenge.objects.get_latest_and_previous()
 
+    # challenge is the nearest challenge: the one just gone, unless there's
+    # a new one which is running or open for registration
     challenge = latest if latest and not latest.isCompComing() else previous
 
     unverified_emails = 0
