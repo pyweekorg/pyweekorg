@@ -10,6 +10,7 @@ from mailer import send_html_mail
 import mailer.models
 import html2text
 import string
+from django.utils.encoding import force_unicode
 
 from pyweek.users.models import EmailAddress
 
@@ -108,7 +109,7 @@ def send(
         else:
             token_key = to_email = recip
 
-        token = UNSUBSCRIBE_SIGNER.sign(rot13(token_key))
+        token = force_unicode(UNSUBSCRIBE_SIGNER.sign(rot13(token_key)))
 
         to_email = clean_header(to_email)
         subject = clean_header(subject.strip())
