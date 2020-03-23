@@ -84,7 +84,7 @@ def entry_upload(request, entry_id):
         except IOError as e:
             # XXX need feedback with custom error "file is not an image"
             msg = e.args[0]
-            if not e.startswith('cannot identify image file'):
+            if not msg.startswith('cannot identify image file'):
                 raise
 	    messages.error(request, 'File is not an image')
             return render(request, 'challenge/entry_file.html', info)
