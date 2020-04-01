@@ -113,6 +113,15 @@ INSTALLED_APPS = [
     'pyweek.activity',
 ]
 
+
+# Cache some things in local memory
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'locmemcache',
+    }
+}
+
 LOGIN_URL = '/login/'
 DEFAULT_FROM_EMAIL = 'daniel@pyweek.org'
 FILE_UPLOAD_PERMISSIONS = 0o644

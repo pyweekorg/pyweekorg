@@ -5,10 +5,12 @@ from urlparse import urljoin
 from django.db import models as md
 from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
 
 from .. import models
 
 
+@cache_page(24 * 60 * 60)
 def challenge_downloads(request, challenge_id):
     """Get a view of all downloads for the challenge."""
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
