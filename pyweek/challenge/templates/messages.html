@@ -15,12 +15,27 @@
 
 <h2 style="margin-bottom: 1em">Discussion Threads</h2>
 
-<p id="motd">
-    <img src="{{ STATIC_URL }}/discord.svg" alt="Discord" style="height: 2em"/>
-    <strong>New:</strong> Join our
-<a href="https://discord.gg/narPHDq">Discord Server</a>
-    to chat with other PyWeekers!
-</p>
+<div style="background-color: #7289DA; margin: 1em 0; padding: 1em 1em 0.8em; border-radius: 6px; color: white">
+
+    <a href="https://discord.gg/python">
+    <img src="{{STATIC_URL}}/python-discord.png" alt="Python Discord"
+        style="float: left; margin: -5px 0 0 -8px"
+    >
+    </a>
+    <p><a
+        href="https://discord.gg/python"
+        style="color: white; text-decoration: underline"
+        >
+        Join us in Discord</a>
+    and head to the <tt>#pyweek</tt> channel to chat with other
+    PyWeekers!</p>
+
+    <p><a
+        href="https://pythondiscord.com/"
+        style="color: white; text-decoration: underline"
+        >Python Discord</a> is a large, friendly community, focused around the Python language.</a>
+    <div style="clear: left"></div>
+</div>
 
 {% for entry in diary_entries %}
 <div class="diary-entry">
