@@ -898,6 +898,11 @@ a:not(*[class]):visited {
     text-shadow: 0 0 5px black, 1px 1px 0 black;
 }
 
+.carousel-caption a,
+.carousel-caption a:visited {
+    color: #ffffff;
+}
+
 .carousel-indicators {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
