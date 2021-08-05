@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from django.db.models import Q
 from django.core.management.base import BaseCommand, CommandError
 
@@ -24,7 +22,7 @@ class Command(BaseCommand):
             raise CommandError('Challenge is not finished!')
 
         challenge.generate_tallies()
-        print("Updated rating tallies for PyWeek {}".format(challenge_id))
+        print(f"Updated rating tallies for PyWeek {challenge_id}")
         print("Individual winners reset to:")
         for e in challenge.individualWinners():
             title = e.game or e.title

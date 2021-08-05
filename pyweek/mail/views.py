@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from datetime import datetime
 
 from django import forms
@@ -27,17 +24,17 @@ class DraftEmailList(PermissionRequiredMixin, ListView):
     paginate_by = 30
 
     def get_queryset(self):
-        drafts = super(DraftEmailList, self).get_queryset()
+        drafts = super().get_queryset()
         return drafts.filter(status=DraftEmail.STATUS_DRAFT)
 
 
 class EditEmailForm(forms.ModelForm):
     def list_choices():
         choices = []
-        for key, (name, list_func) in LISTS.iteritems():
+        for key, (name, list_func) in LISTS.items():
             num_recips = list_func().count()
             choices.append(
-                (key, '{} ({} recipients)'.format(name, num_recips))
+                (key, f'{name} ({num_recips} recipients)')
             )
         return choices
 
@@ -68,8 +65,8 @@ class PreviewEmail(PermissionRequiredMixin, DetailView):
     model = DraftEmail
 
     def get_context_data(self, **kwargs):
-        ctx = super(PreviewEmail, self).get_context_data(**kwargs)
-        ctx['subject'] = '[PyWeek] {}'.format(self.object.subject.strip())
+        ctx = super().get_context_data(**kwargs)
+        ctx['subject'] = f'[PyWeek] {self.object.subject.strip()}'
         ctx['body_html'] = self.object.body
         ctx['reason'] = self.object.list_reason
         return ctx
@@ -79,7 +76,7 @@ class PreviewEmailText(PreviewEmail):
     template_name = 'mail/draftemail_preview_text.html'
 
     def get_context_data(self, **kwargs):
-        ctx = super(PreviewEmailText, self).get_context_data(**kwargs)
+        ctx = super().get_context_data(**kwargs)
         html, text = sending._make_payload(
             self.object.body,
             self.object.list_reason

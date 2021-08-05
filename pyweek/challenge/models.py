@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core import validators
 from django.db import models, connection, transaction
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models.signals import pre_save
 
 from ..activity.models import EventRelation
@@ -165,7 +165,7 @@ class Challenge(models.Model):
         return 'Challenge %d: %r' % (self.number, self.title)
 
     def __unicode__(self):
-        return u'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
+        return 'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
 
     def get_absolute_url(self):
         return '/%d/' % self.number
@@ -508,16 +508,16 @@ class Entry(models.Model):
         unique_together = (("challenge", "name"), ("challenge", "title"))
 
     def __repr__(self):
-        return '<Entry %r>' % (self.name, )
+        return f'<Entry {self.name!r}>'
 
     def __str__(self):
-        return 'Entry "%s"' % (self.name, )
+        return f'Entry "{self.name}"'
 
     def __unicode__(self):
-        return u'Entry "%s"' % (self.name.decode('utf8', 'replace'), )
+        return 'Entry "{}"'.format(self.name.decode('utf8', 'replace'))
 
     def get_absolute_url(self):
-        return '/e/{}/'.format(self.name)
+        return f'/e/{self.name}/'
 
     @property
     def display_title(self):
@@ -528,7 +528,7 @@ class Entry(models.Model):
     def short_title(self):
         if len(self.title) <= Entry.SHORT_TITLE_LEN:
             return self.title
-        return u"%s..." % self.title[:Entry.SHORT_TITLE_LEN]
+        return "%s..." % self.title[:Entry.SHORT_TITLE_LEN]
 
     def is_team(self):
         return len(self.users.all()) > 1
@@ -594,9 +594,9 @@ class Entry(models.Model):
             info['innovation'] += rating.innovation
             info['production'] += rating.production
         m = float(len(ratings))
-        num_finished = sum([len(e.users.all())
+        num_finished = sum(len(e.users.all())
                 for e in Entry.objects.filter(challenge=self.challenge)
-                    if e.has_final])
+                    if e.has_final)
         if n:
             for rating in 'fun innovation production'.split():
                 info[rating] /= float(n)
@@ -632,13 +632,13 @@ class Rating(models.Model):
     def __str__(self):
         return '%s rating %s'%(self.user, self.entry)
     def __unicode__(self):
-        return u'%s rating %s'%(self.user.name.decode('utf8', 'replace'),
+        return '%s rating %s'%(self.user.name.decode('utf8', 'replace'),
             self.entry)
 
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(Rating, self).save()
+        super().save()
 
 class RatingTally(models.Model):
     challenge = models.ForeignKey(Challenge)      # convenience
@@ -661,7 +661,7 @@ class RatingTally(models.Model):
     def __str__(self):
         return '%s rating tally'%(self.entry, )
     def __unicode__(self):
-        return u'%s rating tally'%(self.entry,)
+        return '%s rating tally'%(self.entry,)
 
 
 class DiaryEntryManager(models.Manager):
@@ -704,7 +704,7 @@ class DiaryEntry(models.Model):
     def __str__(self):
         return '%s by %s'%(self.title, self.user)
     def __unicode__(self):
-        return u'%s by %s'%(self.title.decode('utf8', 'replace'),
+        return '%s by %s'%(self.title.decode('utf8', 'replace'),
             self.user.username.decode('utf8', 'replace'))
 
     def summary(self):
@@ -719,7 +719,7 @@ class DiaryEntry(models.Model):
             self.created = datetime.datetime.utcnow()
         if self.activity == None:
             self.activity = datetime.datetime.utcnow()
-        super(DiaryEntry, self).save()
+        super().save()
 
     def get_absolute_url(self):
         return reverse("display-diary", args=[self.id])
@@ -740,12 +740,12 @@ class DiaryComment(models.Model):
         return 'diary_comment-%r'%self.id
     __str__ = __repr__
     def __unicode__(self):
-        return u'diary_comment-%r'%self.id
+        return 'diary_comment-%r'%self.id
 
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(DiaryComment, self).save()
+        super().save()
 
 
 def file_upload_location(instance, filename):
@@ -798,13 +798,13 @@ class File(models.Model):
     def __str__(self):
        return 'file for %s (%s)'%(self.entry, self.description)
     def __unicode__(self):
-        return u'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
+        return 'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
             self.description.decode('utf8', 'replace'))
 
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(File, self).save()
+        super().save()
 
     def filename(self):
         return os.path.basename(self.content.name)
@@ -843,7 +843,7 @@ class Award(models.Model):
     def __str__(self):
         return 'award from %s (%s)'%(self.creator, self.description)
     def __unicode__(self):
-        return u'award from {} ({})'.format(
+        return 'award from {} ({})'.format(
             self.creator.username,
             self.description
         )
@@ -854,7 +854,7 @@ class Award(models.Model):
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(Award, self).save()
+        super().save()
 
 
 class EntryAward(models.Model):
@@ -872,11 +872,11 @@ class EntryAward(models.Model):
 
 
     def __repr__(self):
-        return '%r to %r' % (self.award, self.entry)
+        return f'{self.award!r} to {self.entry!r}'
     def __str__(self):
-        return '%s to %s' % (self.award, self.entry)
+        return f'{self.award} to {self.entry}'
     def __unicode__(self):
-        return u'%s to %s' % (self.award, self.entry)
+        return f'{self.award} to {self.entry}'
 
     def content(self):
         return self.award.content
@@ -887,7 +887,7 @@ class EntryAward(models.Model):
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(EntryAward, self).save()
+        super().save()
 
 class Checksum(models.Model):
     entry = models.ForeignKey(Entry)
@@ -914,7 +914,7 @@ class Checksum(models.Model):
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(Checksum, self).save()
+        super().save()
 
 BEST_TEN = 0
 SELECT_MANY = 1
@@ -951,25 +951,25 @@ class Poll(models.Model):
 
     def __repr__(self):
         if self.challenge:
-            return '<Poll %r challenge %r>' % (self.title, self.challenge)
+            return f'<Poll {self.title!r} challenge {self.challenge!r}>'
         else:
-            return '<Poll %r>' % (self.title, )
+            return f'<Poll {self.title!r}>'
     def __str__(self):
         if self.challenge:
-            return '<Poll %s challenge %s>' % (self.title, self.challenge)
+            return f'<Poll {self.title} challenge {self.challenge}>'
         else:
-            return '<Poll %s>' % (self.title, )
+            return f'<Poll {self.title}>'
     def __unicode__(self):
         if self.challenge:
-            return u'<Poll %s challenge %s>' % (self.title.decode('utf8',
+            return '<Poll {} challenge {}>'.format(self.title.decode('utf8',
                 'replace'), self.challenge)
         else:
-            return u'<Poll %s>' % (self.title.decode('utf8', 'replace'), )
+            return '<Poll {}>'.format(self.title.decode('utf8', 'replace'))
 
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(Poll, self).save()
+        super().save()
 
     def tally(self):
         ''' Figure the results of voting.
@@ -990,7 +990,7 @@ class Poll(models.Model):
 
         # figure percentages
         if self.type == INSTANT_RUNOFF:
-            for choice, num in tally.items():
+            for choice, num in list(tally.items()):
                 num = (100. * num / num_voters)
                 tally[choice] = num
         return num_voters, tally
@@ -1016,14 +1016,14 @@ class Poll(models.Model):
         responses = self.response_set.all()
         voters = {}
         for vote in responses:
-            if not voters.has_key(vote.user_id):
+            if vote.user_id not in voters:
                 voters[vote.user_id] = {}
             voters[vote.user_id][vote.option_id] = int(vote.value)
         num_voters = len(voters)
 
         # now give each voter an ordered list of votes
-        for voter, votes in voters.items():
-            l = [(v,k) for (k,v) in votes.items()]
+        for voter, votes in list(voters.items()):
+            l = [(v,k) for (k,v) in list(votes.items())]
             l.sort()
             voters[voter] = l
 
@@ -1032,14 +1032,14 @@ class Poll(models.Model):
         while erk < 10:
             erk += 1
             tally = {}
-            for votes in voters.values():
+            for votes in list(voters.values()):
                 for n, choice in votes:
-                    if eliminated.has_key(choice):
+                    if choice in eliminated:
                         continue
                     tally[choice] = tally.get(choice, 0) + 1
                     break
 
-            l = [(n,c) for (c,n) in tally.items()]
+            l = [(n,c) for (c,n) in list(tally.items())]
             l.sort()
             if l[-1][0] > num_voters/2.:
                 break
@@ -1048,7 +1048,7 @@ class Poll(models.Model):
             eliminated[l[0][1]] = True
 
         # figure percentages
-        for choice, num in tally.items():
+        for choice, num in list(tally.items()):
             num = (100. * num / num_voters)
             tally[choice] = num
 
@@ -1056,7 +1056,7 @@ class Poll(models.Model):
 
     def instant_runoff_winner(self):
         n, tally = self.instant_runoff()
-        l = [(num, choice) for choice, num in tally.items()]
+        l = [(num, choice) for choice, num in list(tally.items())]
         l.sort()
         choice = Option.objects.get(pk=l[-1][1])
         return choice.text
@@ -1070,11 +1070,11 @@ class Option(models.Model):
         unique_together = (("poll", "text"),)
 
     def __repr__(self):
-        return '<Poll %r Option %r>' % (self.poll, self.text)
+        return f'<Poll {self.poll!r} Option {self.text!r}>'
     def __str__(self):
-        return 'Poll %s Option "%s"' % (self.poll, self.text)
+        return f'Poll {self.poll} Option "{self.text}"'
     def __unicode__(self):
-        return u'Poll %s Option "%s"' % (self.poll, self.text.decode('utf8', 'replace'))
+        return 'Poll {} Option "{}"'.format(self.poll, self.text.decode('utf8', 'replace'))
 
 class Response(models.Model):
     poll = models.ForeignKey(Poll)
@@ -1098,7 +1098,7 @@ class Response(models.Model):
     def save(self):
         if self.created == None:
             self.created = datetime.datetime.utcnow()
-        super(Response, self).save()
+        super().save()
 
 
 class UserProfile(models.Model):
@@ -1108,13 +1108,13 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
         unique=True,
-        help_text=u"The username of your Twitter account.",
+        help_text="The username of your Twitter account.",
     )
     github_username = models.CharField(
         max_length=39,
         blank=True,
         null=True,
         unique=True,
-        help_text=u"The username of your GitHub account.",
+        help_text="The username of your GitHub account.",
     )
     content = models.TextField(blank=True)

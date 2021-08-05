@@ -115,7 +115,7 @@ def profile_description(request):
         if form.is_valid():
             form.instance.save()
             messages.success(request, 'Description saved!')
-            return HttpResponseRedirect('/u/{}/'.format(request.user.username))
+            return HttpResponseRedirect(f'/u/{request.user.username}/')
     else:
         form = ProfileForm(instance=profile)
     return render(
@@ -139,7 +139,7 @@ def delete_spammer(request, user_id):
     user.save()
 
     last = None
-    for diary_entry, comments in d.items():
+    for diary_entry, comments in list(d.items()):
         for comment in diary_entry.diarycomment_set.all():
             if comment.user != user:
                 last = comment
@@ -157,5 +157,5 @@ def delete_spammer(request, user_id):
         for comment in comments:
             comment.delete()
 
-    messages.success(request, 'Spammer deleted! ({0})'.format(user))
+    messages.success(request, f'Spammer deleted! ({user})')
     return HttpResponseRedirect('/u/%s/' % user_id)

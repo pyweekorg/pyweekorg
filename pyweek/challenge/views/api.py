@@ -1,6 +1,6 @@
 """REST API views, primarily for the 'pyweek' CLI tool."""
 import posixpath
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from django.db import models as md
 from django.shortcuts import get_object_or_404, render

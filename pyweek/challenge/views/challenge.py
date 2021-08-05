@@ -1,8 +1,8 @@
-import os, cgi, urllib, simplejson
+import os, cgi, urllib.request, urllib.parse, urllib.error, simplejson
 import posixpath
 import datetime
 import xml.sax.saxutils
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from PIL import Image
 
@@ -91,7 +91,7 @@ def all_games(request):
          rating DESC
     ''')
     all = []
-    u = urllib.quote
+    u = urllib.parse.quote
     e = cgi.escape
     for entry_id, title, game, winner, challenge_num, rating in cursor.fetchall():
         team = ',\n'.join(['<a class="small" href="/u/%s">%s</a>'%(u(n), e(n))

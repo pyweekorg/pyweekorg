@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import json
 
 from django.conf import settings
@@ -16,6 +14,7 @@ class Event(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,
+        on_delete=models.SET_NULL,
     )
     type = models.CharField(max_length=16)
     data = models.TextField()
@@ -23,6 +22,7 @@ class Event(models.Model):
     target_content_type = models.ForeignKey(
         ContentType,
         null=True,
+        on_delete=models.SET_NULL,
     )
     target_id = models.PositiveIntegerField(null=True)
     target = GenericForeignKey(
@@ -42,7 +42,7 @@ class Event(models.Model):
 
     @property
     def template_name(self):
-        return 'activity/{}.html'.format(self.type)
+        return f'activity/{self.type}.html'
 
 
 def log_event(type, user=None, target=None, **kwargs):

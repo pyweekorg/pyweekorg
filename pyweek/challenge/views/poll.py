@@ -78,7 +78,7 @@ def render_poll(poll, request, force_display=False):
 def render_fields(poll, request):
     '''Figure the votes display for the current user.'''
     l = poll.response_set.filter(user__pk=request.user.id)
-    votes = dict([(vote.option_id, vote.value) for vote in l])
+    votes = {vote.option_id: vote.value for vote in l}
 
     message = ''
     if request.POST:
@@ -88,7 +88,7 @@ def render_fields(poll, request):
         else:
             for response in l:
                 response.delete()
-            for choice, value in votes.items():
+            for choice, value in list(votes.items()):
                 option = Option.objects.get(pk=choice)
                 r = Response(option=option, value=value,
                     user=request.user, poll=poll)
@@ -115,11 +115,11 @@ def render_fields(poll, request):
 def choice_field(poll, choice, votes):
     ' render one choice field, based on the method '
     if poll.type in (Poll.BEST_TEN, Poll.SELECT_MANY):
-        checked = votes.has_key(choice) and ' checked' or ''
+        checked = choice in votes and ' checked' or ''
         return '<input name="votes" type="checkbox" value="%s"%s>'%(
             choice, checked)
     elif poll.type == Poll.POLL:
-        checked = votes.has_key(choice) and ' checked' or ''
+        checked = choice in votes and ' checked' or ''
         return '<input name="vote" type="radio" value="%s"%s>'%(choice, checked)
     elif poll.type == Poll.INSTANT_RUNOFF:
         value = votes.get(choice, '')
@@ -149,7 +149,7 @@ def handle_votes(poll, current, request):
         options = poll.option_set.all()
         for option in options:
             key = 'vote-%s'%option.id
-            if not request.POST.has_key(key):
+            if key not in request.POST:
                 errors.append( "Must place a number against all choices")
             try:
                 v = int(request.POST[key])
@@ -161,7 +161,7 @@ def handle_votes(poll, current, request):
             n = len(options)
             if v > n:
                 errors.append( "Votes must be numbers <= %s"%n)
-            if have.has_key(v):
+            if v in have:
                 errors.append( "Can't vote %d twice"%v)
             d[option.id] = v
             have[v] = True
@@ -170,8 +170,7 @@ def handle_votes(poll, current, request):
 def render_tally(poll, tally):
     # Render the results of voting
     l = ['<table>']
-    tally = map(lambda (choice, value):
-                 (Option.objects.get(pk=choice), value), tally.items())
+    tally = [(Option.objects.get(pk=choice_value[0]), choice_value[1]) for choice_value in list(tally.items())]
     if poll.is_ongoing:
         tally.sort(lambda a,b:cmp(a[0].text, b[0].text))
     else:

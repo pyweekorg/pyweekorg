@@ -148,8 +148,8 @@ class DiaryForm(forms.Form):
     content = SafeHTMLField(required=True,
         help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
     def as_plain(self):
-        return self._html_output(u'<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
-             u'%s', '', u' %s', False)
+        return self._html_output('<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
+             '%s', '', ' %s', False)
 
 
 class StickyDiaryForm(DiaryForm):
@@ -307,8 +307,8 @@ class CommentForm(forms.Form):
     content = SafeHTMLField(required=True,
         help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
     def as_plain(self):
-        return self._html_output(u'%(field)s<br>%(help_text)s<br>%(errors)s',
-             u'%s', '', u' %s', False)
+        return self._html_output('%(field)s<br>%(help_text)s<br>%(errors)s',
+             '%s', '', ' %s', False)
 
 
 def diary_display(request, diary_id):

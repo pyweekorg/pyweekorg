@@ -3,7 +3,7 @@ Upload script specifically engineered for the PyWeek challenge.
 
 Handles authentication and gives upload progress feedback.
 '''
-import sys, os, httplib, cStringIO, socket, time, getopt
+import sys, os, http.client, io, socket, time, getopt
 
 class Upload:
     def __init__(self, filename):
@@ -17,8 +17,8 @@ def mimeEncode(data, sep_boundary=sep_boundary, end_boundary=end_boundary):
     '''Take the mapping of data and construct the body of a
     multipart/form-data message with it using the indicated boundaries.
     '''
-    ret = cStringIO.StringIO()
-    for key, value in data.items():
+    ret = io.StringIO()
+    for key, value in list(data.items()):
         # handle multiple entries for the same name
         if type(value) != type([]): value = [value]
         for value in value:
@@ -43,7 +43,7 @@ class Progress:
         self.info = info
         self.tosend = len(data)
         self.total = self.tosend/1024
-        self.data = cStringIO.StringIO(data)
+        self.data = io.StringIO(data)
         self.start = self.now = time.time()
         self.sent = 0
         self.num = 0
@@ -53,10 +53,10 @@ class Progress:
 
     def __iter__(self): return self
 
-    def next(self):
+    def __next__(self):
         self.num += 1
         if self.sent >= self.tosend:
-            print self.info, 'done', ' '*(75-len(self.info)-6)
+            print(self.info, 'done', ' '*(75-len(self.info)-6))
             sys.stdout.flush()
             raise StopIteration
 
@@ -98,7 +98,7 @@ class Progress:
         sys.stdout.write(s + ' '*(75-len(s)) + '\r')
         sys.stdout.flush()
 
-class progressHTTPConnection(httplib.HTTPConnection):
+class progressHTTPConnection(http.client.HTTPConnection):
     def progress_send(self, str):
         """Send `str' to the server."""
         if self.sock is None:
@@ -110,16 +110,16 @@ class progressHTTPConnection(httplib.HTTPConnection):
             while sent != len(chunk):
                 try:
                     sent += self.sock.send(chunk)
-                except socket.error, v:
+                except OSError as v:
                     if v[0] == 32:      # Broken pipe
                         self.close()
                     raise
                 p.display()
 
-class progressHTTP(httplib.HTTP):
+class progressHTTP(http.client.HTTP):
     _connection_class = progressHTTPConnection
     def _setup(self, conn):
-        httplib.HTTP._setup(self, conn)
+        http.client.HTTP._setup(self, conn)
         self.progress_send = self._conn.progress_send
 
 def http_request(data, server, port, url):
@@ -140,11 +140,11 @@ def http_request(data, server, port, url):
     response = f.read().strip()
     f.close()
 
-    print '%s %s'%(errcode, errmsg)
-    if response: print response
+    print('%s %s'%(errcode, errmsg))
+    if response: print(response)
 
 def usage():
-    print '''This program is to be used to upload files to the PyWeek system.
+    print('''This program is to be used to upload files to the PyWeek system.
 You may use it to upload screenshots or code submissions.
 
 REQUIRED ARGUMENTS:
@@ -162,14 +162,14 @@ OPTIONAL ARGUMENTS:
 
 In order to qualify for judging at the end of the challenge, you MUST
 upload your source and check the "Final Submission" checkbox.
-'''
+''')
 
 
 if __name__ == '__main__':
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'e:u:p:sfd:h:P:c:')
-    except getopt.GetoptError, message:
-        print message
+    except getopt.GetoptError as message:
+        print(message)
         usage()
         sys.exit(1)
     host = 'www.pyweek.org'
@@ -189,7 +189,7 @@ if __name__ == '__main__':
         elif opt == '-P': port = int(arg)
 
     if len(data) < 4 or url is None:
-        print 'Required argument missing'
+        print('Required argument missing')
         usage()
         sys.exit(1)
 

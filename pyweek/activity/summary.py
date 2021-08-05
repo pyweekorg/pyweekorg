@@ -1,10 +1,10 @@
 from cgi import escape
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 from io import StringIO
 
 
 class Summarizer(HTMLParser):
-    self_closing = {u'br', u'img', u'hr'}
+    self_closing = {'br', 'img', 'hr'}
 
     def __init__(self, maxchars=280):
         HTMLParser.__init__(self)
@@ -17,50 +17,50 @@ class Summarizer(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if self.done:
             return
-        assert isinstance(tag, unicode)
+        assert isinstance(tag, str)
         if tag not in self.self_closing:
             self.stack.append(tag)
-        attrtext = u' '.join(
+        attrtext = ' '.join(
             (
-                u'{}="{}"'.format(escape(k), escape(v))
+                f'{escape(k)}="{escape(v)}"'
                 if v is not None else escape(k)
             ) for k, v in attrs
         )
         self.out.write(
-            u'<{} {}>'.format(tag, attrtext)
+            f'<{tag} {attrtext}>'
         )
 
     def handle_endtag(self, tag):
         if self.done:
             return
-        self.out.write(u'</{}>'.format(escape(tag)))
+        self.out.write(f'</{escape(tag)}>')
         if tag in self.stack:
             self.stack.remove(tag)
 
     def finish(self):
         while self.stack:
             tag = self.stack.pop()
-            self.out.write(u'</{}>'.format(escape(tag)))
+            self.out.write(f'</{escape(tag)}>')
         self.done = True
 
     def handle_data(self, data):
         if self.done:
             return
-        assert isinstance(data, unicode)
+        assert isinstance(data, str)
         words = data.split()
         take = []
         if data[:1].isspace():
             take.append(b'')
         for w in words:
             if self.chars + len(w) > self.maxchars:
-                self.out.write(u' '.join(take) + u'...')
+                self.out.write(' '.join(take) + '...')
                 self.finish()
                 return
             take.append(w)
             self.chars += len(w)
         if data[-1:].isspace():
-            take.append(u'')
-        self.out.write(u' '.join(take))
+            take.append('')
+        self.out.write(' '.join(take))
 
 
 

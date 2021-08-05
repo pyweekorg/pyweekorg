@@ -1,5 +1,5 @@
 from inspect import cleandoc
-from urllib import quote
+from urllib.parse import quote
 
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -191,7 +191,7 @@ class AddressForm(forms.ModelForm):
             obj.request_verification()
             messages.success(
                 self.request,
-                'Your new e-mail address, {}, must be '.format(new_address) +
+                f'Your new e-mail address, {new_address}, must be ' +
                 'verified. Please check your e-mail for a verification link.'
             )
 
@@ -215,7 +215,7 @@ def _handle_delete_address(request):
         addr.delete()
         messages.success(
             request,
-            'E-mail address {} has been deleted.'.format(to_delete)
+            f'E-mail address {to_delete} has been deleted.'
         )
 
 
@@ -242,7 +242,7 @@ def _handle_make_primary(request):
     user.save()
     messages.success(
         request,
-        'Your primary e-mail address has been set to {}.'.format(addr.address)
+        f'Your primary e-mail address has been set to {addr.address}.'
     )
 
 
@@ -259,7 +259,7 @@ def _handle_resend_verification(request):
     if addr.verified:
         messages.error(
             request,
-            'Your e-mail address {} is already verified.'.format(addr.address)
+            f'Your e-mail address {addr.address} is already verified.'
         )
         return
 
@@ -364,7 +364,7 @@ def verify_email(request):
         address.save()
         messages.success(
             request,
-            'Your e-mail address {} has been verified.'.format(address.address)
+            f'Your e-mail address {address.address} has been verified.'
         )
     return HttpResponseRedirect('/profile/')
 
@@ -444,7 +444,7 @@ def resetpw(request):
         try:
             user = users.get()
         except User.DoesNotExist:
-            return redirect_to_login('No such user {}!'.format(username_email))
+            return redirect_to_login(f'No such user {username_email}!')
         addresses = [a.address for a in user.emailaddress_set.all()]
 
     for u in users:
@@ -510,7 +510,7 @@ def recovery(request):
     except User.DoesNotExist:
         return login_page(
             request,
-            error='{} is not a valid username.'.format(username)
+            error=f'{username} is not a valid username.'
         )
 
     if request.method == 'POST':

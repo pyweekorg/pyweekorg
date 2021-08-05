@@ -15,6 +15,6 @@ def page(request, page_id):
     path = os.path.join(settings.PAGES_DIR, '%s.html'%page_id)
     if not os.path.exists(path):
         raise Http404('No file called %s'%page_id)
-    content = open(path, 'r').read()
+    content = open(path).read()
     return render(request, 'page.html', {'content': content})
 

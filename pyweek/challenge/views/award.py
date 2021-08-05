@@ -1,7 +1,6 @@
-
 import os
 import datetime
-import StringIO
+import io
 
 from PIL import Image
 
@@ -38,7 +37,7 @@ class GiveAwardForm(forms.Form):
     award = forms.ModelChoiceField(queryset=None)
 
     def __init__(self, user, *args, **kwargs):
-        super(GiveAwardForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.user = user
         self.fields['award'].queryset = user.award_set.all()
 

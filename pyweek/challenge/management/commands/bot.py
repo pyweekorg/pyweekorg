@@ -29,7 +29,7 @@ def send_email(challenge, message, **info):
     if not mo:
         raise Exception('Failed to parse message')
 
-    mailing_list = set(e.address for e in latest_challenge_users(challenge))
+    mailing_list = {e.address for e in latest_challenge_users(challenge)}
 
     html_body = linebreaks(urlize(body))
 
@@ -173,7 +173,7 @@ class Command(BaseCommand):
                 winner.append('Team: %s (http://pyweek.org/e/%s)'%(title, e.name))
             winner = '\n'.join(winner)
             send_email(latest, CHALLENGE_DONE, theme=theme, winner=winner)
-            print 'PYWEEK BOT: SENT CHALLENGE ALL DONE'
+            print('PYWEEK BOT: SENT CHALLENGE ALL DONE')
 
     def begin_theme_voting(self, latest):
         latest.theme_poll.is_open = True
@@ -183,9 +183,9 @@ class Command(BaseCommand):
 
         themes = '\n'.join(['- %s'%o.text for o in options])
         url = 'http://pyweek.org/p/%s/'%latest.theme_poll.id
-        print 'PYWEEK BOT: SENDING VOTING EMAIL'
+        print('PYWEEK BOT: SENDING VOTING EMAIL')
         send_email(latest, VOTING_START, themes=themes, poll_url=url)
-        print 'PYWEEK BOT: SENT VOTING EMAIL'
+        print('PYWEEK BOT: SENT VOTING EMAIL')
         log_event(
             type="theme-voting",
             target=latest.theme_poll,
@@ -193,12 +193,12 @@ class Command(BaseCommand):
             challenge_title=latest.title,
             options=[o.text for o in options],
         )
-        print 'PYWEEK BOT: Posted to activity log'
+        print('PYWEEK BOT: Posted to activity log')
 
     def start_challenge(self, latest):
         theme = latest.setTheme()  # this also closes the poll
         send_email(latest, CHALLENGE_START, theme=theme)
-        print 'PYWEEK BOT: SENT CHALLENGE START EMAIL'
+        print('PYWEEK BOT: SENT CHALLENGE START EMAIL')
         log_event(
             type="challenge-start",
             target=latest,
@@ -207,7 +207,7 @@ class Command(BaseCommand):
             theme=theme,
             poll_id=latest.theme_poll.id,
         )
-        print 'PYWEEK BOT: Posted to activity log'
+        print('PYWEEK BOT: Posted to activity log')
 
     def challenge_countdown(self, latest, current_date):
         remaining = (latest.end_utc().date() - current_date).days
@@ -219,11 +219,11 @@ class Command(BaseCommand):
             challenge_title=latest.title,
             theme=latest.theme,
         )
-        print 'PYWEEK BOT: Posted to activity log'
+        print('PYWEEK BOT: Posted to activity log')
 
     def end_challenge(self, latest):
         send_email(latest, CHALLENGE_END, theme=latest.theme)
-        print 'PYWEEK BOT: SENT CHALLENGE END EMAIL'
+        print('PYWEEK BOT: SENT CHALLENGE END EMAIL')
         log_event(
             type="challenge-end",
             target=latest,
@@ -231,4 +231,4 @@ class Command(BaseCommand):
             challenge_title=latest.title,
             theme=latest.theme,
         )
-        print 'PYWEEK BOT: Posted to activity log'
+        print('PYWEEK BOT: Posted to activity log')

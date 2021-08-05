@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 import pkgutil
 import re
 
@@ -42,9 +41,9 @@ def rot13(s):
     This implementation is intended to work with Python 2's unicode and byte
     strings
     """
-    if isinstance(s, unicode):
-        _chr = unichr
-        join = u''.join
+    if isinstance(s, str):
+        _chr = chr
+        join = ''.join
     else:
         _chr = chr
         join = b''.join
@@ -98,13 +97,13 @@ def send(
         priority=mailer.models.PRIORITY_MEDIUM):
     """Send an e-mail, using the django-mailer queue."""
     html_part, text_part = _make_payload(html_body, reason)
-    subject = '[PyWeek] {}'.format(subject.strip())
+    subject = f'[PyWeek] {subject.strip()}'
 
     #TODO: identify sending user rather than using default
     from_email = settings.DEFAULT_FROM_EMAIL
     for recip in recipients:
         if isinstance(recip, EmailAddress):
-            to_email = '{} <{}>'.format(recip.user.username, recip.address)
+            to_email = f'{recip.user.username} <{recip.address}>'
             token_key = recip.user.username
         else:
             token_key = to_email = recip
@@ -149,7 +148,7 @@ def send_template(
         priority=mailer.models.PRIORITY_MEDIUM):
     """Send a queued message from a template."""
     html_body = render_to_string(
-        'emails/{}.html'.format(template_name),
+        f'emails/{template_name}.html',
         context=params
     )
     return send(

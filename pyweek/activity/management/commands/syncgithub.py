@@ -38,10 +38,10 @@ class Command(BaseCommand):
 
     def query_github(self, entry):
         repo = entry.github_repo
-        url = 'https://api.github.com/repos/{}/commits'.format(repo)
+        url = f'https://api.github.com/repos/{repo}/commits'
         headers = {}
         if self.github_token:
-            headers['Authorization'] = 'token {}'.format(self.github_token)
+            headers['Authorization'] = f'token {self.github_token}'
         resp = requests.get(url, headers=headers)
         if resp.status_code != 200:
             self.stdout.write(

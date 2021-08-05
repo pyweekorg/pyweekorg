@@ -3,7 +3,7 @@
 All list providers should return an iterable of EmailAddress objects.
 
 """
-from __future__ import unicode_literals
+
 import datetime
 from collections import OrderedDict
 

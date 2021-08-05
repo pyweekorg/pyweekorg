@@ -1,4 +1,4 @@
-import cgi, urllib, random, hashlib
+import cgi, urllib.request, urllib.parse, urllib.error, random, hashlib
 
 from django import forms
 from django.db import models as md
@@ -103,7 +103,7 @@ class BaseEntryForm(forms.ModelForm):
 
         Here we just require open teams to provide a group URL.
         """
-        data = super(BaseEntryForm, self).clean()
+        data = super().clean()
         if data.get('is_open') and not data.get('group_url'):
             self.add_error('group_url', "Open teams must provide a Group URL.")
 
@@ -605,7 +605,7 @@ def entry_manage(request, entry_id):
 
 def entry_requests(request, entry_id):
     """Approve or reject join requests for a team."""
-    back_to_entry = HttpResponseRedirect('/e/{}/'.format(entry_id))
+    back_to_entry = HttpResponseRedirect(f'/e/{entry_id}/')
 
     if request.user.is_anonymous():
         return back_to_entry
@@ -628,7 +628,7 @@ def entry_requests(request, entry_id):
         added = set()
         rejected = set()
         for u in list(entry.join_requests.all()):
-            action = request.POST.get(u'user:' + u.username)
+            action = request.POST.get('user:' + u.username)
             if action == 'approve':
                 # TODO: send e-mail
                 entry.users.add(u)
@@ -647,7 +647,7 @@ def entry_requests(request, entry_id):
                 EmailAddress.objects.filter(user__in=added)
             ]
             sending.send_template(
-                subject='{} team membership accepted'.format(team_name),
+                subject=f'{team_name} team membership accepted',
                 template_name='team-request-accepted',
                 recipients=addresses,
                 params={
@@ -659,10 +659,10 @@ def entry_requests(request, entry_id):
         if added or rejected:
             msgs = []
             if added:
-                msgs.append('added {} new team members'.format(len(added)))
+                msgs.append(f'added {len(added)} new team members')
             if rejected:
                 msgs.append(
-                    'rejected {} membership requests'.format(len(rejected))
+                    f'rejected {len(rejected)} membership requests'
                 )
             messages.success(request, ' and '.join(msgs).capitalize())
             return back_to_entry
