@@ -23,7 +23,7 @@ from django.db import models as md
 from pyweek.challenge import models
 from django.conf import settings
 
-from stripogram import html2safehtml
+from pyweek.bleaching import html2safehtml
 
 from .entry import user_may_rate
 

@@ -17,7 +17,7 @@ from pyweek.mail import sending
 from pyweek.activity.models import log_event
 from pyweek.activity.summary import summarise
 
-from stripogram import html2text, html2safehtml
+from pyweek.bleaching import html2text, html2safehtml
 
 safeTags = '''strong em blockquote pre b a i br img table tr th td pre p dl dd dt ul ol li span div'''.split()
 

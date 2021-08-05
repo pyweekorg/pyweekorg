@@ -2,7 +2,7 @@ Django
 Pillow
 psycopg2-binary
 django-wysiwyg
-stripogram
+bleach
 django-recaptcha2
 django-gravatar2
 html2text

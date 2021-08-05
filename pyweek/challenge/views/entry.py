@@ -13,7 +13,7 @@ from pyweek import settings
 from django.core import validators
 from django.contrib.auth.decorators import login_required
 
-from stripogram import html2text, html2safehtml
+from pyweek.bleaching import html2text, html2safehtml
 from pyweek.activity.models import log_event
 from pyweek.activity.summary import summarise
 from pyweek.mail import sending

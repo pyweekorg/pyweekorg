@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.core.validators import RegexValidator
 from pyweek.challenge import models
 
-from stripogram import html2safehtml
+from pyweek.bleaching import html2safehtml
 import collections
 from django.core.exceptions import ObjectDoesNotExist
 

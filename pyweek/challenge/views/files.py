@@ -13,7 +13,7 @@ from pyweek import settings
 from pyweek.settings import MEDIA_ROOT
 from pyweek.activity.models import log_event
 
-from stripogram import html2text
+from pyweek.bleaching import html2text
 
 
 class FileForm(forms.Form):

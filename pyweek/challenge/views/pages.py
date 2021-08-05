@@ -9,7 +9,7 @@ from django.template import RequestContext
 from django.conf import settings
 from django.http import Http404
 
-from stripogram import html2text, html2safehtml
+from pyweek.bleaching import html2text, html2safehtml
 
 def page(request, page_id):
     path = os.path.join(settings.PAGES_DIR, '%s.html'%page_id)

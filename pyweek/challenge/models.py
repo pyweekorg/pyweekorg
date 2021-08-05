@@ -10,7 +10,7 @@ from django.db.models.signals import pre_save
 from ..activity.models import EventRelation
 
 
-from stripogram import html2text
+from pyweek.bleaching import html2text
 import datetime
 
 # Maximum number of checksums per entry. Set to None to disable
