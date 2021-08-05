@@ -1,4 +1,1 @@
-pss
-e
-fabric<2
--r requirements.txt
+pip-tools

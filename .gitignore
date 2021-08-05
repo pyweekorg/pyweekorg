@@ -10,3 +10,5 @@ development
 /static
 dumps
 /media
+/venv*/
+

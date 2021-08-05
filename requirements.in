@@ -1,0 +1,10 @@
+Django
+Pillow
+psycopg2-binary
+django-wysiwyg
+stripogram
+django-recaptcha2
+django-gravatar2
+html2text
+django-mailer
+requests
