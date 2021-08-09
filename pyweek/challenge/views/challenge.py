@@ -1,4 +1,5 @@
-import os, cgi, urllib.request, urllib.parse, urllib.error, simplejson
+import os, cgi, urllib.request, urllib.parse, urllib.error
+import json
 import posixpath
 import datetime
 import xml.sax.saxutils
@@ -51,8 +52,8 @@ def stats(request):
 
 def stats_json(request):
     stats = models.participation()
-    json = simplejson.dumps({'stats': stats})
-    return HttpResponse(json, content_type='application/json')
+    js = json.dumps({'stats': stats})
+    return HttpResponse(js, content_type='application/json')
 
 
 def all_games(request):

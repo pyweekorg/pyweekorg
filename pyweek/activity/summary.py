@@ -1,4 +1,4 @@
-from cgi import escape
+from html import escape
 from html.parser import HTMLParser
 from io import StringIO
 

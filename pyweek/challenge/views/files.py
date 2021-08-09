@@ -86,7 +86,7 @@ def entry_upload(request, entry_id):
             msg = e.args[0]
             if not msg.startswith('cannot identify image file'):
                 raise
-	    messages.error(request, 'File is not an image')
+            messages.error(request, 'File is not an image')
             return render(request, 'challenge/entry_file.html', info)
 
         log_event(
@@ -221,4 +221,3 @@ def file_delete(request, entry_id, filename):
             'message': 'Are you sure you wish to delete the file %s?'%filename,
         }
     )
-

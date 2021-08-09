@@ -149,7 +149,13 @@ class Challenge(models.Model):
             "competition.".format(days=settings.REGISTRATION_OPENS)
         )
     )
-    theme_poll = models.ForeignKey('Poll', null=True, blank=True, related_name='poll_challenge')
+    theme_poll = models.ForeignKey(
+        'Poll',
+        null=True,
+        blank=True,
+        related_name='poll_challenge',
+        on_delete=models.SET_NULL,  # Deleting a poll doesn't impact the challenge
+    )
     theme = models.CharField(max_length=100, null=True, blank=True, default='')
     torrent_url = models.CharField(max_length=255, null=True, blank=True, default='')
 
@@ -489,9 +495,25 @@ class Entry(models.Model):
         help_text="Chat/group URL, visible only to participants."
     )
 
-    challenge = models.ForeignKey(Challenge, related_name='entries')
-    winner = models.ForeignKey(Challenge, blank=True, null=True, related_name='winner')
-    user = models.ForeignKey(User, verbose_name='entry owner', related_name="owner")
+    challenge = models.ForeignKey(
+        Challenge,
+        related_name='entries',
+        on_delete=models.PROTECT,  # Should not delete a challenge that has entries
+    )
+    winner = models.ForeignKey(
+        Challenge,
+        blank=True,
+        null=True,
+        related_name='winner',
+        on_delete=models.SET_NULL,  # Protected by above, won't duplicate here
+    )
+    user = models.ForeignKey(
+        User,
+        verbose_name='entry owner',
+        related_name="owner",
+        on_delete=models.SET_NULL,  # Entries can be team entries; deleting one
+                                    # user must not delete the entry
+    )
     users = models.ManyToManyField(User)
     is_upload_open = models.BooleanField(default=False)
     has_final = models.BooleanField(default=False)
@@ -611,9 +633,16 @@ class Entry(models.Model):
 RATING_CHOICES = ((1, 'Not at all'), (2,'Below average'),
     (3,'About average'), (4,'Above average'), (5,'Exceptional'))
 
+
 class Rating(models.Model):
-    entry = models.ForeignKey(Entry)
-    user = models.ForeignKey(User)
+    entry = models.ForeignKey(
+        Entry,
+        on_delete=models.CASCADE  # ratings are specific to entries
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL  # user deletion should not change ratings
+    )
     fun = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
     innovation = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
     production = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
@@ -640,14 +669,21 @@ class Rating(models.Model):
             self.created = datetime.datetime.utcnow()
         super().save()
 
+
 class RatingTally(models.Model):
-    challenge = models.ForeignKey(Challenge)      # convenience
-    entry = models.ForeignKey(Entry)
+    challenge = models.ForeignKey(
+        Challenge,
+        on_delete=models.CASCADE  # If deleting a challenge, ratingtally is not important
+    )
+    entry = models.ForeignKey(
+        Entry,
+        on_delete=models.CASCADE  # RatingTally is specific to an entry
+    )
     individual = models.BooleanField()
-    fun = models.FloatField()#max_digits=3, decimal_places=2)
-    innovation = models.FloatField()#max_digits=3, decimal_places=2)
-    production = models.FloatField()#max_digits=3, decimal_places=2)
-    overall = models.FloatField()#max_digits=3, decimal_places=2)
+    fun = models.FloatField()
+    innovation = models.FloatField()
+    production = models.FloatField()
+    overall = models.FloatField()
     nonworking = models.PositiveIntegerField()
     disqualify = models.PositiveIntegerField()
     respondents = models.PositiveIntegerField()
@@ -677,16 +713,39 @@ class DiaryEntryManager(models.Manager):
 
 
 class DiaryEntry(models.Model):
-    challenge = models.ForeignKey(Challenge, blank=True, null=True)      # convenience
-    entry = models.ForeignKey(Entry, blank=True, null=True)
-    user = models.ForeignKey(User, related_name='author')
+    challenge = models.ForeignKey(
+        Challenge,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,  # Deleting a challenge doesn't need to delete diaries
+    )
+    entry = models.ForeignKey(
+        Entry,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,  # Deleting an entry should delete its diary entries
+    )
+    user = models.ForeignKey(
+        User,
+        related_name='author',
+        on_delete=models.CASCADE,  # Deleting a user account should delete user activity
+    )
     title = models.CharField(max_length=100)
     content = models.TextField()
     created = models.DateTimeField()
     edited = models.DateTimeField(blank=True, null=True)
     activity = models.DateTimeField()
-    actor = models.ForeignKey(User, related_name='actor')
-    last_comment = models.ForeignKey('DiaryComment', blank=True, null=True)
+    actor = models.ForeignKey(
+        User,
+        related_name='actor',
+        on_delete=models.SET_NULL,  # Actor is just the last commenter
+    )
+    last_comment = models.ForeignKey(
+        'DiaryComment',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,  # Deleting a comment doesn't affect the diary
+    )
     reply_count = models.PositiveIntegerField(default=0)
     sticky = models.BooleanField(default=False)
     is_pyggy = models.BooleanField(default=False)
@@ -724,10 +783,22 @@ class DiaryEntry(models.Model):
     def get_absolute_url(self):
         return reverse("display-diary", args=[self.id])
 
+
 class DiaryComment(models.Model):
-    challenge = models.ForeignKey(Challenge, blank=True, null=True)
-    diary_entry = models.ForeignKey(DiaryEntry)
-    user = models.ForeignKey(User)
+    challenge = models.ForeignKey(
+        Challenge,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,  # many redundant relationships here
+    )
+    diary_entry = models.ForeignKey(
+        DiaryEntry,
+        on_delete=models.CASCADE,  # nowhere to show a comment if diary is gone
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,  # deleting a user should delete their activity
+    )
     content = models.TextField()
     created = models.DateTimeField()
     edited = models.DateTimeField(null=True)
@@ -753,9 +824,20 @@ def file_upload_location(instance, filename):
 
 
 class File(models.Model):
-    challenge = models.ForeignKey(Challenge)
-    entry = models.ForeignKey(Entry)
-    user = models.ForeignKey(User)
+    challenge = models.ForeignKey(
+        Challenge,
+        on_delete=models.SET_NULL,  # Challenge doesn't own the file
+    )
+    entry = models.ForeignKey(
+        Entry,
+        on_delete=models.CASCADE,  # Entries own their files
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,  # Files uploaded by one team member on behalf
+                                    # of the whole team must not be deleted if
+                                    # that user is deleted
+    )
     thumb_width = models.PositiveIntegerField(default=0)
     content = models.FileField(upload_to=file_upload_location)
     created = models.DateTimeField()
@@ -829,7 +911,10 @@ def award_upload_location(instance, filename):
 
 
 class Award(models.Model):
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,  # awards belong to their recipients
+    )
     created = models.DateTimeField()
     content = models.FileField(upload_to=award_upload_location)
     description = models.CharField(max_length=255)
@@ -858,11 +943,23 @@ class Award(models.Model):
 
 
 class EntryAward(models.Model):
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,  # awards belong to their recipients
+    )
     created = models.DateTimeField()
-    challenge = models.ForeignKey(Challenge)
-    entry = models.ForeignKey(Entry)
-    award = models.ForeignKey(Award)
+    challenge = models.ForeignKey(
+        Challenge,
+        on_delete=models.SET_NULL,  # awards belong to entries not challenges
+    )
+    entry = models.ForeignKey(
+        Entry,
+        on_delete=models.CASCADE,  # deleting an entry deletes the awards it has received
+    )
+    award = models.ForeignKey(
+        Award,
+        on_delete=models.CASCADE,  # if an award must be deleted it is deleted from all entries
+    )
 
     activity_log_events = EventRelation()
 
@@ -874,8 +971,6 @@ class EntryAward(models.Model):
     def __repr__(self):
         return f'{self.award!r} to {self.entry!r}'
     def __str__(self):
-        return f'{self.award} to {self.entry}'
-    def __unicode__(self):
         return f'{self.award} to {self.entry}'
 
     def content(self):
@@ -889,32 +984,6 @@ class EntryAward(models.Model):
             self.created = datetime.datetime.utcnow()
         super().save()
 
-class Checksum(models.Model):
-    entry = models.ForeignKey(Entry)
-    user = models.ForeignKey(User)
-    created = models.DateTimeField()
-    description = models.CharField(max_length=255)
-    md5 = models.CharField(max_length=32, unique=True,
-        validators=[validators.RegexValidator(
-            '[0-9a-fA-F]{32}','Invalid md5 hash. Should be 32 hex digits')]
-        )
-    is_final = models.BooleanField(default=False)
-    is_screenshot = models.BooleanField(default=False)
-
-    class Meta:
-        get_latest_by = 'created'
-        ordering = ['-created']
-
-
-    #def __repr__(self):
-        #return 'MD5 hash %r' % (self.md5)
-    #def __str__(self):
-        #return 'MD5 hash %r' % (self.md5)
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
 BEST_TEN = 0
 SELECT_MANY = 1
@@ -927,7 +996,10 @@ POLL_CHOICES = (
     (POLL, 'Poll'),
 )
 class Poll(models.Model):
-    challenge = models.ForeignKey(Challenge)
+    challenge = models.ForeignKey(
+        Challenge,
+        on_delete=models.CASCADE,  # Theme polls are owned by a challenge
+    )
     title = models.CharField(max_length=100)
     description = models.TextField()
     created = models.DateTimeField()
@@ -1061,9 +1133,13 @@ class Poll(models.Model):
         choice = Option.objects.get(pk=l[-1][1])
         return choice.text
 
+
 class Option(models.Model):
-    poll = models.ForeignKey(Poll) #, edit_inline=models.TABULAR, num_in_admin=5, num_extra_on_change=5)
-    text = models.CharField(max_length=100)  #, core=True)
+    poll = models.ForeignKey(
+        Poll,
+        on_delete=models.CASCADE,  # Options are owned by a poll
+    )
+    text = models.CharField(max_length=100)
 
     class Meta:
         ordering = ['id']
@@ -1073,13 +1149,23 @@ class Option(models.Model):
         return f'<Poll {self.poll!r} Option {self.text!r}>'
     def __str__(self):
         return f'Poll {self.poll} Option "{self.text}"'
-    def __unicode__(self):
-        return 'Poll {} Option "{}"'.format(self.poll, self.text.decode('utf8', 'replace'))
+
 
 class Response(models.Model):
-    poll = models.ForeignKey(Poll)
-    option = models.ForeignKey(Option)
-    user = models.ForeignKey(User)
+    poll = models.ForeignKey(
+        Poll,
+        on_delete=models.CASCADE,  # Responses are owned by a poll
+    )
+    option = models.ForeignKey(
+        Option,
+        on_delete=models.RESTRICT,  # Shouldn't delete options independently
+                                    # of deleting the whole poll
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,  # Once entered a poll response should not
+                                    # be deleted if the user is deleted
+    )
     created = models.DateTimeField()
     value = models.IntegerField()
 
@@ -1093,7 +1179,7 @@ class Response(models.Model):
                 self.value)
         else:
             return '%r chose %r'%(self.user, self.option)
-    __unicode__ = __str__ = __repr__
+    __str__ = __repr__
 
     def save(self):
         if self.created == None:
@@ -1102,7 +1188,10 @@ class Response(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,  # Profiles are owned by a user
+    )
     twitter_username = models.CharField(
         max_length=15,
         blank=True,

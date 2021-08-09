@@ -42,11 +42,6 @@ class PollAdmin(admin.ModelAdmin):
     inlines = [OptionInline]
 
 
-class ChecksumAdmin(admin.ModelAdmin):
-    list_display = ['user', 'created', 'md5', 'is_final',
-                    'is_screenshot']
-
-
 class EntryAwardAdmin(admin.ModelAdmin):
     list_display = ['creator', 'entry', 'award']
 
@@ -97,7 +92,6 @@ admin.site.register(models.RatingTally, RatingTallyAdmin)
 admin.site.register(models.DiaryEntry, DiaryEntryAdmin)
 admin.site.register(models.EntryAward, EntryAwardAdmin)
 admin.site.register(models.Award, AwardAdmin)
-admin.site.register(models.Checksum, ChecksumAdmin)
 admin.site.register(models.Poll, PollAdmin)
 admin.site.register(models.Option, OptionAdmin)
 admin.site.register(models.Response, ResponseAdmin)

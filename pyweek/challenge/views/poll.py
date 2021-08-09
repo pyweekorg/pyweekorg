@@ -1,5 +1,4 @@
-import cgi
-import sets
+import html
 
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
@@ -106,7 +105,7 @@ def render_fields(poll, request):
         choices.sort(lambda a,b: cmp(a.text, b.text))
     for choice in choices:
         l.append('<tr><td>%s</td><td>%s</td></tr>'%(
-            choice_field(poll, choice.id, votes), cgi.escape(choice.text)))
+            choice_field(poll, choice.id, votes), html.escape(choice.text)))
     l.append('<tr><td>&nbsp;</td><td><input type="submit"></td></tr>')
     l.append('</table></form>')
     return '\n'.join(l)
@@ -165,20 +164,20 @@ def handle_votes(poll, current, request):
                 errors.append( "Can't vote %d twice"%v)
             d[option.id] = v
             have[v] = True
-    return d, list(sets.Set(errors))
+    return d, list(set(errors))
+
 
 def render_tally(poll, tally):
     # Render the results of voting
     l = ['<table>']
     tally = [(Option.objects.get(pk=choice_value[0]), choice_value[1]) for choice_value in list(tally.items())]
     if poll.is_ongoing:
-        tally.sort(lambda a,b:cmp(a[0].text, b[0].text))
+        tally.sort(key=lambda o: o[0].text)
     else:
-        tally.sort(lambda a,b:cmp(a[1],b[1]))
-        tally.reverse()
+        tally.sort(key=lambda o: o[1], reverse=True)
     n = 0
     for choice, value in tally:
-        choice = cgi.escape(str(choice.text))
+        choice = html.escape(str(choice.text))
         if poll.type == Poll.INSTANT_RUNOFF:
             l.append('<tr><td>%d%%</td><td>%s</td></tr>'%(value, choice))
         else:

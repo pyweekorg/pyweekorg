@@ -1,1 +1,4 @@
 pip-tools
+mypy
+django-stubs
+django-email-bandit
