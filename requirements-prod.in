@@ -1,4 +1,2 @@
 gunicorn==19.9.0
 sentry-sdk==0.3.6
-django-storages==1.7.2
-boto3==1.10.9

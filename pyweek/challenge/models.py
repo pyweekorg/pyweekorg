@@ -6,6 +6,7 @@ from django.db import models, connection, transaction
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db.models.signals import pre_save
+from django.utils.timezone import now
 
 from ..activity.models import EventRelation
 
@@ -159,9 +160,6 @@ class Challenge(models.Model):
 
     def __str__(self):
         return f'Challenge {int(self.number)}: {self.title!r}'
-
-    def __unicode__(self):
-        return f"Challenge {int(self.number)}: {self.title.decode('utf8', 'replace')}"
 
     def get_absolute_url(self):
         return f'/{int(self.number)}/'
@@ -525,9 +523,6 @@ class Entry(models.Model):
     def __str__(self):
         return f'Entry "{self.name}"'
 
-    def __unicode__(self):
-        return f"Entry \"{self.name.decode('utf8', 'replace')}\""
-
     def get_absolute_url(self):
         return f'/e/{self.name}/'
 
@@ -542,7 +537,7 @@ class Entry(models.Model):
             return self.title
         return f"{self.title[:Entry.SHORT_TITLE_LEN]}..."
 
-    def is_team(self):
+    def is_team(self) -> bool:
         return len(self.users.all()) > 1
 
     def diary_entries(self):
@@ -555,7 +550,7 @@ class Entry(models.Model):
             num_comments=models.Count('diarycomment')
         )
 
-    def isUploadOpen(self):
+    def isUploadOpen(self) -> bool:
         if self.is_upload_open:
             return True
         challenge = self.challenge
@@ -565,7 +560,7 @@ class Entry(models.Model):
         #return len(self.file_set.filter(is_final__exact=True,
             #is_screenshot__exact=False))
 
-    def may_rate(self, user, challenge=None):
+    def may_rate(self, user: User, challenge: Challenge = None) -> bool:
         # determine whether the current user is allowed to rate the entry
         if user.is_anonymous:
             return False
@@ -585,10 +580,10 @@ class Entry(models.Model):
                 return True
         return False
 
-    def has_rated(self, user):
+    def has_rated(self, user: User) -> bool:
         if user.is_anonymous:
             return False
-        return len(self.rating_set.filter(user__username__exact=user.username))
+        return len(self.rating_set.filter(user__username__exact=user.username)) > 0
 
     def tally_ratings(self):
         ratings = self.rating_set.all()
@@ -634,13 +629,16 @@ class Rating(models.Model):
         null=True,
         on_delete=models.SET_NULL  # user deletion should not change ratings
     )
-    fun = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
-    innovation = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
-    production = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
+
+    fun, innovation, production = [
+        models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
+        for _ in range(3)
+    ]
+
     nonworking = models.BooleanField()
     disqualify = models.BooleanField()
     comment = models.TextField()
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
 
     class Meta:
         get_latest_by = 'created'
@@ -651,14 +649,6 @@ class Rating(models.Model):
         return f'{self.user!r} rating {self.entry!r}'
     def __str__(self):
         return f'{self.user} rating {self.entry}'
-    def __unicode__(self):
-        return '%s rating %s'%(self.user.name.decode('utf8', 'replace'),
-            self.entry)
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
 
 class RatingTally(models.Model):
@@ -686,8 +676,6 @@ class RatingTally(models.Model):
     def __repr__(self):
         return f'{self.entry!r} rating tally'
     def __str__(self):
-        return f'{self.entry} rating tally'
-    def __unicode__(self):
         return f'{self.entry} rating tally'
 
 
@@ -723,9 +711,9 @@ class DiaryEntry(models.Model):
     )
     title = models.CharField(max_length=100)
     content = models.TextField()
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     edited = models.DateTimeField(blank=True, null=True)
-    activity = models.DateTimeField()
+    activity = models.DateTimeField(default=now)
     actor = models.ForeignKey(
         User,
         related_name='actor',
@@ -754,9 +742,6 @@ class DiaryEntry(models.Model):
         return f'{self.title!r} by {self.user!r}'
     def __str__(self):
         return f'{self.title} by {self.user}'
-    def __unicode__(self):
-        return '%s by %s'%(self.title.decode('utf8', 'replace'),
-            self.user.username.decode('utf8', 'replace'))
 
     def summary(self):
         ''' summary text - remove HTML and truncate '''
@@ -764,13 +749,6 @@ class DiaryEntry(models.Model):
         if len(text) > 255:
             text = text[:252] + '...'
         return text
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        if self.activity == None:
-            self.activity = datetime.datetime.utcnow()
-        super().save()
 
     def get_absolute_url(self):
         return reverse("display-diary", args=[self.id])
@@ -792,7 +770,7 @@ class DiaryComment(models.Model):
         on_delete=models.CASCADE,  # deleting a user should delete their activity
     )
     content = models.TextField()
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     edited = models.DateTimeField(null=True)
 
     class Meta:
@@ -802,13 +780,6 @@ class DiaryComment(models.Model):
     def __repr__(self):
         return f'diary_comment-{self.id!r}'
     __str__ = __repr__
-    def __unicode__(self):
-        return f'diary_comment-{self.id!r}'
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
 
 def file_upload_location(instance, filename):
@@ -834,7 +805,7 @@ class File(models.Model):
     )
     thumb_width = models.PositiveIntegerField(default=0)
     content = models.FileField(upload_to=file_upload_location)
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     description = models.CharField(max_length=255)
     is_final = models.BooleanField(default=False)
     is_screenshot = models.BooleanField(default=False)
@@ -873,14 +844,6 @@ class File(models.Model):
        return f'file for {self.entry!r} ({self.description!r})'
     def __str__(self):
        return f'file for {self.entry} ({self.description})'
-    def __unicode__(self):
-        return 'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
-            self.description.decode('utf8', 'replace'))
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
     def filename(self):
         return os.path.basename(self.content.name)
@@ -910,7 +873,7 @@ class Award(models.Model):
         null=True,
         on_delete=models.SET_NULL,  # awards belong to their recipients
     )
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     content = models.FileField(upload_to=award_upload_location)
     description = models.CharField(max_length=255)
 
@@ -922,16 +885,9 @@ class Award(models.Model):
         return f'award from {self.creator!r} ({self.description!r})'
     def __str__(self):
         return f'award from {self.creator} ({self.description})'
-    def __unicode__(self):
-        return f'award from {self.creator.username} ({self.description})'
 
     def filename(self):
         return os.path.basename(self.get_content_filename())
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
 
 class EntryAward(models.Model):
@@ -940,7 +896,7 @@ class EntryAward(models.Model):
         null=True,
         on_delete=models.SET_NULL,  # awards belong to their recipients
     )
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     challenge = models.ForeignKey(
         Challenge,
         null=True,
@@ -973,11 +929,6 @@ class EntryAward(models.Model):
     def description(self):
         return self.award.description
 
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
-
 
 BEST_TEN = 0
 SELECT_MANY = 1
@@ -996,7 +947,7 @@ class Poll(models.Model):
     )
     title = models.CharField(max_length=100)
     description = models.TextField()
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     is_open = models.BooleanField()
     is_hidden = models.BooleanField()
     is_ongoing = models.BooleanField()
@@ -1015,27 +966,11 @@ class Poll(models.Model):
         get_latest_by = 'created'
         ordering = ['-created']
 
-    def __repr__(self):
-        if self.challenge:
-            return f'<Poll {self.title!r} challenge {self.challenge!r}>'
-        else:
-            return f'<Poll {self.title!r}>'
     def __str__(self):
         if self.challenge:
             return f'<Poll {self.title} challenge {self.challenge}>'
         else:
             return f'<Poll {self.title}>'
-    def __unicode__(self):
-        if self.challenge:
-            return '<Poll {} challenge {}>'.format(self.title.decode('utf8',
-                'replace'), self.challenge)
-        else:
-            return f"<Poll {self.title.decode('utf8', 'replace')}>"
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
     def tally(self):
         ''' Figure the results of voting.
@@ -1139,10 +1074,10 @@ class Option(models.Model):
         ordering = ['id']
         unique_together = (("poll", "text"),)
 
-    def __repr__(self):
-        return f'<Poll {self.poll!r} Option {self.text!r}>'
     def __str__(self):
         return f'Poll {self.poll} Option "{self.text}"'
+
+    __repr__ = __str__
 
 
 class Response(models.Model):
@@ -1161,7 +1096,7 @@ class Response(models.Model):
         on_delete=models.SET_NULL,  # Once entered a poll response should not
                                     # be deleted if the user is deleted
     )
-    created = models.DateTimeField()
+    created = models.DateTimeField(default=now)
     value = models.IntegerField()
 
     class Meta:
@@ -1174,11 +1109,6 @@ class Response(models.Model):
         else:
             return f'{self.user!r} chose {self.option!r}'
     __str__ = __repr__
-
-    def save(self):
-        if self.created == None:
-            self.created = datetime.datetime.utcnow()
-        super().save()
 
 
 class UserProfile(models.Model):

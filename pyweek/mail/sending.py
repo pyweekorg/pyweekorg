@@ -1,6 +1,7 @@
 import pkgutil
 import re
 import string
+from typing import AnyStr, Iterable, Any
 
 import django.core.mail
 from django.conf import settings
@@ -30,25 +31,15 @@ REASON_COMMENTS = (
 UNSUBSCRIBE_SIGNER = signing.Signer(salt='unsubscribe')
 
 
-def rot13(s):
+def rot13(s: str) -> str:
     """rot13 a string in order to obfuscate it.
 
     This is not a crucial security measure because we use cryptographic
     signing; really the only reason to do it is to discourage probing
     of the system.
-
-    This implementation is intended to work with Python 2's unicode and byte
-    strings
     """
-    if isinstance(s, str):
-        _chr = chr
-        join = ''.join
-    else:
-        _chr = chr
-        join = b''.join
     out = []
-    for c in s:
-        code = ord(c)
+    for code in map(ord, s):
         if 65 <= code <= 90:
             # uppercase latin alphabet
             code = (code - 65 + 13) % 26 + 65
@@ -58,7 +49,7 @@ def rot13(s):
             code = (code - 97 + 13) % 26 + 97
             c = chr(code)
         out.append(c)
-    return join(out)
+    return ''.join(out)
 
 
 
@@ -66,7 +57,7 @@ class InvalidTemplate(Exception):
     """The selected template does not exist."""
 
 
-def _make_payload(body_html, reason):
+def _make_payload(body_html: str, reason: str) -> tuple[str, str]:
     converter = html2text.HTML2Text()
     converter.inline_links = False
     body_text = converter.handle(body_html).strip()
@@ -83,17 +74,19 @@ def _make_payload(body_html, reason):
 WS_RE = re.compile(r'[\r\n]+')
 TOKEN_KEY = '%%UNSUBSCRIBE_TOKEN%%'
 
-def clean_header(v):
+
+def clean_header(v: str) -> str:
     """Clean a header value, removing illegal characters."""
     return WS_RE.sub(' ', v)
 
 
 def send(
-        subject,
-        html_body,
-        recipients,
-        reason,
-        priority=PRIORITY_MEDIUM):
+    subject: str,
+    html_body: str,
+    recipients: Iterable[str],
+    reason: str,
+    priority: int = PRIORITY_MEDIUM
+) -> None:
     """Send an e-mail, using the django-mailer queue."""
     html_part, text_part = _make_payload(html_body, reason)
     subject = f'[PyWeek] {subject.strip()}'
@@ -139,18 +132,19 @@ def send(
 
 
 def send_template(
-        subject,
-        template_name,
-        recipients,
-        params,
-        reason,
-        priority=PRIORITY_MEDIUM):
+    subject: str,
+    template_name: str,
+    recipients: Iterable[str],
+    params: dict[str, Any],
+    reason: str,
+    priority: int = PRIORITY_MEDIUM
+) -> None:
     """Send a queued message from a template."""
     html_body = render_to_string(
         f'emails/{template_name}.html',
         context=params
     )
-    return send(
+    send(
         subject,
         html_body,
         recipients,

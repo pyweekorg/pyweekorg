@@ -8,3 +8,5 @@ django-gravatar2
 html2text
 django-mailer
 requests
+django-storages
+boto3

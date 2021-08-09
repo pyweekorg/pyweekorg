@@ -1,4 +1,9 @@
-import cgi, urllib.request, urllib.parse, urllib.error, random, hashlib
+import urllib.request
+import urllib.parse
+import urllib.error
+import random
+import hashlib
+import operator
 
 from django import forms
 from django.db import models as md
@@ -30,17 +35,17 @@ GITHUB_REGEX = (
 )
 
 
-def isUnusedEntryName(field_data):
+def isUnusedEntryName(field_data: str) -> None:
     if models.Entry.objects.filter(name__exact=field_data):
         raise validators.ValidationError(f'"{field_data}" already taken')
 
 
-def isUnusedEntryTitle(field_data):
+def isUnusedEntryTitle(field_data: str) -> None:
     if models.Entry.objects.filter(title__exact=field_data):
         raise validators.ValidationError(f'"{field_data}" already taken')
 
 
-def isCommaSeparatedUserList(field_data):
+def isCommaSeparatedUserList(field_data: str) -> None:
     for name in [e.strip() for e in field_data.split(',')]:
         if not models.User.objects.filter(username__exact=name):
             raise validators.ValidationError(f'No such user {name}')
@@ -151,7 +156,7 @@ def entry_list(request, challenge_id):
 
     # random sorting per-user
     r = random.random()
-    s = int(hashlib.md5(str(request.user)).hexdigest()[:8], 16)
+    s = int(hashlib.md5(request.user.username.encode()).hexdigest()[:8], 16)
     random.seed(s)
 
     for entry in models.Entry.objects.filter(challenge=challenge_id):
@@ -195,14 +200,7 @@ def entry_list(request, challenge_id):
     # reset random generator
     random.seed(r)
 
-    def sortfun(a, b):
-        return cmp(a['sortname'], b['sortname'])
-    entries.sort(sortfun)
-
-    # re-sort (yay, stable!) by number of ratings
-    def sortfun(a, b):
-        return cmp(a['num_ratings'], b['num_ratings'])
-    entries.sort(sortfun)
+    entries.sort(key=operator.itemgetter('sortname', 'num_ratings'))
 
     return render(request, 'challenge/entries.html', {
             'challenge': challenge,
