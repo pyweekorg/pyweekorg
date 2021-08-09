@@ -17,16 +17,16 @@ from pyweek.mail import sending
 from pyweek.activity.models import log_event
 from pyweek.activity.summary import summarise
 
-from pyweek.bleaching import html2text, html2safehtml
+from pyweek.bleaching import html2text, html2safehtml, SAFE_TAGS
 
-safeTags = '''strong em blockquote pre b a i br img table tr th td pre p dl dd dt ul ol li span div'''.split()
 
 class SafeHTMLField(forms.CharField):
     widget = forms.Textarea
+
     def clean(self, value):
-        if '<' in value:
-            value = html2safehtml(value, safeTags)
-        if not value: raise forms.ValidationError(['This field is required'])
+        value = html2safehtml(value)
+        if not value:
+            raise forms.ValidationError(['This field is required'])
         return value
 
 
@@ -96,7 +96,7 @@ def extract_entries(entries):
 def list_messages(request):
     try:
         start = int(request.GET.get('start', 0))
-    except:
+    except ValueError:
         # XXX haxx0rs trying to inject SQL into my codez
         start = 0
 
@@ -107,9 +107,9 @@ def list_messages(request):
     diary_entries = extract_entries(entries[start:start + MESSAGES_PER_PAGE])
 
     # pagination
-    n = start / MESSAGES_PER_PAGE
+    n = start // MESSAGES_PER_PAGE
     num = len(entries)
-    m = (num / MESSAGES_PER_PAGE) + 1
+    m = (num // MESSAGES_PER_PAGE) + 1
     if n < 5:
         s = 0
         e = n + 10
@@ -146,7 +146,7 @@ def list_messages(request):
 class DiaryForm(forms.Form):
     title = forms.CharField(required=True, widget=forms.TextInput(attrs={'size':'60'}))
     content = SafeHTMLField(required=True,
-        help_text=f"Basic HTML tags allowed: {', '.join(safeTags)}")
+        help_text=f"Basic HTML tags allowed: {', '.join(SAFE_TAGS)}")
     def as_plain(self):
         return self._html_output('<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
              '%s', '', ' %s', False)
@@ -157,7 +157,7 @@ class StickyDiaryForm(DiaryForm):
 
 
 def message_add(request):
-    is_anon = request.user.is_anonymous()
+    is_anon = request.user.is_anonymous
     if is_anon:
         return HttpResponseRedirect('/login/')
     is_super = not is_anon and request.user.is_superuser
@@ -212,7 +212,7 @@ def message_add(request):
 
 
 def entry_diary(request, entry_id):
-    is_anon = request.user.is_anonymous()
+    is_anon = request.user.is_anonymous
     if is_anon:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
@@ -305,7 +305,7 @@ class DiaryFeed(Feed):
 
 class CommentForm(forms.Form):
     content = SafeHTMLField(required=True,
-        help_text=f"Basic HTML tags allowed: {', '.join(safeTags)}")
+        help_text=f"Basic HTML tags allowed: {', '.join(SAFE_TAGS)}")
     def as_plain(self):
         return self._html_output('%(field)s<br>%(help_text)s<br>%(errors)s',
              '%s', '', ' %s', False)
@@ -318,7 +318,7 @@ def diary_display(request, diary_id):
     challenge = diary.challenge
     is_member = entry and request.user in entry.users.all()
 
-    is_anon = request.user.is_anonymous()
+    is_anon = request.user.is_anonymous
 
     previewed = False
     if request.POST:
@@ -363,7 +363,7 @@ def diary_display(request, diary_id):
         'challenge': challenge,
         'entry': entry,
         'diary': diary,
-        'is_user': not request.user.is_anonymous(),
+        'is_user': not request.user.is_anonymous,
         'previewed': previewed,
         'content': diary.content,
         'form': form,
@@ -374,7 +374,7 @@ def diary_display(request, diary_id):
 
 
 def diary_edit(request, diary_id):
-    is_anon = request.user.is_anonymous()
+    is_anon = request.user.is_anonymous
     if is_anon:
         return HttpResponseRedirect(f'/login/?next=/d/{diary_id}/edit/')
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
@@ -421,7 +421,7 @@ def diary_edit(request, diary_id):
 
 
 def diary_delete(request, diary_id):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return HttpResponseRedirect('/login/')
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     if request.user != diary.user:

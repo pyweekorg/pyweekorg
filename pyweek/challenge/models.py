@@ -510,6 +510,7 @@ class Entry(models.Model):
         User,
         verbose_name='entry owner',
         related_name="owner",
+        null=True,
         on_delete=models.SET_NULL,  # Entries can be team entries; deleting one
                                     # user must not delete the entry
     )
@@ -576,7 +577,7 @@ class Entry(models.Model):
 
     def may_rate(self, user, challenge=None):
         # determine whether the current user is allowed to rate the entry
-        if user.is_anonymous():
+        if user.is_anonymous:
             return False
         if user in self.users.all():
             # Users may not rate their own entry
@@ -595,7 +596,7 @@ class Entry(models.Model):
         return False
 
     def has_rated(self, user):
-        if user.is_anonymous():
+        if user.is_anonymous:
             return False
         return len(self.rating_set.filter(user__username__exact=user.username))
 
@@ -640,6 +641,7 @@ class Rating(models.Model):
     )
     user = models.ForeignKey(
         User,
+        null=True,
         on_delete=models.SET_NULL  # user deletion should not change ratings
     )
     fun = models.PositiveIntegerField(choices=RATING_CHOICES, default=3)
@@ -737,6 +739,7 @@ class DiaryEntry(models.Model):
     actor = models.ForeignKey(
         User,
         related_name='actor',
+        null=True,
         on_delete=models.SET_NULL,  # Actor is just the last commenter
     )
     last_comment = models.ForeignKey(
@@ -825,6 +828,7 @@ def file_upload_location(instance, filename):
 class File(models.Model):
     challenge = models.ForeignKey(
         Challenge,
+        null=True,
         on_delete=models.SET_NULL,  # Challenge doesn't own the file
     )
     entry = models.ForeignKey(
@@ -833,6 +837,7 @@ class File(models.Model):
     )
     user = models.ForeignKey(
         User,
+        null=True,
         on_delete=models.SET_NULL,  # Files uploaded by one team member on behalf
                                     # of the whole team must not be deleted if
                                     # that user is deleted
@@ -912,6 +917,7 @@ def award_upload_location(instance, filename):
 class Award(models.Model):
     creator = models.ForeignKey(
         User,
+        null=True,
         on_delete=models.SET_NULL,  # awards belong to their recipients
     )
     created = models.DateTimeField()
@@ -941,11 +947,13 @@ class Award(models.Model):
 class EntryAward(models.Model):
     creator = models.ForeignKey(
         User,
+        null=True,
         on_delete=models.SET_NULL,  # awards belong to their recipients
     )
     created = models.DateTimeField()
     challenge = models.ForeignKey(
         Challenge,
+        null=True,
         on_delete=models.SET_NULL,  # awards belong to entries not challenges
     )
     entry = models.ForeignKey(
@@ -1159,6 +1167,7 @@ class Response(models.Model):
     )
     user = models.ForeignKey(
         User,
+        null=True,
         on_delete=models.SET_NULL,  # Once entered a poll response should not
                                     # be deleted if the user is deleted
     )

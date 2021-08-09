@@ -102,7 +102,7 @@ class ProfileForm(forms.ModelForm):
 
 
 def profile_description(request):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return HttpResponseRedirect('/login/')
 
     try:

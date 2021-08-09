@@ -23,7 +23,7 @@ class FileForm(forms.Form):
     is_screenshot = forms.BooleanField(required=False)
 
 def entry_upload(request, entry_id):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
     challenge = entry.challenge
@@ -185,7 +185,7 @@ def _make_thumbnail(file):
 
 
 def file_delete(request, entry_id, filename):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
     challenge_id = entry.challenge_id

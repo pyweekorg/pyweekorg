@@ -142,7 +142,7 @@ def entry_list(request, challenge_id):
     may_rate = user_may_rate(challenge, request.user)
     # may rate at all
     may_rate = False
-    if not all_done and not request.user.is_anonymous() and challenge.isRatingOpen():
+    if not all_done and not request.user.is_anonymous and challenge.isRatingOpen():
         username = request.user.username
         for e in models.Entry.objects.filter(challenge=challenge_id, users__username__exact=username):
             if e.has_final:
@@ -227,7 +227,7 @@ def user_may_rate(challenge, user):
         # Not in the rating period
         return False
 
-    if user.is_anonymous():
+    if user.is_anonymous:
         # Only logged-in users may rate
         return False
 
@@ -510,7 +510,7 @@ def entry_display(request, entry_id):
             'files': entry.file_set.all(),
             'thumb': thumb,
             'diary_entries': entry.diary_entries(),
-            'is_user': not request.user.is_anonymous(),
+            'is_user': not request.user.is_anonymous,
             'is_member': is_member,
             'is_team': len(user_list) > 1,
             'is_owner': entry.user == request.user,
@@ -525,10 +525,10 @@ def entry_display(request, entry_id):
 def entry_ratings(request, entry_id):
     entry = get_object_or_404(models.Entry, pk=entry_id)
     challenge = entry.challenge
-    anon = request.user.is_anonymous()
+    anon = request.user.is_anonymous
     super = not anon and request.user.is_superuser
     if not (challenge.isAllDone() or super):
-        if not request.user.is_anonymous():
+        if not request.user.is_anonymous:
              messages.error(request, "You're not allowed to view ratings yet!")
         return HttpResponseRedirect(f'/e/{entry_id}/')
     user_list = entry.users.all()
@@ -537,7 +537,7 @@ def entry_ratings(request, entry_id):
     return render(request, 'challenge/entry_ratings.html', {
             'challenge': challenge,
             'entry': entry,
-            'is_user': not request.user.is_anonymous(),
+            'is_user': not request.user.is_anonymous,
             'is_member': is_member,
             'is_team': len(user_list) > 1,
             'is_owner': entry.user == request.user,
@@ -553,7 +553,7 @@ class EntryForm(BaseEntryForm):
 
 
 def entry_manage(request, entry_id):
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
 
@@ -607,7 +607,7 @@ def entry_requests(request, entry_id):
     """Approve or reject join requests for a team."""
     back_to_entry = HttpResponseRedirect(f'/e/{entry_id}/')
 
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return back_to_entry
 
     entry = get_object_or_404(models.Entry, pk=entry_id)

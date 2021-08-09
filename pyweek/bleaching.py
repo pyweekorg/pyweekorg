@@ -9,7 +9,10 @@ Here we provide a similar interface, implemented using bleach.
 import bleach
 
 
-def html2safehtml(text: str):
+SAFE_TAGS = '''strong em blockquote pre b a i br img table tr th td pre p dl dd dt ul ol li span div'''.split()
+
+
+def html2safehtml(text: str, tags: list[str] = SAFE_TAGS):
     """Return a cleaned version of the given text.
 
     This is a wrapper around bleach to centralise the options we pass to it.

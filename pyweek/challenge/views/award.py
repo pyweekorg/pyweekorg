@@ -46,7 +46,7 @@ class GiveAwardForm(forms.Form):
 def give_award(request, entry_id):
     creator = request.user
 
-    if creator.is_anonymous():
+    if creator.is_anonymous:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
     challenge = entry.challenge
@@ -89,7 +89,7 @@ class UploadAwardForm(forms.Form):
 def upload_award(request, entry_id):
     creator = request.user
 
-    if creator.is_anonymous():
+    if creator.is_anonymous:
         return HttpResponseRedirect('/login/')
     entry = get_object_or_404(models.Entry, pk=entry_id)
     challenge = entry.challenge

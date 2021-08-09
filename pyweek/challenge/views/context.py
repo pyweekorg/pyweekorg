@@ -9,7 +9,7 @@ def challenges(request):
     challenge = latest if latest and not latest.isCompComing() else previous
 
     unverified_emails = 0
-    if not request.user.is_anonymous():
+    if not request.user.is_anonymous:
         latest_entries = request.user.entry_set.filter(challenge=challenge)
         unverified_emails = (
             request.user.emailaddress_set

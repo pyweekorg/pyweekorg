@@ -1,4 +1,8 @@
-import os, cgi, urllib.request, urllib.parse, urllib.error
+import os
+import html
+import urllib.request
+import urllib.parse
+import urllib.error
 import json
 import posixpath
 import datetime
@@ -93,7 +97,7 @@ def all_games(request):
     ''')
     all = []
     u = urllib.parse.quote
-    e = cgi.escape
+    e = html.escape
     for entry_id, title, game, winner, challenge_num, rating in cursor.fetchall():
         team = ',\n'.join([f'<a class="small" href="/u/{u(n)}">{e(n)}</a>'
             for n in users[entry_id]])

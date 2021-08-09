@@ -53,7 +53,7 @@ def poll_view(request, poll_id):
 
 def render_poll(poll, request, force_display=False):
     if poll.is_open and not force_display:
-        if request.user.is_anonymous():
+        if request.user.is_anonymous:
             return '<p>You must log in to vote.</p>'
         return render_fields(poll, request)
     else:
