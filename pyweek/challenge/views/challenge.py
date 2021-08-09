@@ -95,7 +95,7 @@ def all_games(request):
     u = urllib.parse.quote
     e = cgi.escape
     for entry_id, title, game, winner, challenge_num, rating in cursor.fetchall():
-        team = ',\n'.join(['<a class="small" href="/u/%s">%s</a>'%(u(n), e(n))
+        team = ',\n'.join([f'<a class="small" href="/u/{u(n)}">{e(n)}</a>'
             for n in users[entry_id]])
         all.append(dict(entry_id=entry_id, game_name=game or title,
             challenge_num=challenge_num, winner=winner, rating=rating,
@@ -185,7 +185,7 @@ def challenge_ratings(request, challenge_id):
     all_done = challenge.isAllDone()
     if not all_done:
         messages.error(request, 'Cannot view the ratings until the judging period is over!')
-        return HttpResponseRedirect("/%s/" % challenge_id)
+        return HttpResponseRedirect(f"/{challenge_id}/")
 
     individual = []
     team = []

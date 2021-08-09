@@ -82,7 +82,7 @@ class ProfileForm(forms.ModelForm):
     content = SafeHTMLField(
         label='Text to appear on your profile page',
         required=False,
-        help_text='Basic HTML tags allowed: %s' % (', '.join(safeTags))
+        help_text=f"Basic HTML tags allowed: {', '.join(safeTags)}"
     )
 
     def clean_twitter_username(self):
@@ -158,4 +158,4 @@ def delete_spammer(request, user_id):
             comment.delete()
 
     messages.success(request, f'Spammer deleted! ({user})')
-    return HttpResponseRedirect('/u/%s/' % user_id)
+    return HttpResponseRedirect(f'/u/{user_id}/')

@@ -70,7 +70,7 @@ def render_poll(poll, request, force_display=False):
             num, tally = poll.instant_runoff()
             s += render_tally(poll, tally)
 
-        s += '<p>There were %d respondents.</p>'%num
+        s += f'<p>There were {int(num)} respondents.</p>'
         return s
 
 
@@ -96,9 +96,9 @@ def render_fields(poll, request):
 
     l = []
     if message:
-        l.append('<div class="form-error">%s</div>'%message)
+        l.append(f'<div class="form-error">{message}</div>')
     if votes and poll.type in (Poll.BEST_TEN, Poll.SELECT_MANY):
-        l.append('<p>You have selected %s choices.</p>'%len(votes))
+        l.append(f'<p>You have selected {len(votes)} choices.</p>')
     l.append('<form method="POST" action="."><table>')
     choices = list(poll.option_set.all())
     if poll.is_ongoing:
@@ -115,14 +115,13 @@ def choice_field(poll, choice, votes):
     ' render one choice field, based on the method '
     if poll.type in (Poll.BEST_TEN, Poll.SELECT_MANY):
         checked = choice in votes and ' checked' or ''
-        return '<input name="votes" type="checkbox" value="%s"%s>'%(
-            choice, checked)
+        return f'<input name="votes" type="checkbox" value="{choice}"{checked}>'
     elif poll.type == Poll.POLL:
         checked = choice in votes and ' checked' or ''
-        return '<input name="vote" type="radio" value="%s"%s>'%(choice, checked)
+        return f'<input name="vote" type="radio" value="{choice}"{checked}>'
     elif poll.type == Poll.INSTANT_RUNOFF:
         value = votes.get(choice, '')
-        return '<input name="vote-%d" size="2" value="%s">'%(choice, value)
+        return f'<input name="vote-{int(choice)}" size="2" value="{value}">'
     else:
         return 'oops'
 
@@ -147,7 +146,7 @@ def handle_votes(poll, current, request):
         have = {}
         options = poll.option_set.all()
         for option in options:
-            key = 'vote-%s'%option.id
+            key = f'vote-{option.id}'
             if key not in request.POST:
                 errors.append( "Must place a number against all choices")
             try:
@@ -159,9 +158,9 @@ def handle_votes(poll, current, request):
                 errors.append( "Votes must be numbers > 0")
             n = len(options)
             if v > n:
-                errors.append( "Votes must be numbers <= %s"%n)
+                errors.append( f"Votes must be numbers <= {n}")
             if v in have:
-                errors.append( "Can't vote %d twice"%v)
+                errors.append( f"Can't vote {int(v)} twice")
             d[option.id] = v
             have[v] = True
     return d, list(set(errors))
@@ -179,13 +178,13 @@ def render_tally(poll, tally):
     for choice, value in tally:
         choice = html.escape(str(choice.text))
         if poll.type == Poll.INSTANT_RUNOFF:
-            l.append('<tr><td>%d%%</td><td>%s</td></tr>'%(value, choice))
+            l.append(f'<tr><td>{int(value)}%</td><td>{choice}</td></tr>')
         else:
             if poll.type == Poll.POLL and n == 0:
-                choice = '<b>%s</b>'%choice
+                choice = f'<b>{choice}</b>'
             elif poll.type == Poll.BEST_TEN and n < 10:
-                choice = '<b>%s</b>'%choice
-            l.append('<tr><td>%d</td><td>%s</td></tr>'%(value, choice))
+                choice = f'<b>{choice}</b>'
+            l.append(f'<tr><td>{int(value)}</td><td>{choice}</td></tr>')
         n += 1
     l.append('</table>')
     #l.append('<!-- %d respondents -->'%len(self.votes))

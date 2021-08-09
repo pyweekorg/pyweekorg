@@ -42,15 +42,15 @@ def pretty_time_diff(diff):
     l = []
 
     if diff.days > 1:
-        l.append('%d days'%diff.days)
+        l.append(f'{int(diff.days)} days')
     if diff.days == 1:
         l.append('1 day')
     if hours > 1:
-        l.append('%d hours'%hours)
+        l.append(f'{int(hours)} hours')
     if hours == 1:
         l.append('1 hour')
     if minutes > 1:
-        l.append('%d minutes'%minutes)
+        l.append(f'{int(minutes)} minutes')
     if minutes == 1:
         l.append('1 minute')
     if not l:
@@ -165,16 +165,16 @@ class Challenge(models.Model):
         ordering = ['start']
 
     def __repr__(self):
-        return '<%s>' % self
+        return f'<{self}>'
 
     def __str__(self):
-        return 'Challenge %d: %r' % (self.number, self.title)
+        return f'Challenge {int(self.number)}: {self.title!r}'
 
     def __unicode__(self):
-        return 'Challenge %d: %s' % (self.number, self.title.decode('utf8', 'replace'))
+        return f"Challenge {int(self.number)}: {self.title.decode('utf8', 'replace')}"
 
     def get_absolute_url(self):
-        return '/%d/' % self.number
+        return f'/{int(self.number)}/'
 
     @property
     def rules(self):
@@ -207,7 +207,7 @@ class Challenge(models.Model):
             event = 'judging ends'
         else:
             return 'challenge finished'
-        return '%s: %s'%(event, pretty_time_diff(diff))
+        return f'{event}: {pretty_time_diff(diff)}'
 
     def summary(self):
         now = datetime.datetime.utcnow()
@@ -216,23 +216,23 @@ class Challenge(models.Model):
         ed = self.end_utc()
         if now < sv:
             diff = sd - now
-            event = ['The %s challenge starts in'%self.title, '', '']
+            event = [f'The {self.title} challenge starts in', '', '']
         elif now < sd:
             diff = sd - now
             event = ['Theme voting; challenge starts in', '',
-                '(<a href="/p/%s">vote</a>)'%self.theme_poll.id]
+                f'(<a href="/p/{self.theme_poll.id}">vote</a>)']
         elif now < ed:
             diff = ed - now
-            event = ['"%s" challenge underway;'%self.getTheme(),
+            event = [f'"{self.getTheme()}" challenge underway;',
                 '', 'to go']
         elif now < ed + datetime.timedelta(1):
             diff = ed - now + datetime.timedelta(1)
-            event = ['"%s" challenge is finished;'%self.getTheme(), '', 'to upload your entry']
+            event = [f'"{self.getTheme()}" challenge is finished;', '', 'to upload your entry']
         elif now < ed + datetime.timedelta(14):
             diff = ed - now + datetime.timedelta(14)
             event = ['Judging ends in', '', '']
         else:
-            return '"%s" challenge is finished'%self.getTheme()
+            return f'"{self.getTheme()}" challenge is finished'
 
         event[1] = pretty_time_diff(diff)
         return ' '.join(event)
@@ -256,9 +256,9 @@ class Challenge(models.Model):
 
     def pageTitle(self):
         if self.theme:
-            return 'PyWeek &mdash; %s &mdash; %s'%(self.title, self.theme)
+            return f'PyWeek &mdash; {self.title} &mdash; {self.theme}'
         else:
-            return 'PyWeek &mdash; %s'%self.title
+            return f'PyWeek &mdash; {self.title}'
 
     def registration_start(self):
         """The date on which registration opens."""
@@ -366,10 +366,9 @@ class Challenge(models.Model):
                 style = 'done'
             date = this.strftime('%A %Y/%m/%d')
             if style:
-                l.append('<tr class="%s"><td>%s</td><td>%s</td>'%(style,
-                    date, event))
+                l.append(f'<tr class="{style}"><td>{date}</td><td>{event}</td>')
             else:
-                l.append('<tr><td>%s</td><td>%s</td>'%(date, event))
+                l.append(f'<tr><td>{date}</td><td>{event}</td>')
         rego_date = self.registration_start()
         sd = self.start_utc()
         ed = self.end_utc()
@@ -536,7 +535,7 @@ class Entry(models.Model):
         return f'Entry "{self.name}"'
 
     def __unicode__(self):
-        return 'Entry "{}"'.format(self.name.decode('utf8', 'replace'))
+        return f"Entry \"{self.name.decode('utf8', 'replace')}\""
 
     def get_absolute_url(self):
         return f'/e/{self.name}/'
@@ -550,7 +549,7 @@ class Entry(models.Model):
     def short_title(self):
         if len(self.title) <= Entry.SHORT_TITLE_LEN:
             return self.title
-        return "%s..." % self.title[:Entry.SHORT_TITLE_LEN]
+        return f"{self.title[:Entry.SHORT_TITLE_LEN]}..."
 
     def is_team(self):
         return len(self.users.all()) > 1
@@ -657,9 +656,9 @@ class Rating(models.Model):
         unique_together = (("entry", "user"),)
 
     def __repr__(self):
-        return '%r rating %r'%(self.user, self.entry)
+        return f'{self.user!r} rating {self.entry!r}'
     def __str__(self):
-        return '%s rating %s'%(self.user, self.entry)
+        return f'{self.user} rating {self.entry}'
     def __unicode__(self):
         return '%s rating %s'%(self.user.name.decode('utf8', 'replace'),
             self.entry)
@@ -693,11 +692,11 @@ class RatingTally(models.Model):
         verbose_name_plural = "RatingTallies"
 
     def __repr__(self):
-        return '%r rating tally'%(self.entry, )
+        return f'{self.entry!r} rating tally'
     def __str__(self):
-        return '%s rating tally'%(self.entry, )
+        return f'{self.entry} rating tally'
     def __unicode__(self):
-        return '%s rating tally'%(self.entry,)
+        return f'{self.entry} rating tally'
 
 
 class DiaryEntryManager(models.Manager):
@@ -759,9 +758,9 @@ class DiaryEntry(models.Model):
         verbose_name_plural = "DiaryEntries"
 
     def __repr__(self):
-        return '%r by %r'%(self.title, self.user)
+        return f'{self.title!r} by {self.user!r}'
     def __str__(self):
-        return '%s by %s'%(self.title, self.user)
+        return f'{self.title} by {self.user}'
     def __unicode__(self):
         return '%s by %s'%(self.title.decode('utf8', 'replace'),
             self.user.username.decode('utf8', 'replace'))
@@ -808,10 +807,10 @@ class DiaryComment(models.Model):
         ordering = ['created']
 
     def __repr__(self):
-        return 'diary_comment-%r'%self.id
+        return f'diary_comment-{self.id!r}'
     __str__ = __repr__
     def __unicode__(self):
-        return 'diary_comment-%r'%self.id
+        return f'diary_comment-{self.id!r}'
 
     def save(self):
         if self.created == None:
@@ -876,9 +875,9 @@ class File(models.Model):
             return 'screenshot'
 
     def __repr__(self):
-       return 'file for %r (%r)'%(self.entry, self.description)
+       return f'file for {self.entry!r} ({self.description!r})'
     def __str__(self):
-       return 'file for %s (%s)'%(self.entry, self.description)
+       return f'file for {self.entry} ({self.description})'
     def __unicode__(self):
         return 'file for %s (%s)'%(self.entry.name.decode('utf8', 'replace'),
             self.description.decode('utf8', 'replace'))
@@ -903,7 +902,7 @@ class File(models.Model):
         else:
             unit = 'G'
         sizeInUnit = size/unitSize[unit]
-        return '%0.2f %sbytes'%(sizeInUnit, unit)
+        return f'{sizeInUnit:0.2f} {unit}bytes'
 
 
 def award_upload_location(instance, filename):
@@ -924,14 +923,11 @@ class Award(models.Model):
         ordering = ['-created']
 
     def __repr__(self):
-        return 'award from %r (%r)'%(self.creator, self.description)
+        return f'award from {self.creator!r} ({self.description!r})'
     def __str__(self):
-        return 'award from %s (%s)'%(self.creator, self.description)
+        return f'award from {self.creator} ({self.description})'
     def __unicode__(self):
-        return 'award from {} ({})'.format(
-            self.creator.username,
-            self.description
-        )
+        return f'award from {self.creator.username} ({self.description})'
 
     def filename(self):
         return os.path.basename(self.get_content_filename())
@@ -1036,7 +1032,7 @@ class Poll(models.Model):
             return '<Poll {} challenge {}>'.format(self.title.decode('utf8',
                 'replace'), self.challenge)
         else:
-            return '<Poll {}>'.format(self.title.decode('utf8', 'replace'))
+            return f"<Poll {self.title.decode('utf8', 'replace')}>"
 
     def save(self):
         if self.created == None:
@@ -1175,10 +1171,9 @@ class Response(models.Model):
 
     def __repr__(self):
         if self.value:
-            return '%r chose %r (%r)'%(self.user, self.option,
-                self.value)
+            return f'{self.user!r} chose {self.option!r} ({self.value!r})'
         else:
-            return '%r chose %r'%(self.user, self.option)
+            return f'{self.user!r} chose {self.option!r}'
     __str__ = __repr__
 
     def save(self):

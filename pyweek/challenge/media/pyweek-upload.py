@@ -24,12 +24,12 @@ def mimeEncode(data, sep_boundary=sep_boundary, end_boundary=end_boundary):
         for value in value:
             ret.write(sep_boundary)
             if isinstance(value, Upload):
-                ret.write('\nContent-Disposition: form-data; name="%s"'%key)
+                ret.write(f'\nContent-Disposition: form-data; name="{key}"')
                 filename = os.path.basename(value.filename)
-                ret.write('; filename="%s"\n\n'%filename)
+                ret.write(f'; filename="{filename}"\n\n')
                 value = open(os.path.join(value.filename), "rb").read()
             else:
-                ret.write('\nContent-Disposition: form-data; name="%s"'%key)
+                ret.write(f'\nContent-Disposition: form-data; name="{key}"')
                 ret.write("\n\n")
                 value = str(value)
             ret.write(str(value))
@@ -90,11 +90,11 @@ class Progress:
                 s = '%s %2d%% (ETA %02d:%02d:%02d)'%(self.info,
                     self.num * 100. / self.total, H, M, S)
             else:
-                s = '%s 0%% (ETA %02d:%02d:%02d)'%(self.info, H, M, S)
+                s = f'{self.info} 0% (ETA {int(H):02}:{int(M):02}:{int(S):02})'
         elif self.total:
-            s = '%s %2d%%'%(self.info, self.num * 100. / self.total)
+            s = f'{self.info} {int(self.num * 100.0 / self.total):2}%'
         else:
-            s = '%s %d done'%(self.info, self.num)
+            s = f'{self.info} {int(self.num)} done'
         sys.stdout.write(s + ' '*(75-len(s)) + '\r')
         sys.stdout.flush()
 
@@ -127,7 +127,7 @@ def http_request(data, server, port, url):
 
     data = mimeEncode(data)
     h.putrequest('POST', url)
-    h.putheader('Content-type', 'multipart/form-data; boundary=%s'%boundary)
+    h.putheader('Content-type', f'multipart/form-data; boundary={boundary}')
     h.putheader('Content-length', str(len(data)))
     h.putheader('Host', server)
     h.endheaders()
@@ -140,7 +140,7 @@ def http_request(data, server, port, url):
     response = f.read().strip()
     f.close()
 
-    print('%s %s'%(errcode, errmsg))
+    print(f'{errcode} {errmsg}')
     if response: print(response)
 
 def usage():
@@ -184,7 +184,7 @@ if __name__ == '__main__':
         elif opt == '-f': optional['is_final'] = 'yes'
         elif opt == '-d': data['description'] = arg
         elif opt == '-c': data['content_file'] = Upload(arg)
-        elif opt == '-e': url = '/e/%s/oup/'%arg
+        elif opt == '-e': url = f'/e/{arg}/oup/'
         elif opt == '-h': host = arg
         elif opt == '-P': port = int(arg)
 

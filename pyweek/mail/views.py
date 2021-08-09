@@ -117,10 +117,7 @@ def send(request, pk):
         raise
     messages.success(
         request,
-        "E-mail '{}' sent to {} recipients".format(
-            email.subject,
-            len(recipients)
-        )
+        f"E-mail '{email.subject}' sent to {len(recipients)} recipients"
     )
     return redirect('draft-emails')
 

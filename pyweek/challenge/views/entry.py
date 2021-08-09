@@ -32,18 +32,18 @@ GITHUB_REGEX = (
 
 def isUnusedEntryName(field_data):
     if models.Entry.objects.filter(name__exact=field_data):
-        raise validators.ValidationError('"%s" already taken'%field_data)
+        raise validators.ValidationError(f'"{field_data}" already taken')
 
 
 def isUnusedEntryTitle(field_data):
     if models.Entry.objects.filter(title__exact=field_data):
-        raise validators.ValidationError('"%s" already taken'%field_data)
+        raise validators.ValidationError(f'"{field_data}" already taken')
 
 
 def isCommaSeparatedUserList(field_data):
     for name in [e.strip() for e in field_data.split(',')]:
         if not models.User.objects.filter(username__exact=name):
-            raise validators.ValidationError('No such user %s'%name)
+            raise validators.ValidationError(f'No such user {name}')
 
 
 class BaseEntryForm(forms.ModelForm):
@@ -331,11 +331,11 @@ def entry_add(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
 
     if not challenge.isRegoOpen():
-        return HttpResponseRedirect("/%s/" % challenge_id)
+        return HttpResponseRedirect(f"/{challenge_id}/")
 
     if challenge.isCompFinished():
         messages.error(request, 'Entry registration closed')
-        return HttpResponseRedirect("/%s/" % challenge_id)
+        return HttpResponseRedirect(f"/{challenge_id}/")
 
     if request.method == 'POST':
         f = AddEntryForm(request.POST)
@@ -362,7 +362,7 @@ def entry_add(request, challenge_id):
             )
 
             messages.success(request, 'Entry created!')
-            return HttpResponseRedirect("/e/%s/"%entry.name)
+            return HttpResponseRedirect(f"/e/{entry.name}/")
     else:
         f = AddEntryForm(initial={'users': request.user.username})
 
@@ -439,7 +439,7 @@ def entry_display(request, entry_id):
                         entry.challenge.number,
                     )
                 )
-                return HttpResponseRedirect("/e/%s/"%entry.name)
+                return HttpResponseRedirect(f"/e/{entry.name}/")
         elif rating is not None:
             data = dict(
                 disqualify=rating.disqualify,
@@ -457,8 +457,8 @@ def entry_display(request, entry_id):
     if challenge.isAllDone() and entry.has_final:
         # display ratings
         d = rating_results = entry.tally_ratings()
-        d['dp'] = '%d%%'%(d.get('disqualify', 0)*100)
-        d['dnwp'] = '%d%%'%(d.get('nonworking', 0)*100)
+        d['dp'] = f"{int(d.get('disqualify', 0) * 100)}%"
+        d['dnwp'] = f"{int(d.get('nonworking', 0) * 100)}%"
 
     join_requested = False
 
@@ -530,7 +530,7 @@ def entry_ratings(request, entry_id):
     if not (challenge.isAllDone() or super):
         if not request.user.is_anonymous():
              messages.error(request, "You're not allowed to view ratings yet!")
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
     user_list = entry.users.all()
     is_member = request.user in list(user_list)
 
@@ -562,7 +562,7 @@ def entry_manage(request, entry_id):
 
     if not is_member:
         messages.error(request, "You're not allowed to manage this entry!")
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
 
     if request.POST:
         f = EntryForm(request.POST, instance=entry)
@@ -581,7 +581,7 @@ def entry_manage(request, entry_id):
             else:
                 entry.users = new_users
                 messages.success(request, 'Changes saved!')
-            return HttpResponseRedirect("/e/%s/" % entry_id)
+            return HttpResponseRedirect(f"/e/{entry_id}/")
     else:
         f = EntryForm(
             instance=entry,

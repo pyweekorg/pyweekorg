@@ -45,10 +45,7 @@ class Command(BaseCommand):
         resp = requests.get(url, headers=headers)
         if resp.status_code != 200:
             self.stdout.write(
-                "Error {} polling {}".format(
-                    resp.status_code,
-                    url
-                )
+                f"Error {resp.status_code} polling {url}"
             )
             return
 

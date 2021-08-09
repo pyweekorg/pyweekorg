@@ -54,7 +54,7 @@ def give_award(request, entry_id):
     is_member = creator in entry.users.all()
     if is_member:
         messages.error(request, 'You cannot give an award to your own entry!')
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
 
     info = dict(
         challenge=challenge,
@@ -80,7 +80,7 @@ def give_award(request, entry_id):
     else:
         messages.error(request, 'This entry already has that award.')
 
-    return HttpResponseRedirect('/e/%s/'%entry_id)
+    return HttpResponseRedirect(f'/e/{entry_id}/')
 
 class UploadAwardForm(forms.Form):
     content = forms.FileField()
@@ -97,7 +97,7 @@ def upload_award(request, entry_id):
     is_member = creator in entry.users.all()
     if is_member:
         messages.error(request, 'You cannot give an award to your own entry!')
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
 
     info = dict(
         challenge=challenge,
@@ -145,7 +145,7 @@ def upload_award(request, entry_id):
     else:
         messages.error(request, 'This entry already has that award.')
 
-    return HttpResponseRedirect('/e/%s/'%entry_id)
+    return HttpResponseRedirect(f'/e/{entry_id}/')
 
 def _give_award(challenge, user, entry, award):
     # Don't do anything if award has already been given.

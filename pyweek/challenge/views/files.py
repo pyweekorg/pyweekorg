@@ -31,7 +31,7 @@ def entry_upload(request, entry_id):
     is_member = request.user in entry.users.all()
     if not is_member or not entry.isUploadOpen():
         messages.error(request, "You're not allowed to upload files!")
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
 
     if request.method == 'POST':
         f = FileForm(request.POST, request.FILES)
@@ -101,7 +101,7 @@ def entry_upload(request, entry_id):
         )
 
     messages.success(request, 'File added!')
-    return HttpResponseRedirect('/e/%s/'%entry_id)
+    return HttpResponseRedirect(f'/e/{entry_id}/')
 
 
 def oneshot_upload(request, entry_id):
@@ -162,7 +162,7 @@ def oneshot_upload(request, entry_id):
             _make_thumbnail(upload_file)
         except IOError as e:
             return HttpResponse(
-                'Error uploading screenshot: {}'.format(e)
+                f'Error uploading screenshot: {e}'
             )
     return HttpResponse('File added!')
 
@@ -193,7 +193,7 @@ def file_delete(request, entry_id, filename):
     is_member = request.user in entry.users.all()
     if not is_member:
         messages.error(request, "You're not allowed to delete files!")
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
 
     if request.method == 'POST':
         if request.POST.get('confirm', ''):
@@ -210,14 +210,14 @@ def file_delete(request, entry_id, filename):
                 storage.delete(filename + '-thumb.png')
 
                 messages.success(request, 'File deleted')
-                return HttpResponseRedirect('/e/%s/'%entry_id)
+                return HttpResponseRedirect(f'/e/{entry_id}/')
         else:
             messages.success(request, 'Cancelled')
-            return HttpResponseRedirect('/e/%s/'%entry_id)
+            return HttpResponseRedirect(f'/e/{entry_id}/')
 
     return render(request, 'confirm.html',
         {
-            'url': '/e/%s/delete/%s'%(entry_id, filename),
-            'message': 'Are you sure you wish to delete the file %s?'%filename,
+            'url': f'/e/{entry_id}/delete/{filename}',
+            'message': f'Are you sure you wish to delete the file {filename}?',
         }
     )

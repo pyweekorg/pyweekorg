@@ -167,10 +167,10 @@ class Command(BaseCommand):
             winner = []
             for e in latest.individualWinners():
                 title = e.game or e.title
-                winner.append('Individual: %s (http://pyweek.org/e/%s)'%(title, e.name))
+                winner.append(f'Individual: {title} (http://pyweek.org/e/{e.name})')
             for e in latest.teamWinners():
                 title = e.game or e.title
-                winner.append('Team: %s (http://pyweek.org/e/%s)'%(title, e.name))
+                winner.append(f'Team: {title} (http://pyweek.org/e/{e.name})')
             winner = '\n'.join(winner)
             send_email(latest, CHALLENGE_DONE, theme=theme, winner=winner)
             print('PYWEEK BOT: SENT CHALLENGE ALL DONE')
@@ -181,8 +181,8 @@ class Command(BaseCommand):
         latest.theme_poll.save()
         options = list(latest.theme_poll.option_set.all())
 
-        themes = '\n'.join(['- %s'%o.text for o in options])
-        url = 'http://pyweek.org/p/%s/'%latest.theme_poll.id
+        themes = '\n'.join([f'- {o.text}' for o in options])
+        url = f'http://pyweek.org/p/{latest.theme_poll.id}/'
         print('PYWEEK BOT: SENDING VOTING EMAIL')
         send_email(latest, VOTING_START, themes=themes, poll_url=url)
         print('PYWEEK BOT: SENT VOTING EMAIL')

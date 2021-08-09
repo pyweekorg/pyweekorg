@@ -61,16 +61,16 @@ def extract_entries(entries):
         activity = diary.activity
         delta = now - activity
         if activity.year != now.year:
-            date = activity.strftime('%d %%b %%Y'%activity.day)
+            date = activity.strftime(f'{int(activity.day)} %b %Y')
         elif delta.days < 1:
             if delta.seconds < 30:
                 date = 'just now'
             elif delta.seconds < 120:
                 date = 'a minute ago'
             elif delta.seconds < 7200:
-                date = '%d minutes ago'%(delta.seconds/60)
+                date = f'{int(delta.seconds / 60)} minutes ago'
             else:
-                date = '%d hours ago'%(delta.seconds/3600)
+                date = f'{int(delta.seconds / 3600)} hours ago'
         elif delta.days == 1:
             date = activity.strftime('%H:%M yesterday')
         elif delta.days < 8:
@@ -146,7 +146,7 @@ def list_messages(request):
 class DiaryForm(forms.Form):
     title = forms.CharField(required=True, widget=forms.TextInput(attrs={'size':'60'}))
     content = SafeHTMLField(required=True,
-        help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
+        help_text=f"Basic HTML tags allowed: {', '.join(safeTags)}")
     def as_plain(self):
         return self._html_output('<b>%(label)s</b><br>%(field)s<br>%(help_text)s<br>%(errors)s',
              '%s', '', ' %s', False)
@@ -197,7 +197,7 @@ def message_add(request):
                 description_truncated=truncated,
             )
             messages.success(request, 'Entry saved!')
-            return HttpResponseRedirect('/d/%s/'%diary.id)
+            return HttpResponseRedirect(f'/d/{diary.id}/')
     else:
         form = cls()
 
@@ -219,7 +219,7 @@ def entry_diary(request, entry_id):
     is_member = request.user in entry.users.all()
     if not is_member:
         messages.error(request, "You're not allowed to add diary entries!")
-        return HttpResponseRedirect('/e/%s/'%entry_id)
+        return HttpResponseRedirect(f'/e/{entry_id}/')
     challenge = entry.challenge
 
     is_super = not is_anon and request.user.is_superuser
@@ -264,7 +264,7 @@ def entry_diary(request, entry_id):
                 description_truncated=truncated,
             )
             messages.success(request, 'Entry saved!')
-            return HttpResponseRedirect('/d/%s/'%diary.id)
+            return HttpResponseRedirect(f'/d/{diary.id}/')
     else:
         form = cls()
 
@@ -305,7 +305,7 @@ class DiaryFeed(Feed):
 
 class CommentForm(forms.Form):
     content = SafeHTMLField(required=True,
-        help_text='Basic HTML tags allowed: %s'%(', '.join(safeTags)))
+        help_text=f"Basic HTML tags allowed: {', '.join(safeTags)}")
     def as_plain(self):
         return self._html_output('%(field)s<br>%(help_text)s<br>%(errors)s',
              '%s', '', ' %s', False)
@@ -345,10 +345,7 @@ def diary_display(request, diary_id):
                 Q(user__diarycomment__diary_entry=diary) | Q(user=diary.user)
             ).exclude(user=request.user).distinct().select_related('user')
             sending.send_template(
-                subject='New comment from {} on "{}"'.format(
-                    request.user.username,
-                    diary.title
-                ),
+                subject=f'New comment from {request.user.username} on "{diary.title}"',
                 template_name='diary-reply',
                 recipients=addresses,
                 params={
@@ -358,8 +355,7 @@ def diary_display(request, diary_id):
                 reason=sending.REASON_COMMENTS
             )
 
-            return HttpResponseRedirect('/d/%s/#%s'%(diary_id,
-                comment.id))
+            return HttpResponseRedirect(f'/d/{diary_id}/#{comment.id}')
     else:
         form = CommentForm()
 
@@ -380,11 +376,11 @@ def diary_display(request, diary_id):
 def diary_edit(request, diary_id):
     is_anon = request.user.is_anonymous()
     if is_anon:
-        return HttpResponseRedirect('/login/?next=/d/%s/edit/'%diary_id)
+        return HttpResponseRedirect(f'/login/?next=/d/{diary_id}/edit/')
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     if request.user != diary.user:
         messages.error(request, "You can't edit this entry!")
-        return HttpResponseRedirect('/d/%s/'%diary_id)
+        return HttpResponseRedirect(f'/d/{diary_id}/')
 
     is_super = not is_anon and request.user.is_superuser
 
@@ -410,7 +406,7 @@ def diary_edit(request, diary_id):
                 diary.sticky = form.cleaned_data.get('sticky', False)
             diary.save()
             messages.success(request, 'Edit saved!')
-            return HttpResponseRedirect('/d/%s/edit/'%diary_id)
+            return HttpResponseRedirect(f'/d/{diary_id}/edit/')
     else:
         form = cls(data)
     return render(request, 'challenge/diary_edit.html',
@@ -430,12 +426,12 @@ def diary_delete(request, diary_id):
     diary = get_object_or_404(models.DiaryEntry, pk=diary_id)
     if request.user != diary.user:
         messages.error(request, "You can't delete this entry!")
-        return HttpResponseRedirect('/d/%s/'%diary_id)
+        return HttpResponseRedirect(f'/d/{diary_id}/')
 
     if request.POST and 'delete' in request.POST:
         diary.delete()
         messages.success(request, "Diary entry deleted!")
         return HttpResponseRedirect('/messages/')
     else:
-        return HttpResponseRedirect('/d/%s/'%diary_id)
+        return HttpResponseRedirect(f'/d/{diary_id}/')
 
