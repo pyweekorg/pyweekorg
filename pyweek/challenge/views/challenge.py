@@ -8,6 +8,7 @@ import posixpath
 import datetime
 import xml.sax.saxutils
 from urllib.parse import urljoin
+from typing import Any
 
 from PIL import Image
 
@@ -18,7 +19,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.core.paginator import Paginator, InvalidPage
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.core import validators
@@ -38,7 +39,7 @@ class SafeHTMLField(forms.CharField):
         ul ol li span div'''.split()
     widget = forms.Textarea
 
-    def clean(self, value):
+    def clean(self, value: str) -> str:
         if '<' in value:
             value = html2safehtml(value, self.SAFE_TAGS)
         if not value:
@@ -46,21 +47,21 @@ class SafeHTMLField(forms.CharField):
         return value
 
 
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     return render(request, 'challenge/index.html', {'django_version': django.__version__})
 
 
-def stats(request):
+def stats(request: HttpRequest) -> HttpResponse:
     return render(request, 'stats.html', {})
 
 
-def stats_json(request):
+def stats_json(request: HttpRequest) -> HttpResponse:
     stats = models.participation()
     js = json.dumps({'stats': stats})
     return HttpResponse(js, content_type='application/json')
 
 
-def all_games(request):
+def all_games(request: HttpRequest) -> HttpResponse:
     cursor = connection.cursor()
     cursor.execute('''
     SELECT
@@ -74,7 +75,7 @@ def all_games(request):
          challenge_entry.has_final = true AND
          challenge_entry.challenge_id < 1000
     ''')
-    users = {}
+    users: dict[str, list[str]] = {}
     for name, entry_id in cursor.fetchall():
        users.setdefault(entry_id, []).append(name)
     cursor.execute('''
@@ -95,23 +96,23 @@ def all_games(request):
     ORDER BY
          rating DESC
     ''')
-    all = []
+    all_entries: list[dict[str, Any]] = []
     u = urllib.parse.quote
     e = html.escape
     for entry_id, title, game, winner, challenge_num, rating in cursor.fetchall():
         team = ',\n'.join([f'<a class="small" href="/u/{u(n)}">{e(n)}</a>'
             for n in users[entry_id]])
-        all.append(dict(entry_id=entry_id, game_name=game or title,
+        all_entries.append(dict(entry_id=entry_id, game_name=game or title,
             challenge_num=challenge_num, winner=winner, rating=rating,
             team=team))
-    return render(request, 'challenge/all_games.html', {'all_games': all})
+    return render(
+        request,
+        'challenge/all_games.html',
+        {'all_games': all_entries}
+    )
 
 
-def test(request):
-    assert False, 'this is false'
-
-
-def update_has_final(request):
+def update_has_final(request: HttpRequest) -> HttpResponse:
     for entry in models.Entry.objects.all():
         n = len(entry.file_set.filter(is_final__exact=True,
             is_screenshot__exact=False))
@@ -122,7 +123,7 @@ def update_has_final(request):
     return render(request, 'challenge/index.html', {})
 
 
-def previous_challenges(request):
+def previous_challenges(request: HttpRequest) -> HttpResponse:
     """Display an overview of all previous challenges."""
     challenges = models.Challenge.objects.all_previous()
     return render(request, 'challenge/list.html', {
@@ -130,13 +131,18 @@ def previous_challenges(request):
     })
 
 
-def challenge_display(request, challenge_id):
+def challenge_display(
+    request: HttpRequest,
+    challenge_id: str
+) -> HttpResponse:
     """Display an overview page for a challenge."""
-    challenge = get_object_or_404(models.Challenge, pk=challenge_id)
+    challenge: models.Challenge = get_object_or_404(
+        models.Challenge,
+        pk=challenge_id
+    )
 
-    screenie = challenge.file_set.order_by('-created').filter(is_screenshot__exact=True)[:0]
-    if screenie:
-        screenie = screenie[0]
+    screenies = challenge.file_set.order_by('-created').filter(is_screenshot__exact=True)[:0]
+    screenie = screenies[0] if screenies else None
 
     finished = challenge.isCompFinished()
     all_done = challenge.isAllDone()
@@ -165,10 +171,15 @@ def challenge_display(request, challenge_id):
     )
 
 
-
-def challenge_diaries(request, challenge_id):
+def challenge_diaries(
+    request: HttpRequest,
+    challenge_id: str
+) -> HttpResponse:
     """Display recent blog posts for a challenge."""
-    challenge = get_object_or_404(models.Challenge, pk=challenge_id)
+    challenge: models.Challenge = get_object_or_404(
+        models.Challenge,
+        pk=challenge_id
+    )
     blogposts = models.DiaryEntry.objects.for_challenge(challenge)
 
     pages = Paginator(blogposts, 10)
@@ -183,6 +194,7 @@ def challenge_diaries(request, challenge_id):
         'page': page,
         'user_may_rate': user_may_rate(challenge, request.user),
     })
+
 
 def challenge_ratings(request, challenge_id):
     challenge = get_object_or_404(models.Challenge, pk=challenge_id)
