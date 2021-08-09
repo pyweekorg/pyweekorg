@@ -13,7 +13,10 @@ from pyweek.challenge.models import Challenge, Entry, UTC
 from pyweek.activity.models import log_event
 from pyweek.mail.lists import latest_challenge_users
 from pyweek.mail import sending
-from django.template.defaultfilters import urlize, linebreaks
+from django.template.defaultfilters import (
+    urlize,
+    linebreaks_filter as linebreaks,
+)
 
 
 def send_email(challenge, message, **info):

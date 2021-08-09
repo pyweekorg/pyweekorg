@@ -102,7 +102,7 @@ def render_fields(poll, request):
     l.append('<form method="POST" action="."><table>')
     choices = list(poll.option_set.all())
     if poll.is_ongoing:
-        choices.sort(lambda a,b: cmp(a.text, b.text))
+        choices.sort(key=lambda o: o.text)
     for choice in choices:
         l.append('<tr><td>%s</td><td>%s</td></tr>'%(
             choice_field(poll, choice.id, votes), html.escape(choice.text)))

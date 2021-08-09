@@ -8,7 +8,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'challenge', '0008_auto_20190807_1808'), (b'challenge', '0009_auto_20190807_1813'), (b'challenge', '0010_auto_20190807_1910'), (b'challenge', '0011_auto_20190807_2138')]
+    replaces = [('challenge', '0008_auto_20190807_1808'), ('challenge', '0009_auto_20190807_1813'), ('challenge', '0010_auto_20190807_1910'), ('challenge', '0011_auto_20190807_2138')]
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -24,12 +24,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='entry',
             name='group_url',
-            field=models.URLField(blank=True, help_text=b'Chat/group URL, visible only to participants.', null=True),
+            field=models.URLField(blank=True, help_text='Chat/group URL, visible only to participants.', null=True),
         ),
         migrations.AddField(
             model_name='entry',
             name='is_open',
-            field=models.BooleanField(default=False, help_text=b'Can people request to join the team?'),
+            field=models.BooleanField(default=False, help_text='Can people request to join the team?'),
         ),
         migrations.AddField(
             model_name='entry',

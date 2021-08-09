@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='usersettings',
             name='email_replies',
-            field=models.BooleanField(default=True, help_text=b'Do you want to receive replies to your diary posts and comments by e-mail?'),
+            field=models.BooleanField(default=True, help_text='Do you want to receive replies to your diary posts and comments by e-mail?'),
         ),
     ]

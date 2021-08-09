@@ -87,8 +87,8 @@ class Migration(migrations.Migration):
             name='UserSettings',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email_contest_updates', models.BooleanField(default=True, help_text=b'Can we e-mail you about contests you are registered in?')),
-                ('email_news', models.BooleanField(default=True, help_text=b'Can we e-mail you (rarely) about Pyweek news, such as upcoming competitions?')),
+                ('email_contest_updates', models.BooleanField(default=True, help_text='Can we e-mail you about contests you are registered in?')),
+                ('email_news', models.BooleanField(default=True, help_text='Can we e-mail you (rarely) about Pyweek news, such as upcoming competitions?')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='settings', to=settings.AUTH_USER_MODEL)),
             ],
         ),

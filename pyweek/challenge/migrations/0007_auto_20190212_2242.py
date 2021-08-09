@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='challenge',
             name='is_rego_open',
-            field=models.BooleanField(default=False, help_text=b'Set to True to open registration for this competition now. Otherwise, registration opens 45 days before the competition.'),
+            field=models.BooleanField(default=False, help_text='Set to True to open registration for this competition now. Otherwise, registration opens 45 days before the competition.'),
         ),
     ]

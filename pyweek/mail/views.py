@@ -28,17 +28,19 @@ class DraftEmailList(PermissionRequiredMixin, ListView):
         return drafts.filter(status=DraftEmail.STATUS_DRAFT)
 
 
-class EditEmailForm(forms.ModelForm):
-    def list_choices():
-        choices = []
-        for key, (name, list_func) in LISTS.items():
-            num_recips = list_func().count()
-            choices.append(
-                (key, f'{name} ({num_recips} recipients)')
-            )
-        return choices
+def mailing_list_choices() -> list[tuple[str, str]]:
+    """Get the choices for a ChoiceField for mailing lists."""
+    choices = []
+    for key, (name, list_func) in LISTS.items():
+        num_recips = list_func().count()
+        choices.append(
+            (key, f'{name} ({num_recips} recipients)')
+        )
+    return choices
 
-    list_name = forms.ChoiceField(choices=list_choices)
+
+class EditEmailForm(forms.ModelForm):
+    list_name = forms.ChoiceField(choices=mailing_list_choices)
     subject = forms.CharField(
         widget=forms.TextInput(attrs={'size': '80'}),
     )

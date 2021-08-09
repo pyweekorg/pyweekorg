@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='poll',
             name='type',
-            field=models.IntegerField(choices=[(0, b'Ten Single Votes'), (1, b'Select Many'), (2, b'Instant-Runoff'), (3, b'Poll')], help_text=b'Instant-runoff is the type for challenge theme polls.'),
+            field=models.IntegerField(choices=[(0, 'Ten Single Votes'), (1, 'Select Many'), (2, 'Instant-Runoff'), (3, 'Poll')], help_text='Instant-runoff is the type for challenge theme polls.'),
         ),
     ]

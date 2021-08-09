@@ -22,22 +22,12 @@ CUTOFF_TIME = 2*60*60
 # Number of days allowed to upload against MD5
 EXTRA_DAYS = 3
 
-class UTC(datetime.tzinfo):
-    def utcoffset(self, dt):
-        return datetime.timedelta(0)
-    def tzname(self, dt):
-        return "UTC"
-    def dst(self, dt):
-        return datetime.timedelta(0)
+UTC = datetime.timezone.utc
 
 
-UTC = UTC()
-
-
-def pretty_time_diff(diff):
-    minutes = int(diff.seconds / 60)
-    hours = int(minutes / 60)
-    minutes = minutes % 60
+def pretty_time_diff(diff: datetime.timedelta) -> str:
+    minutes = diff.seconds // 60
+    hours, minutes = divmod(minutes, 60)
 
     l = []
 
@@ -57,9 +47,9 @@ def pretty_time_diff(diff):
         l.append('less than 1 minute')
     if len(l) == 1:
         return l[0]
-    elif len(l) == 2:
-        return '%s and %s'%tuple(l)
-    return ', '.join(l[:-1]) + ' and ' + l[-1]
+
+    *rest, last = l
+    return ', '.join(rest) + f' and {last}'
 
 
 def participation():

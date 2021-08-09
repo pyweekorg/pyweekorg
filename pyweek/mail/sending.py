@@ -1,14 +1,14 @@
 import pkgutil
 import re
+import string
 
 import django.core.mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core import signing
-from mailer import send_html_mail
-import mailer.models
+
+import mailer
 import html2text
-import string
 
 from pyweek.users.models import EmailAddress
 
@@ -17,10 +17,10 @@ from pyweek.users.models import EmailAddress
 # that allows skipping the queue. This is mostly important
 # for e-mail validation, which is effectively an interactive
 # process.
-PRIORITY_LOW = mailer.models.PRIORITY_LOW
-PRIORITY_MEDIUM = mailer.models.PRIORITY_MEDIUM
-PRIORITY_HIGH = mailer.models.PRIORITY_HIGH
-PRIORITY_IMMEDIATE = float('inf')
+PRIORITY_LOW = mailer.get_priority('low')
+PRIORITY_MEDIUM = mailer.get_priority('medium')
+PRIORITY_HIGH = mailer.get_priority('high')
+PRIORITY_IMMEDIATE = -1
 
 
 REASON_COMMENTS = (
@@ -93,7 +93,7 @@ def send(
         html_body,
         recipients,
         reason,
-        priority=mailer.models.PRIORITY_MEDIUM):
+        priority=PRIORITY_MEDIUM):
     """Send an e-mail, using the django-mailer queue."""
     html_part, text_part = _make_payload(html_body, reason)
     subject = f'[PyWeek] {subject.strip()}'
@@ -128,7 +128,7 @@ def send(
                 fail_silently=False,
             )
         else:
-            send_html_mail(
+            mailer.send_html_mail(
                 subject=subject,
                 message=user_text,
                 message_html=user_html,
@@ -144,7 +144,7 @@ def send_template(
         recipients,
         params,
         reason,
-        priority=mailer.models.PRIORITY_MEDIUM):
+        priority=PRIORITY_MEDIUM):
     """Send a queued message from a template."""
     html_body = render_to_string(
         f'emails/{template_name}.html',

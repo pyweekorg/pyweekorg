@@ -12,10 +12,10 @@ admin.site.unregister(User)
 def do_delete_spammer(modeladmin, request, queryset):
     for obj in queryset:
         delete_spammer(request, obj.username)
-do_delete_spammer.short_description = 'Delete that spammer!'
+do_delete_spammer.short_description = 'Delete that spammer!'  # type: ignore[attr-defined]
+
 
 class CustomUserAdmin(UserAdmin):
-
     actions = [do_delete_spammer]
 
 admin.site.register(User, CustomUserAdmin)

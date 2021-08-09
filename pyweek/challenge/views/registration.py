@@ -1,10 +1,13 @@
 from inspect import cleandoc
 from urllib.parse import quote
+from typing import Optional
 
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import (
+    HttpRequest, HttpResponseRedirect, HttpResponseForbidden
+)
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.core.mail import send_mail
@@ -24,7 +27,7 @@ from ..models import Challenge
 from ...users.models import EmailAddress, UserSettings
 
 
-def is_registration_open():
+def is_registration_open() -> bool:
     """Return True if registration is currently open."""
     c = Challenge.objects.latest()
     return c and c.isRegoOpen()
@@ -58,7 +61,7 @@ class RegistrationForm(forms.Form):
         help_text="Please confirm you are a human person made of bone and cells."
     )
 
-    def clean_name(self):
+    def clean_name(self) -> str:
         username = self.cleaned_data['name']
         if User.objects.filter(username__iexact=username):
             raise forms.ValidationError(
@@ -66,7 +69,7 @@ class RegistrationForm(forms.Form):
             )
         return username
 
-    def clean_email(self):
+    def clean_email(self) -> str:
         email = self.cleaned_data['email']
         if EmailAddress.objects.filter(address__iexact=email):
             raise forms.ValidationError(
@@ -86,7 +89,7 @@ class RegistrationForm(forms.Form):
         password_validation.validate_password(passwd1)
 
 
-def register(request):
+def register(request: HttpRequest):
     if not is_registration_open():
         return HttpResponseForbidden(
             "Registration is not available at the current time. "
@@ -120,9 +123,9 @@ class PasswordForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = []
+        fields: list[str] = []
 
-    def clean_old_password(self):
+    def clean_old_password(self) -> Optional[str]:
         pw = self.cleaned_data['old_password']
         if not pw:
             return None
