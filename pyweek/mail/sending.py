@@ -31,6 +31,18 @@ REASON_COMMENTS = (
 UNSUBSCRIBE_SIGNER = signing.Signer(salt='unsubscribe')
 
 
+def rotate(s: str) -> str:
+    """Rot13 the given alphabet."""
+    assert len(s) == 26
+    return s[13:] + s[:13]
+
+
+ROT13_TABLE = str.maketrans(
+    string.ascii_lowercase + string.ascii_uppercase,
+    rotate(string.ascii_lowercase) + rotate(string.ascii_uppercase)
+)
+
+
 def rot13(s: str) -> str:
     """rot13 a string in order to obfuscate it.
 
@@ -38,18 +50,7 @@ def rot13(s: str) -> str:
     signing; really the only reason to do it is to discourage probing
     of the system.
     """
-    out = []
-    for code in map(ord, s):
-        if 65 <= code <= 90:
-            # uppercase latin alphabet
-            code = (code - 65 + 13) % 26 + 65
-            c = chr(code)
-        if 97 <= code <= 122:
-            # uppercase latin alphabet
-            code = (code - 97 + 13) % 26 + 97
-            c = chr(code)
-        out.append(c)
-    return ''.join(out)
+    return s.translate(ROT13_TABLE)
 
 
 
