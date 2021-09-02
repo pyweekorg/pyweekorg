@@ -31,7 +31,7 @@ function start () {
     cd $PROJDIR
 
     echo "Starting gunicorn"
-    $VENV/bin/gunicorn --bind localhost:$PORT -w 20 --timeout 300 --pid "$PIDFILE" --log-file "$LOGFILE" -D pyweek.wsgi:application
+    $VENV/bin/gunicorn --bind localhost:$PORT -w 3 --timeout 300 --pid "$PIDFILE" --log-file "$LOGFILE" -D pyweek.wsgi:application
 }
 
 case $1 in

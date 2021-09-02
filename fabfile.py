@@ -3,7 +3,7 @@ from fabric.api import env, run, put, get, local
 from fabric.context_managers import cd, shell_env
 from fabric.contrib.project import rsync_project
 
-env.hosts = ['pyweek@pyweek.org:6185']
+env.hosts = ['pyweek@pyweek.org']
 
 
 rsync_exclusions = [
@@ -12,17 +12,22 @@ rsync_exclusions = [
     '*.swp',
     '__pycache__',
     '.git',
-    'venv',
+    'venv*',
+    '.venv*',
+    '.mypy_cache',
     '/media',
     'dumps',
     'db.sqlite3',
     'dev_settings.py',
     'source',
     'fabfile.py',
-    '/deploy'
+    '/deploy',
+    'deadmigrations',
+    'out',
+    'stubs'
 ]
 
-PYTHON = "/home/pyweek/.local/bin/python"
+PYTHON = "/usr/bin/python3.9"
 
 
 def publish():
@@ -33,22 +38,17 @@ def publish():
     with cd('/home/pyweek/www/'):
         run('chmod 600 prod_settings.py')
         if run('test -x venv/bin/pip', quiet=True).failed:
-            run('virtualenv --python={} venv'.format(PYTHON))
-            run('venv/bin/python get-pip.py')
-
-        # Symlink the media directory (containing uploads) into place
-        if run('test -d media', quiet=True).failed:
-            run('ls -s ../media')
+            run('{} -m venv venv'.format(PYTHON))
 
         path = run('echo "${PATH}"', quiet=True)
         with shell_env(
                 DJANGO_SETTINGS_MODULE='prod_settings',
                 VIRTUAL_ENV='/home/pyweek/www/venv',
-                PATH='/home/pyweek/www/venv/bin:' + path):
-            run('pip install --upgrade setuptools distribute')
-            run('pip install -r requirements.txt -r prod-requirements.txt')
-            run('python manage.py collectstatic -v 0 -c --no-input')
-            run('python manage.py migrate')
+                PATH='/home/pyweek/www/venv/bin:' + path,
+                PYTHONPATH='/home/pyweek/www/'):
+            run('pip install -r requirements.txt -r requirements-prod.txt')
+            run('django-admin collectstatic -v 0 -c --no-input')
+            run('django-admin migrate')
             run('./runserver.sh reload')
         run('crontab crontab.txt')
 
