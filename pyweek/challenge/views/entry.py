@@ -346,7 +346,7 @@ def entry_add(request, challenge_id):
             members = f.cleaned_data['users']
 
             entry.save()
-            entry.users = models.User.objects.filter(username__in=members)
+            entry.users.set(models.User.objects.filter(username__in=members))
 
             short_description, truncated = summarise(entry.description)
             log_event(
@@ -577,7 +577,7 @@ def entry_manage(request, entry_id):
             if len(new_users) != len(team_members):
                 messages.error(request, 'Invalid team members list')
             else:
-                entry.users = new_users
+                entry.users.set(new_users)
                 messages.success(request, 'Changes saved!')
             return HttpResponseRedirect(f"/e/{entry_id}/")
     else:
