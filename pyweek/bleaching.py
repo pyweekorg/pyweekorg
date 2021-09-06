@@ -17,7 +17,7 @@ def html2safehtml(text: str, tags: list[str] = SAFE_TAGS) -> str:
 
     This is a wrapper around bleach to centralise the options we pass to it.
     """
-    return bleach.clean(text, strip=True)
+    return bleach.clean(text, tags=tags, strip=True)
 
 
 def html2text(text: str) -> str:
