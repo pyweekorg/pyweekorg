@@ -96,7 +96,7 @@ def send(
     from_email = settings.DEFAULT_FROM_EMAIL
     for recip in recipients:
         if isinstance(recip, EmailAddress):
-            to_email = f'{recip.user.username} <{recip.address}>'
+            to_email = f'"{recip.user.username}" <{recip.address}>'
             token_key = recip.user.username
         else:
             token_key = to_email = recip
