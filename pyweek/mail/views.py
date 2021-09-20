@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
 from django.core import signing
+from django.db.models import Q
 
 from ..challenge.views.registration import redirect_to_login
 from .lists import LISTS
@@ -145,12 +146,23 @@ def unsubscribe(request):
     except (KeyError, signing.BadSignature):
         return redirect_to_login('Missing/invalid unsubscribe token')
 
-    profile = UserSettings.objects.get(user__username=user)
+    if '@' in user:
+        # FIXME: this can return multiple results because an address
+        # can be associated with multiple accounts
+        profiles = list(UserSettings.objects.filter(
+            user__emailaddress__address=user,
+        ))
+        profile = profiles[0]
+    else:
+        profile = UserSettings.objects.get(user__username=user)
+        profiles = [profile]
 
     if request.method == 'POST':
         form = SettingsForm(request.POST, instance=profile)
         if form.is_valid():
-            form.save()
+            for p in profiles:
+                form.instance = p
+                form.save()
             return redirect_to_login(
                 "Your e-mail preferences have been saved."
             )
