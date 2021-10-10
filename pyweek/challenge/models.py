@@ -1,4 +1,5 @@
 import os
+import operator
 
 from django.conf import settings
 from django.core import validators
@@ -410,8 +411,9 @@ class Challenge(models.Model):
                 individual.append((int(ratings['overall'] * 100), entry))
 
         # figure the winners
-        team.sort()
-        individual.sort()
+        by_score = operator.itemgetter(0)
+        team.sort(key=by_score)
+        individual.sort(key=by_score)
         for l in (team, individual):
             if not l:
                 continue
