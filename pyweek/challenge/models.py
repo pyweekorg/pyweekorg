@@ -268,7 +268,7 @@ class Challenge(models.Model):
             return True
         now = datetime.datetime.utcnow()
         sd = self.start_utc()
-        ed = self.end_utc()
+        ed = self.end_utc() + datetime.timedelta(1)
         rego_date = self.registration_start()
         end_rego_date = ed
         return rego_date <= now <= end_rego_date
