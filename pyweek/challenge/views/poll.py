@@ -1,11 +1,14 @@
+from functools import partial
 import html
+from io import StringIO
 
 from django.shortcuts import render, get_object_or_404
-from django.template import RequestContext
 from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from pyweek.challenge.models import Poll, Response, Option
+
+from .. import theme_voting
+
 
 instructions = {
     Poll.BEST_TEN: 'Select your ten preferred items from the list.',
@@ -14,9 +17,24 @@ instructions = {
     (for your most preferred choice) through %(num_choices)s (for your
     least preferred choice).''',
     Poll.POLL: 'Select your preferred item from the list.',
+
+    Poll.STAR_VOTE: (
+        "Please enter a score from 0 to 5 for each option, where 5 is "
+        "highly preferred and 0 is highly disliked."
+    ),
 }
 
+scoring = {
+    Poll.BEST_TEN: theme_voting.acceptance_vote,
+    Poll.SELECT_MANY: theme_voting.acceptance_vote,
+    Poll.INSTANT_RUNOFF: theme_voting.instant_runoff,
+    Poll.POLL: theme_voting.acceptance_vote,
+    Poll.STAR_VOTE: theme_voting.star_vote,
+}
+
+
 def poll_display(request, poll_id):
+    """Display a poll."""
     poll = get_object_or_404(Poll, pk=poll_id, is_hidden=False)
     info = {
         'num_choices': len(poll.option_set.all()),
@@ -57,21 +75,24 @@ def render_poll(poll, request, force_display=False):
             return '<p>You must log in to vote.</p>'
         return render_fields(poll, request)
     else:
-        s = ''
+        output = StringIO()
+        buffered_print = partial(print, file=output)
+
+        options = [option.text for option in poll.option_set.all()]
+        responses = theme_voting.responses_by_user(poll)
+
         if not poll.is_open:
-            s += '<p>Polling is closed.</p>'
+            buffered_print("Polling is closed.")
+            buffered_print(f"There were {len(responses)} respondents.\n")
         elif poll.is_ongoing:
-            s += '<p><a href="..">(Re)cast your votes</a></p>'
-        num, tally = poll.tally()
-        s += render_tally(poll, tally)
+            buffered_print('<a href="..">(Re)cast your votes</a>\n')
 
-        if poll.type == Poll.INSTANT_RUNOFF:
-            s += '<p>After preferences:</p>'
-            num, tally = poll.instant_runoff()
-            s += render_tally(poll, tally)
-
-        s += f'<p>There were {int(num)} respondents.</p>'
-        return s
+        scoring[poll.type](options, responses, print=buffered_print)
+        return (
+            '<div style="white-space: pre-line">'
+            + html.escape(output.getvalue())
+            + '</div>'
+        )
 
 
 def render_fields(poll, request):
@@ -119,7 +140,7 @@ def choice_field(poll, choice, votes):
     elif poll.type == Poll.POLL:
         checked = choice in votes and ' checked' or ''
         return f'<input name="vote" type="radio" value="{choice}"{checked}>'
-    elif poll.type == Poll.INSTANT_RUNOFF:
+    elif poll.type in (Poll.INSTANT_RUNOFF, Poll.STAR_VOTE):
         value = votes.get(choice, '')
         return f'<input name="vote-{int(choice)}" size="2" value="{value}">'
     else:
@@ -143,26 +164,40 @@ def handle_votes(poll, current, request):
             d[int(item)] = 1
     elif poll.type == Poll.INSTANT_RUNOFF:
         d = {}
-        have = {}
+        have = set()
         options = poll.option_set.all()
         for option in options:
             key = f'vote-{option.id}'
             if key not in request.POST:
-                errors.append( "Must place a number against all choices")
+                errors.append("Must place a number against all choices")
             try:
                 v = int(request.POST[key])
             except ValueError:
-                errors.append( "Votes must be numbers")
+                errors.append("Votes must be numbers")
                 continue
             if v <= 0:
-                errors.append( "Votes must be numbers > 0")
+                errors.append("Votes must be numbers > 0")
             n = len(options)
             if v > n:
-                errors.append( f"Votes must be numbers <= {n}")
+                errors.append(f"Votes must be numbers <= {n}")
             if v in have:
-                errors.append( f"Can't vote {int(v)} twice")
+                errors.append(f"Can't vote {int(v)} twice")
             d[option.id] = v
-            have[v] = True
+            have.add(v)
+    elif poll.type == Poll.STAR_VOTE:
+        d = {}
+        for option in poll.option_set.all():
+            try:
+                v = int(request.POST[f'vote-{option.id}'])
+            except KeyError:
+                errors.append("Must place a score against all choices")
+            except ValueError:
+                errors.append("Scores must be numbers")
+                continue
+
+            if not (0 <= v <= 5):
+                errors.append("Scores must be between 0 and 5 (inclusive)")
+            d[option.id] = v
     return d, list(set(errors))
 
 

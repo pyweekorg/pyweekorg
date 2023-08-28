@@ -936,11 +936,13 @@ BEST_TEN = 0
 SELECT_MANY = 1
 INSTANT_RUNOFF = 2
 POLL = 3
+STAR_VOTE = 4
 POLL_CHOICES = (
     (BEST_TEN, 'Ten Single Votes'),
     (SELECT_MANY, 'Select Many'),
     (INSTANT_RUNOFF, 'Instant-Runoff'),
     (POLL, 'Poll'),
+    (STAR_VOTE, 'STAR Voting'),
 )
 class Poll(models.Model):
     challenge = models.ForeignKey(
@@ -955,13 +957,15 @@ class Poll(models.Model):
     is_ongoing = models.BooleanField()
     type = models.IntegerField(
         choices=POLL_CHOICES,
-        help_text="Instant-runoff is the type for challenge theme polls."
+        help_text="STAR Voting is the type for challenge theme polls.",
+        default=STAR_VOTE
     )
 
     BEST_TEN=BEST_TEN
     SELECT_MANY=SELECT_MANY
     INSTANT_RUNOFF=INSTANT_RUNOFF
     POLL=POLL
+    STAR_VOTE=STAR_VOTE
     POLL_CHOICES=POLL_CHOICES
 
     class Meta:
@@ -973,96 +977,6 @@ class Poll(models.Model):
             return f'<Poll {self.title} challenge {self.challenge}>'
         else:
             return f'<Poll {self.title}>'
-
-    def tally(self):
-        ''' Figure the results of voting.
-
-        Return [(option, percentage)]
-        '''
-        tally = {}
-        responses = self.response_set.all()
-        respondees = set()
-        for response in responses:
-            respondees.add(response.user_id)
-            sum = tally.get(response.option_id, 0)
-            if self.type == INSTANT_RUNOFF and response.value == 1:
-                tally[response.option_id] = sum + 1
-            elif self.type in (BEST_TEN, SELECT_MANY, POLL):
-                tally[response.option_id] = sum + 1
-        num_voters = len(respondees)
-
-        # figure percentages
-        if self.type == INSTANT_RUNOFF:
-            for choice, num in list(tally.items()):
-                num = (100. * num / num_voters)
-                tally[choice] = num
-        return num_voters, tally
-
-    def instant_runoff(self):
-        '''Take the votes as recorded, and figure a majority winner
-        according to instant-runoff rules.
-
-        First choices are tallied. If no candidate has the support of a
-        majority of voters, the candidate with the least support is
-        eliminated. A second round of counting takes place, with the votes
-        of supporters of the eliminated candidate now counting for their
-        second choice candidate. After a candidate is eliminated, he or she
-        may not receive any more votes.
-
-        This process of counting and eliminating is repeated until one
-        candidate has over half the votes. This is equivalent to continuing
-        until there is only one candidate left.
-        '''
-        eliminated = {}
-
-        # obtain a list of the voters
-        responses = self.response_set.all()
-        voters = {}
-        for vote in responses:
-            if vote.user_id not in voters:
-                voters[vote.user_id] = {}
-            voters[vote.user_id][vote.option_id] = int(vote.value)
-        num_voters = len(voters)
-
-        # now give each voter an ordered list of votes
-        for voter, votes in list(voters.items()):
-            l = [(v,k) for (k,v) in list(votes.items())]
-            l.sort()
-            voters[voter] = l
-
-        # now see if someone won
-        erk = 0
-        while erk < 10:
-            erk += 1
-            tally = {}
-            for votes in list(voters.values()):
-                for n, choice in votes:
-                    if choice in eliminated:
-                        continue
-                    tally[choice] = tally.get(choice, 0) + 1
-                    break
-
-            l = [(n,c) for (c,n) in list(tally.items())]
-            l.sort()
-            if l[-1][0] > num_voters/2.:
-                break
-
-            # eliminate, distribute votes
-            eliminated[l[0][1]] = True
-
-        # figure percentages
-        for choice, num in list(tally.items()):
-            num = (100. * num / num_voters)
-            tally[choice] = num
-
-        return num_voters, tally
-
-    def instant_runoff_winner(self):
-        n, tally = self.instant_runoff()
-        l = [(num, choice) for choice, num in list(tally.items())]
-        l.sort()
-        choice = Option.objects.get(pk=l[-1][1])
-        return choice.text
 
 
 class Option(models.Model):
