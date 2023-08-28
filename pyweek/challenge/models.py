@@ -227,13 +227,14 @@ class Challenge(models.Model):
         return ' '.join(event)
 
     def setTheme(self):
+        from . import theme_voting
         # close the poll
         poll = self.theme_poll
         poll.is_open = False
         poll.save()
 
         # and save off the winner
-        self.theme = poll.instant_runoff_winner()
+        self.theme = theme_voting.tally(poll)
         self.save()
         return self.theme
 

@@ -24,14 +24,6 @@ instructions = {
     ),
 }
 
-scoring = {
-    Poll.BEST_TEN: theme_voting.acceptance_vote,
-    Poll.SELECT_MANY: theme_voting.acceptance_vote,
-    Poll.INSTANT_RUNOFF: theme_voting.instant_runoff,
-    Poll.POLL: theme_voting.acceptance_vote,
-    Poll.STAR_VOTE: theme_voting.star_vote,
-}
-
 
 def poll_display(request, poll_id):
     """Display a poll."""
@@ -77,19 +69,17 @@ def render_poll(poll, request, force_display=False):
     else:
         output = StringIO()
         buffered_print = partial(print, file=output)
-
-        options = [option.text for option in poll.option_set.all()]
-        responses = theme_voting.responses_by_user(poll)
+        respondents = poll.option_set.count()
 
         if not poll.is_open:
             buffered_print("Polling is closed.")
-            buffered_print(f"There were {len(responses)} respondents.\n")
-        elif poll.is_ongoing:
-            buffered_print('<a href="..">(Re)cast your votes</a>\n')
+            buffered_print(f"There were {respondents} respondents.\n")
 
-        scoring[poll.type](options, responses, print=buffered_print)
+        _winner = theme_voting.tally(poll, print=buffered_print)
+
         return (
-            '<div style="white-space: pre-line">'
+            ('<a href="..">(Re)cast your votes</a>\n' if poll.is_ongoing else '')
+            + '<div style="white-space: pre-line">'
             + html.escape(output.getvalue())
             + '</div>'
         )

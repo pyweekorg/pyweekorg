@@ -9,7 +9,22 @@
 {{ poll.description }}
 
 {% if poll.is_open %}
-{{ instructions }}
+<p>{{ instructions }}</p>
+
+{% if poll.type == poll.STAR_VOTE %}
+<div style="background-color: #7289DA; margin: 1em 0; padding: 1em 1em 0.8em; border-radius: 6px; color: white">
+<p><strong>Important!</strong> We now use <a href="https://en.wikipedia.org/wiki/STAR_voting">STAR Voting</a> so that
+theme selection more closely reflects participants' preferences. It's easy:</p>
+
+<ul>
+    <li>Give each option a rating from 0 to 5.</li>
+    <li>You can give the same score to more than one option.</li>
+    <li>5 is the highest score, meaning you prefer that option.</li>
+    <li>0 is the lowest score, meaning you dislike that option.</li>
+</ul>
+</div>
+{% endif %}
+
 {% endif %}
 
 {{ fields }}

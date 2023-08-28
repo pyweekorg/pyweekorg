@@ -1,7 +1,10 @@
 import itertools
 from operator import itemgetter
-from typing import IO, Any, Callable
+from typing import Callable
 from collections import Counter, defaultdict
+
+import starvote
+
 from .models import Poll
 
 
@@ -102,4 +105,30 @@ def star_vote(
     responses: list[dict[str, int]],
     print: Callable = print,
 ):
-    raise NotImplementedError()
+    winners = starvote.election(
+        starvote.STAR_Voting,
+        responses,
+        seats=1,
+        verbosity=1,
+        print=print,
+    )
+    # starvote supports elections with more than one winner, but we will only
+    # have one.
+    return winners[0]
+
+
+
+TALLY_FUNCTIONS = {
+    Poll.BEST_TEN: acceptance_vote,
+    Poll.SELECT_MANY: acceptance_vote,
+    Poll.INSTANT_RUNOFF: instant_runoff,
+    Poll.POLL: acceptance_vote,
+    Poll.STAR_VOTE: star_vote,
+}
+
+
+def tally(poll: Poll, print: Callable = print) -> str:
+    """Tally voting for the given poll."""
+    options = [option.text for option in poll.option_set.all()]
+    responses = responses_by_user(poll)
+    return TALLY_FUNCTIONS[poll.type](options, responses, print=print)
