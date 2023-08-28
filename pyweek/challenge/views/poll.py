@@ -69,7 +69,7 @@ def render_poll(poll, request, force_display=False):
     else:
         output = StringIO()
         buffered_print = partial(print, file=output)
-        respondents = poll.option_set.count()
+        respondents = poll.response_set.count()
 
         if not poll.is_open:
             buffered_print("Polling is closed.")
