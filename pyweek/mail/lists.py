@@ -29,14 +29,15 @@ def address_list(name, reason):
 
 
 @address_list(
-    'All users',
-    reason="because you are a registered user at pyweek.org."
+    'Announcement List',
+    reason="because you are opted in to PyWeek announcements."
 )
-def all_users():
-    """A list of all users."""
-    return filter_verified(EmailAddress.objects.filter(
+def announce():
+    """A list of verified addresses who want contest/site announcements."""
+    return EmailAddress.objects.filter(
         user__settings__email_news=True,
-    ).distinct())
+	    verified=True,
+    ).distinct()
 
 
 @address_list(
@@ -48,21 +49,6 @@ def verified_users(challenge=None):
     return EmailAddress.objects.filter(
         user__settings__email_contest_updates=True,
         verified=True,
-    ).distinct()
-
-
-@address_list(
-    'Unverified addresses - DO NOT USE',
-    reason="because you are a registered user at pyweek.org."
-)
-def unverified_users(challenge=None):
-    """Unverified e-mail accounts.
-
-    Only use this to contact people to prompt them to verify their accounts.
-    """
-    return EmailAddress.objects.filter(
-        user__settings__email_contest_updates=True,
-        verified=False,
     ).distinct()
 
 
