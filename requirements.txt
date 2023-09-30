@@ -29,7 +29,7 @@ django-mailer==2.1
     # via -r requirements.in
 django-recaptcha2==1.4.1
     # via -r requirements.in
-django-storages==1.11.1
+django-storages==1.14.1
     # via -r requirements.in
 django-wysiwyg==0.8.0
     # via -r requirements.in
