@@ -174,7 +174,7 @@ from django.core.files.storage import get_storage_class
 
 def _make_thumbnail(file):
     image = Image.open(io.BytesIO(file.content.read()))
-    image.thumbnail((150, 150), Image.ANTIALIAS)
+    image.thumbnail((150, 150))
     target = file.content.name + '-thumb.png'
 
     storage = get_storage_class()
