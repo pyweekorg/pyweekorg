@@ -18,7 +18,7 @@ certifi==2022.12.7
     # via requests
 charset-normalizer==2.0.4
     # via requests
-django==3.2.23
+django==3.2.25
     # via
     #   -r requirements.in
     #   django-mailer
