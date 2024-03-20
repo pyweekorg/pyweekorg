@@ -18,7 +18,7 @@ certifi==2022.12.7
     # via requests
 charset-normalizer==2.0.4
     # via requests
-django==3.2.25
+django==4.0.10
     # via
     #   -r requirements.in
     #   django-mailer
@@ -53,8 +53,6 @@ pyparsing==2.4.7
     # via packaging
 python-dateutil==2.8.2
     # via botocore
-pytz==2021.1
-    # via django
 requests==2.31.0
     # via
     #   -r requirements.in
