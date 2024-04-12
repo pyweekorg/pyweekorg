@@ -35,7 +35,7 @@ django-wysiwyg==0.8.0
     # via -r requirements.in
 html2text==2020.1.16
     # via -r requirements.in
-idna==3.2
+idna==3.7
     # via requests
 jmespath==0.10.0
     # via
