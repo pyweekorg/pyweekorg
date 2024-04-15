@@ -66,7 +66,7 @@ six==1.16.0
     #   bleach
     #   django-mailer
     #   python-dateutil
-sqlparse==0.4.4
+sqlparse==0.5.0
     # via django
 starvote==2.0.6
     # via -r requirements.in
