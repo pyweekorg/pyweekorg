@@ -55,7 +55,7 @@ python-dateutil==2.8.2
     # via botocore
 pytz==2021.1
     # via django
-requests==2.31.0
+requests==2.32.0
     # via
     #   -r requirements.in
     #   django-recaptcha2
