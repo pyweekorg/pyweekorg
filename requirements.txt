@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-asgiref==3.4.1
+asgiref==3.8.1
     # via django
 bleach==4.0.0
     # via -r requirements.in
@@ -18,7 +18,7 @@ certifi==2022.12.7
     # via requests
 charset-normalizer==2.0.4
     # via requests
-django==3.2.25
+django==4.2.16
     # via
     #   -r requirements.in
     #   django-mailer
@@ -53,8 +53,6 @@ pyparsing==2.4.7
     # via packaging
 python-dateutil==2.8.2
     # via botocore
-pytz==2021.1
-    # via django
 requests==2.31.0
     # via
     #   -r requirements.in
@@ -70,6 +68,8 @@ sqlparse==0.4.4
     # via django
 starvote==2.0.6
     # via -r requirements.in
+typing-extensions==4.12.2
+    # via asgiref
 urllib3==1.26.6
     # via
     #   botocore
