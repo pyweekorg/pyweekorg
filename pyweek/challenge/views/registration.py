@@ -78,8 +78,9 @@ class RegistrationForm(forms.Form):
         return email
 
     def clean(self):
-        passwd1 = self.cleaned_data['password']
-        passwd2 = self.cleaned_data['again']
+        cleaned_data = super().clean()
+        passwd1 = cleaned_data['password']
+        passwd2 = cleaned_data['again']
         if passwd1 != passwd2:
             raise forms.ValidationError(
                 "The passwords you entered do not match."
@@ -87,6 +88,7 @@ class RegistrationForm(forms.Form):
 
         # Run standard Django password validators
         password_validation.validate_password(passwd1)
+        return cleaned_data
 
 
 def register(request: HttpRequest):
@@ -136,15 +138,16 @@ class PasswordForm(forms.ModelForm):
         return pw
 
     def clean(self):
-        if not any(self.cleaned_data.values()):
+        cleaned_data = super().clean()
+        if not any(cleaned_data.values()):
             return {}
-        if not self.cleaned_data['old_password']:
+        if not cleaned_data['old_password']:
             raise forms.ValidationError(
                 "You must enter the old password."
             )
 
-        passwd1 = self.cleaned_data['password']
-        passwd2 = self.cleaned_data['again']
+        passwd1 = cleaned_data['password']
+        passwd2 = cleaned_data['again']
         if not passwd1 and not passwd2:
             raise forms.ValidationError(
                 "You must enter the new password."
@@ -156,6 +159,7 @@ class PasswordForm(forms.ModelForm):
 
         # Run standard Django password validators
         password_validation.validate_password(passwd1, user=self.instance)
+        return cleaned_data
 
     def save(self):
         if not self.cleaned_data:
@@ -482,8 +486,9 @@ class RecoveryForm(forms.Form):
     )
 
     def clean(self):
-        passwd1 = self.cleaned_data['new_password']
-        passwd2 = self.cleaned_data['new_password_confirm']
+        cleaned_data = super().clean()
+        passwd1 = cleaned_data['new_password']
+        passwd2 = cleaned_data['new_password_confirm']
         if passwd1 != passwd2:
             raise forms.ValidationError(
                 "The passwords you entered do not match."
@@ -491,6 +496,7 @@ class RecoveryForm(forms.Form):
 
         # Run standard Django password validators
         password_validation.validate_password(passwd1, user=self.user)
+        return cleaned_data
 
 
 def recovery(request):
