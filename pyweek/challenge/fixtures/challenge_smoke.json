@@ -1,0 +1,72 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 101,
+    "fields": {
+      "username": "smoke_owner",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2026-01-01T00:00:00",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$10000$XyeJGXX0gAyw$vohJld2dJhz0uRTlSrJqJrZZio5g3/ddzFv9Gk0Lg74=",
+      "email": "owner@example.com",
+      "date_joined": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 102,
+    "fields": {
+      "username": "smoke_judge",
+      "first_name": "",
+      "last_name": "",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2026-01-01T00:00:00",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$10000$XyeJGXX0gAyw$vohJld2dJhz0uRTlSrJqJrZZio5g3/ddzFv9Gk0Lg74=",
+      "email": "judge@example.com",
+      "date_joined": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "challenge.challenge",
+    "pk": 99,
+    "fields": {
+      "title": "Smoke Challenge",
+      "start": "2026-01-01",
+      "end": "2026-12-31",
+      "motd": "Smoke test challenge.",
+      "is_rego_open": true,
+      "theme_poll": null,
+      "theme": "Compatibility",
+      "torrent_url": ""
+    }
+  },
+  {
+    "model": "challenge.entry",
+    "pk": "smoke-entry",
+    "fields": {
+      "title": "Smoke Team",
+      "game": "Smoke Game",
+      "github_repo": null,
+      "head_sha": null,
+      "description": "Entry used by automated smoke tests.",
+      "is_open": true,
+      "group_url": null,
+      "challenge": 99,
+      "winner": null,
+      "user": 101,
+      "is_upload_open": true,
+      "has_final": false,
+      "join_requests": [],
+      "users": [101]
+    }
+  }
+]
