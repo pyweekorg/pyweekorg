@@ -47,7 +47,7 @@ packaging==21.0
     # via bleach
 pillow==10.2.0
     # via -r requirements.in
-psycopg2-binary==2.9.1
+psycopg2-binary==2.9.9
     # via -r requirements.in
 pyparsing==2.4.7
     # via packaging
