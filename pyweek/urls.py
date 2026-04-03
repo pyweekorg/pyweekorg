@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import URLPattern, URLResolver, include, path, re_path
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
@@ -8,11 +8,13 @@ from django.views.generic.base import RedirectView
 
 admin.autodiscover()
 
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^emails/', include('pyweek.mail.urls')),
-    url(r'^latest/', include('pyweek.activity.urls')),
-    url(r'^media/dl/(?P<path>.*)',
-        RedirectView.as_view(url=settings.MEDIA_URL + '%(path)s')),
-    url(r'', include('pyweek.challenge.urls')),
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("admin/", admin.site.urls),
+    path("emails/", include("pyweek.mail.urls")),
+    path("latest/", include("pyweek.activity.urls")),
+    re_path(
+        r"^media/dl/(?P<path>.*)",
+        RedirectView.as_view(url=settings.MEDIA_URL + "%(path)s"),
+    ),
+    path("", include("pyweek.challenge.urls")),
 ]
