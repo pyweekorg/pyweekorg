@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from .views import timeline
 
 
 urlpatterns = [
-    url('^$', timeline, name='timeline'),
+    re_path(r"^$", timeline, name="timeline"),
 ]
