@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+from datetime import date, timedelta
 import os
 import tempfile
 from PIL import Image
@@ -11,7 +12,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import connection
 from django.test import TestCase, override_settings
 
-from pyweek.challenge.models import Award, DiaryEntry, EntryAward, File
+from pyweek.challenge.models import Award, Challenge, DiaryEntry, Entry, EntryAward, File
 
 
 class ChallengeSmokeTests(TestCase):
@@ -295,3 +296,70 @@ class ChallengeSmokeTests(TestCase):
     def test_register_page_available_with_open_challenge(self) -> None:
         """Register page is available while challenge registration is open."""
         self._assert_status("/register/")
+
+
+class EntryTitleTests(TestCase):
+    """Team names must be unique within a challenge, including on edits."""
+
+    fixtures = ["challenge_smoke.json"]
+
+    def setUp(self):
+        self.user = User.objects.get(username="smoke_owner")
+        self.client.force_login(self.user)
+        self.challenge = Challenge.objects.get(pk=99)
+        self.challenge.end = date.today() + timedelta(days=7)
+        self.challenge.save()
+        self.entry = Entry.objects.get(pk="smoke-entry")
+        self.data = {
+            "name": "new-entry",
+            "title": self.entry.title,
+            "users": self.user.username,
+            "game": "Test Game",
+        }
+
+    def test_add_duplicate_title_shows_field_error(self):
+        self.entry.title = "같은 팀 이름"
+        self.entry.save()
+        self.data["title"] = "  같은 팀 이름  "
+        response = self.client.post("/99/entry_add/", self.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "A team with this name already exists in this challenge.")
+        self.assertIn("title", response.context["form"].errors)
+        self.assertFalse(Entry.objects.filter(pk="new-entry").exists())
+
+    def test_add_title_used_in_another_challenge(self):
+        other = Challenge.objects.create(
+            number=100, title="Other challenge",
+            start=date.today(), end=date.today() + timedelta(days=7),
+            is_rego_open=True,
+        )
+        response = self.client.post(f"/{other.pk}/entry_add/", self.data)
+        self.assertRedirects(response, "/e/new-entry/", fetch_redirect_response=False)
+        entry = Entry.objects.get(pk="new-entry")
+        self.assertEqual(entry.challenge, other)
+        self.assertEqual(entry.user, self.user)
+        self.assertEqual(list(entry.users.all()), [self.user])
+
+    def test_manage_duplicate_title_shows_field_error(self):
+        Entry.objects.create(
+            name="other-entry", title="Other team",
+            challenge=self.challenge, user=self.user,
+        )
+        self.data["title"] = "Other team"
+        response = self.client.post("/e/smoke-entry/manage/", self.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("title", response.context["form"].errors)
+        self.entry.refresh_from_db()
+        self.assertEqual(self.entry.title, "Smoke Team")
+
+    def test_manage_unchanged_title(self):
+        response = self.client.post("/e/smoke-entry/manage/", self.data)
+        self.assertRedirects(response, "/e/smoke-entry/", fetch_redirect_response=False)
+        self.entry.refresh_from_db()
+        self.assertEqual(self.entry.game, "Test Game")
+
+    def test_add_unique_title(self):
+        self.data["title"] = "New team"
+        response = self.client.post("/99/entry_add/", self.data)
+        self.assertRedirects(response, "/e/new-entry/", fetch_redirect_response=False)
+        self.assertEqual(Entry.objects.get(pk="new-entry").title, "New team")
