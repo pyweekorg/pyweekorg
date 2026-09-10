@@ -295,3 +295,61 @@ class ChallengeSmokeTests(TestCase):
     def test_register_page_available_with_open_challenge(self) -> None:
         """Register page is available while challenge registration is open."""
         self._assert_status("/register/")
+
+
+class RegistrationValidationTests(TestCase):
+    """Invalid registration submissions return errors, never server errors."""
+
+    def setUp(self):
+        from unittest.mock import patch
+
+        for target, value in (
+            ("pyweek.challenge.views.registration.is_registration_open", True),
+            ("snowpenguin.django.recaptcha2.fields.ReCaptchaField.clean", "verified"),
+        ):
+            patcher = patch(target, return_value=value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        self.data = {
+            "name": "new_entrant",
+            "email": "entrant@example.com",
+            "password": "Boats-and-dragons-42!",
+            "again": "Boats-and-dragons-42!",
+        }
+
+    def test_missing_or_empty_password_fields(self):
+        for missing in (("password",), ("again",), ("password", "again")):
+            for empty in (False, True):
+                with self.subTest(missing=missing, empty=empty):
+                    data = self.data.copy()
+                    for field in missing:
+                        if empty:
+                            data[field] = ""
+                        else:
+                            del data[field]
+                    response = self.client.post("/register/", data)
+                    self.assertEqual(response.status_code, 200)
+                    for field in missing:
+                        self.assertEqual(
+                            response.context["form"].errors[field],
+                            ["This field is required."],
+                        )
+                    self.assertFalse(User.objects.filter(username="new_entrant").exists())
+
+    def test_mismatched_passwords_are_rejected(self):
+        self.data["again"] = "a different password"
+        response = self.client.post("/register/", self.data)
+        self.assertContains(response, "The passwords you entered do not match.")
+        self.assertFalse(User.objects.filter(username="new_entrant").exists())
+
+    def test_weak_passwords_are_rejected(self):
+        self.data.update(password="123", again="123")
+        response = self.client.post("/register/", self.data)
+        self.assertContains(response, "This password is too short.")
+        self.assertFalse(User.objects.filter(username="new_entrant").exists())
+
+    def test_valid_registration_still_creates_account(self):
+        response = self.client.post("/register/", self.data)
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+        user = User.objects.get(username="new_entrant")
+        self.assertTrue(user.check_password(self.data["password"]))
