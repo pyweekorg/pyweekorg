@@ -58,8 +58,10 @@ The torrent file is <A href="{{ challenge.torrent_url }}">here</a>.</p>
    {% for user in e.users.all %}
    <a href="{% url 'user_display' user.username %}">{{ user.username }}</a>{% if not forloop.last%}, {% endif %}
    {% endfor %}
-  {% else %}
+  {% elif e.user %}
    Entrant: <a href="{% url 'user_display' e.user.username %}">{{ e.user.username }}</a>
+  {% else %}
+   Entrant: Deleted user
   {% endif %}
   {% if e.is_open and e.challenge.isRegoOpen %}&emsp;(<a href="{{ e.get_absolute_url }}" title="Open Team">Join this team?</a>){% endif %}
   </p>
