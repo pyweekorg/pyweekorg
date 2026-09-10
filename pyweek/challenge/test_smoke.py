@@ -116,6 +116,28 @@ class ChallengeSmokeTests(TestCase):
         """Message list page renders."""
         self._assert_status("/messages/")
 
+    def test_messages_invalid_offsets_show_first_page(self) -> None:
+        for start in ("-12", "-30", "invalid", ""):
+            with self.subTest(start=start):
+                response = self.client.get("/messages/", {"start": start})
+                self.assertEqual(response.status_code, 200)
+                self.assertIsNone(response.context["prev"])
+                self.assertTrue(response.context["pages"][0]["current"])
+                self.assertNotContains(response, "?start=-")
+
+    def test_messages_previous_link_reaches_first_page(self) -> None:
+        for start in (1, 18, 30, 60):
+            with self.subTest(start=start):
+                response = self.client.get("/messages/", {"start": start})
+                self.assertEqual(response.status_code, 200)
+                previous = max(0, start - 30)
+                self.assertEqual(response.context["prev"], previous)
+                self.assertContains(
+                    response,
+                    f'href="/messages/?start={previous}">&lt;&lt; Previous</a>',
+                )
+                self.assertNotContains(response, "?start=-")
+
     def test_diary_feed_renders(self) -> None:
         """Diary RSS feed renders."""
         self._assert_status("/d/feed/")
