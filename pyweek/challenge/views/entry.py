@@ -40,11 +40,6 @@ def isUnusedEntryName(field_data: str) -> None:
         raise validators.ValidationError(f'"{field_data}" already taken')
 
 
-def isUnusedEntryTitle(field_data: str) -> None:
-    if models.Entry.objects.filter(title__exact=field_data):
-        raise validators.ValidationError(f'"{field_data}" already taken')
-
-
 def isCommaSeparatedUserList(field_data: str) -> None:
     for name in [e.strip() for e in field_data.split(',')]:
         if not models.User.objects.filter(username__exact=name):
@@ -88,6 +83,21 @@ class BaseEntryForm(forms.ModelForm):
         }),
         required=False,
     )
+
+    def clean_title(self):
+        # Challenge is not an editable field, so ModelForm skips its
+        # unique_together constraint. Check it explicitly against the instance.
+        title = self.cleaned_data['title']
+        entries = models.Entry.objects.filter(
+            challenge_id=self.instance.challenge_id, title=title,
+        )
+        if not self.instance._state.adding:
+            entries = entries.exclude(pk=self.instance.pk)
+        if entries.exists():
+            raise forms.ValidationError(
+                "A team with this name already exists in this challenge."
+            )
+        return title
 
     def clean_description(self):
         """Strip HTML from the description."""
@@ -336,13 +346,14 @@ def entry_add(request, challenge_id):
         return HttpResponseRedirect(f"/{challenge_id}/")
 
     if request.method == 'POST':
-        f = AddEntryForm(request.POST)
+        f = AddEntryForm(
+            request.POST,
+            instance=models.Entry(challenge=challenge, user=request.user),
+        )
         f.current_user = request.user.username
 
         if f.is_valid():
             entry = f.instance
-            entry.challenge = challenge
-            entry.user = request.user
             members = f.cleaned_data['users']
 
             entry.save()
