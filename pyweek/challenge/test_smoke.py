@@ -120,6 +120,58 @@ class ChallengeSmokeTests(TestCase):
         """Diary RSS feed renders."""
         self._assert_status("/d/feed/")
 
+    def test_profile_rejects_wrong_old_password(self) -> None:
+        self._login("smoke_owner")
+        response = self.client.post("/profile/", {
+            "passwd-old_password": "wrong-password",
+            "passwd-password": "Boats-and-dragons-42!",
+            "passwd-again": "Boats-and-dragons-42!",
+        })
+        self.assertContains(response, "This password is not correct.")
+        self.assertEqual(
+            response.context["password_form"].errors["old_password"],
+            ["This password is not correct."],
+        )
+        self.assertTrue(User.objects.get(username="smoke_owner").check_password("password"))
+
+    def test_profile_rejects_incomplete_or_invalid_password_changes(self) -> None:
+        self._login("smoke_owner")
+        for old, new, again, error in (
+            ("", "Boats-and-dragons-42!", "Boats-and-dragons-42!", "You must enter the old password."),
+            ("password", "", "", "You must enter the new password."),
+            ("password", "Boats-and-dragons-42!", "different", "Supplied passwords did not match."),
+            ("password", "123", "123", "This password is too short."),
+            ("wrong-password", "", "", "This password is not correct."),
+        ):
+            with self.subTest(error=error):
+                response = self.client.post("/profile/", {
+                    "passwd-old_password": old,
+                    "passwd-password": new,
+                    "passwd-again": again,
+                })
+                self.assertContains(response, error)
+                self.assertTrue(User.objects.get(username="smoke_owner").check_password("password"))
+
+    def test_profile_password_change_keeps_user_logged_in(self) -> None:
+        self._login("smoke_owner")
+        new_password = "Boats-and-dragons-42!"
+        response = self.client.post("/profile/", {
+            "passwd-old_password": "password",
+            "passwd-password": new_password,
+            "passwd-again": new_password,
+        })
+        self.assertRedirects(response, "/profile/")
+        user = User.objects.get(username="smoke_owner")
+        self.assertTrue(user.check_password(new_password))
+        self.assertFalse(user.check_password("password"))
+        self.assertEqual(int(self.client.session["_auth_user_id"]), user.pk)
+
+    def test_profile_update_without_password_change(self) -> None:
+        self._login("smoke_owner")
+        response = self.client.post("/profile/", {"profile-email_replies": "on"})
+        self.assertRedirects(response, "/profile/")
+        self.assertTrue(User.objects.get(username="smoke_owner").check_password("password"))
+
     def test_profile_redirects_when_anonymous(self) -> None:
         """Anonymous users are redirected from profile page."""
         self._assert_status("/profile/", expected=302)

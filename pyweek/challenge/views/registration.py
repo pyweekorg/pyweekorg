@@ -139,6 +139,9 @@ class PasswordForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        if self.errors:
+            # Field validation may have removed an invalid password.
+            return cleaned_data
         if not any(cleaned_data.values()):
             return {}
         if not cleaned_data['old_password']:
