@@ -45,4 +45,4 @@ jobs:
           POSTGRES_PASSWORD: pyweek
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
-        run: python -m django test pyweek.challenge.test_smoke -v 2
+        run: python -m django test pyweek.challenge.test_smoke pyweek.mail.tests -v 2

@@ -35,17 +35,24 @@ article {
     </head>
     <body>
         <nav>
+            {% if object.status == 3 %}
+            <a href="{% url 'sent-emails' %}">Back to sent e-mails</a>
+            {% else %}
             <a href="{% url 'draft-emails' %}">Back to e-mails</a>
-            <a href="{% url 'edit-email' object.pk %}">Edit</a>
+            {% endif %}
+            {% if object.status == 1 %}<a href="{% url 'edit-email' object.pk %}">Edit</a>{% endif %}
             {% block nav %}{% endblock %}
+            {% if object.status == 1 %}
             <form action="{% url 'send-email' object.pk %}" method="post">
             {% csrf_token %}
             <button>Send</button>
             </form>
+            {% endif %}
         </nav>
         <article>
-            <p><strong>To:</strong> &lt;{{ object.list_title }} ({{ object.recipients.count }} recipients)&gt;</p>
+            <p><strong>To:</strong> &lt;{{ object.list_title }} {% if object.status == 1 %}({{ object.recipients.count }} recipients){% endif %}&gt;</p>
 
+            {% if object.status == 3 %}<p><strong>Sent:</strong> {{ object.sent|default_if_none:"Unknown" }}</p>{% endif %}
             <h1>{{ subject }}</h1>
 
             {% block content %}

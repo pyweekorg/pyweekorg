@@ -26,7 +26,20 @@ class DraftEmailList(PermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         drafts = super().get_queryset()
-        return drafts.filter(status=DraftEmail.STATUS_DRAFT)
+        return drafts.filter(status=DraftEmail.STATUS_DRAFT).order_by('-edited', '-pk')
+
+
+class SentEmailList(PermissionRequiredMixin, ListView):
+    permission_required = 'mail.add_draftemail'
+    model = DraftEmail
+    paginate_by = 30
+    template_name = 'mail/draftemail_list.html'
+    extra_context = {'show_sent': True}
+
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            status=DraftEmail.STATUS_SENT,
+        ).order_by('-sent', '-pk')
 
 
 def mailing_list_choices() -> list[tuple[str, str]]:
@@ -61,6 +74,9 @@ class EditEmail(PermissionRequiredMixin, UpdateView):
     permission_required = 'mail.add_draftemail'
     model = DraftEmail
     form_class = EditEmailForm
+
+    def get_queryset(self):
+        return super().get_queryset().filter(status=DraftEmail.STATUS_DRAFT)
 
 
 class PreviewEmail(PermissionRequiredMixin, DetailView):

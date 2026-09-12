@@ -2,12 +2,13 @@ from django.conf.urls import url
 
 from .views import (
     ComposeEmail, EditEmail, DraftEmailList, PreviewEmail, PreviewEmailText,
-    send, unsubscribe
+    SentEmailList, send, unsubscribe
 )
 
 
 urlpatterns = [
     url('^$', DraftEmailList.as_view(), name='draft-emails'),
+    url('^sent/$', SentEmailList.as_view(), name='sent-emails'),
     url('^unsubscribe$', unsubscribe, name='unsubscribe'),
     url('^compose$', ComposeEmail.as_view(), name='compose-email'),
     url(r'^(?P<pk>\d+)/$', PreviewEmail.as_view(), name='preview-email'),
