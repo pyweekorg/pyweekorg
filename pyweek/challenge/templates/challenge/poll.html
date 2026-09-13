@@ -2,6 +2,14 @@
 
 {% block title %}PyWeek{{ challenge.number}} - {{ poll.title }}{% endblock %}
 
+{% block links %}
+{{ block.super }}
+{% if poll.type == poll.STAR_VOTE %}
+<link rel="stylesheet" href="{{ STATIC_URL }}star-rating.css">
+<script src="{{ STATIC_URL }}js/star-rating.js" defer></script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <h1>PyWeek{{ challenge.number}} - {{ poll.title }}</h1>
 

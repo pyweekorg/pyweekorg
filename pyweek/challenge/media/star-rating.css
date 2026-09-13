@@ -1,0 +1,79 @@
+.star-ballot { max-width: 640px; margin: 24px 0; }
+.star-choice { margin-bottom: 12px; }
+.star-choice > label { display: block; }
+.star-choice > input { width: 5em; }
+.star-rating {
+    min-width: 0;
+    margin: 0;
+    padding: 12px 16px 14px;
+    border: 1px solid #cbd5df;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+.star-rating legend {
+    width: auto;
+    margin: 0;
+    padding: 0 6px;
+    border: 0;
+    color: #263b50;
+    font-size: 16px;
+    font-weight: 600;
+}
+.star-rating__controls { display: inline-flex; vertical-align: middle; }
+.star-rating__option {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+}
+.star-rating__option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+.star-rating__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid transparent;
+    border-radius: 7px;
+    color: #64748b;
+    font-size: 17px;
+    font-weight: 600;
+}
+.star-rating__icon svg {
+    width: 30px;
+    height: 30px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linejoin: round;
+}
+.star-rating__option.is-filled svg { fill: #edac2c; stroke: #93600b; }
+.star-rating__option input:checked + .star-rating__icon {
+    background: #e7edf4;
+    border-color: #64748b;
+}
+.star-rating__option input:focus-visible + .star-rating__icon {
+    outline: 3px solid #176bb5;
+    outline-offset: 2px;
+}
+.star-rating__option input:disabled + .star-rating__icon { opacity: .5; cursor: default; }
+.star-rating__status {
+    display: inline-block;
+    margin-left: 16px;
+    color: #475569;
+    font-size: 14px;
+    vertical-align: middle;
+}
+@media (max-width: 480px) {
+    .star-rating { padding: 10px 8px; }
+    .star-rating__status { display: block; margin: 6px 0 0 8px; }
+}
+@media (forced-colors: active) {
+    .star-rating__option.is-filled svg { fill: Highlight; stroke: CanvasText; }
+    .star-rating__option input:checked + .star-rating__icon { border-color: Highlight; }
+    .star-rating__option input:focus-visible + .star-rating__icon { outline-color: Highlight; }
+}

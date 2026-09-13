@@ -110,15 +110,27 @@ def render_fields(poll, request):
         l.append(f'<div class="form-error">{message}</div>')
     if votes and poll.type in (Poll.BEST_TEN, Poll.SELECT_MANY):
         l.append(f'<p>You have selected {len(votes)} choices.</p>')
-    l.append('<form method="POST" action="."><table>')
+    star = poll.type == Poll.STAR_VOTE
+    l.append('<form method="POST" action="." class="star-ballot">' if star
+             else '<form method="POST" action="."><table>')
     choices = list(poll.option_set.all())
     if poll.is_ongoing:
         choices.sort(key=lambda o: o.text)
     for choice in choices:
-        l.append('<tr><td>%s</td><td>%s</td></tr>'%(
-            choice_field(poll, choice.id, votes), html.escape(choice.text)))
-    l.append('<tr><td>&nbsp;</td><td><input type="submit"></td></tr>')
-    l.append('</table></form>')
+        if star:
+            l.append(
+                f'<div class="star-choice"><label for="vote-{choice.id}">'
+                f'{html.escape(choice.text)}</label> '
+                f'{choice_field(poll, choice.id, votes)}</div>'
+            )
+        else:
+            l.append('<tr><td>%s</td><td>%s</td></tr>'%(
+                choice_field(poll, choice.id, votes), html.escape(choice.text)))
+    if star:
+        l.append('<button class="btn btn-primary" type="submit">Save ratings</button></form>')
+    else:
+        l.append('<tr><td>&nbsp;</td><td><input type="submit"></td></tr>')
+        l.append('</table></form>')
     return '\n'.join(l)
 
 
@@ -130,7 +142,12 @@ def choice_field(poll, choice, votes):
     elif poll.type == Poll.POLL:
         checked = choice in votes and ' checked' or ''
         return f'<input name="vote" type="radio" value="{choice}"{checked}>'
-    elif poll.type in (Poll.INSTANT_RUNOFF, Poll.STAR_VOTE):
+    elif poll.type == Poll.STAR_VOTE:
+        value = html.escape(str(votes.get(choice, '')), quote=True)
+        return (f'<input id="vote-{int(choice)}" name="vote-{int(choice)}" '
+                f'type="number" min="0" max="5" step="1" required '
+                f'data-star-rating value="{value}">')
+    elif poll.type == Poll.INSTANT_RUNOFF:
         value = votes.get(choice, '')
         return f'<input name="vote-{int(choice)}" size="2" value="{value}">'
     else:
