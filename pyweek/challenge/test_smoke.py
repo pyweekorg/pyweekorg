@@ -9,9 +9,65 @@ from PIL import Image
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import connection
-from django.test import TestCase, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 
-from pyweek.challenge.models import Award, DiaryEntry, EntryAward, File
+from pyweek.challenge.models import Award, Challenge, DiaryEntry, EntryAward, File, Option, Poll, Response
+from pyweek.challenge.views.poll import handle_votes, render_fields
+
+
+class ThemeVoteValidationTests(TestCase):
+    fixtures = ["challenge_smoke.json"]
+
+    def setUp(self):
+        self.user = User.objects.get(username="smoke_owner")
+        self.poll = Poll.objects.create(
+            challenge=Challenge.objects.first(), title="Theme vote",
+            description="", is_open=True, is_hidden=False, is_ongoing=False,
+            type=Poll.STAR_VOTE,
+        )
+        self.options = [
+            Option.objects.create(poll=self.poll, text=text)
+            for text in ("First theme", "Second theme")
+        ]
+        self.factory = RequestFactory()
+
+    def test_missing_fields_are_rejected_without_reusing_previous_value(self):
+        for poll_type, value in ((Poll.STAR_VOTE, 5), (Poll.INSTANT_RUNOFF, 1)):
+            self.poll.type = poll_type
+            for missing in self.options:
+                with self.subTest(poll_type=poll_type, missing=missing.id):
+                    data = {
+                        f"vote-{option.id}": str(value)
+                        for option in self.options if option != missing
+                    }
+                    votes, errors = handle_votes(
+                        self.poll, {}, self.factory.post("/", data)
+                    )
+                    self.assertTrue(errors)
+                    self.assertNotIn(missing.id, votes)
+
+    def test_incomplete_submission_preserves_existing_votes(self):
+        for option in self.options:
+            Response.objects.create(
+                poll=self.poll, option=option, user=self.user, value=3
+            )
+        request = self.factory.post("/", {f"vote-{self.options[1].id}": "5"})
+        request.user = self.user
+        output = render_fields(self.poll, request)
+        self.assertIn("Must place a score against all choices", output)
+        self.assertEqual(
+            list(self.poll.response_set.order_by("option_id").values_list("value", flat=True)),
+            [3, 3],
+        )
+
+    def test_complete_star_ballot_accepts_zero_and_five(self):
+        expected = {self.options[0].id: 0, self.options[1].id: 5}
+        request = self.factory.post("/", {
+            f"vote-{option_id}": str(value) for option_id, value in expected.items()
+        })
+        votes, errors = handle_votes(self.poll, {}, request)
+        self.assertEqual(errors, [])
+        self.assertEqual(votes, expected)
 
 
 class ChallengeSmokeTests(TestCase):
