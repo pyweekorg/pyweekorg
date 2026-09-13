@@ -347,17 +347,18 @@ playwright-cli kill-all
 
 ## Installation
 
-If global `playwright-cli` command is not available, try a local version via `npx playwright cli`:
+In this repository, install the locked development dependencies and download the browser through the Akamai mirror:
 
 ```bash
-npx --no-install playwright --version
+npm ci
+PLAYWRIGHT_DOWNLOAD_HOST=https://playwright-akamai.azureedge.net \
+PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT=120000 \
+npx playwright-cli install
 ```
 
-When local version is available, use `npx playwright cli` in all commands. Otherwise, install `playwright-cli` as a global command:
+Use `npx playwright-cli` for the commands in this skill. The download timeout is 120 seconds. The Akamai mirror successfully served Chromium and FFmpeg here; the default CDN failed. Let the installer select the build matching the locked Playwright version rather than hard-coding a ZIP URL.
 
-```bash
-npm install -g @playwright/cli@latest
-```
+Omit `--skills=agents` during normal setup: the skill is already committed, and that flag overwrites these repository-specific instructions. When deliberately refreshing the upstream skill, preserve this installation section.
 
 ## Example: Form submission
 
