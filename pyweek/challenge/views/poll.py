@@ -160,6 +160,7 @@ def handle_votes(poll, current, request):
             key = f'vote-{option.id}'
             if key not in request.POST:
                 errors.append("Must place a number against all choices")
+                continue
             try:
                 v = int(request.POST[key])
             except ValueError:
@@ -181,6 +182,7 @@ def handle_votes(poll, current, request):
                 v = int(request.POST[f'vote-{option.id}'])
             except KeyError:
                 errors.append("Must place a score against all choices")
+                continue
             except ValueError:
                 errors.append("Scores must be numbers")
                 continue
@@ -214,4 +216,3 @@ def render_tally(poll, tally):
     l.append('</table>')
     #l.append('<!-- %d respondents -->'%len(self.votes))
     return '\n'.join(l)
-
