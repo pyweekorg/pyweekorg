@@ -8,7 +8,7 @@ import datetime
 from collections import OrderedDict
 
 from django.conf import settings
-from django.db.models import Q, F, Count
+from django.db.models import Count
 from pyweek.challenge.models import Challenge
 from pyweek.users.models import EmailAddress
 
@@ -89,6 +89,19 @@ def latest_challenge_users(challenge=None):
         user__entry__challenge=challenge,
         user__settings__email_contest_updates=True,
     ).distinct())
+
+
+@address_list(
+    'Latest challenge non-entrants (verified)',
+    reason="because you are opted in to PyWeek announcements and have not "
+           "entered the latest PyWeek challenge."
+)
+def latest_challenge_non_entrants(challenge=None):
+    """Verified announcement subscribers who have not entered this challenge."""
+    challenge = challenge or Challenge.objects.latest()
+    if challenge is None:
+        return EmailAddress.objects.none()
+    return announce().exclude(user__entry__challenge=challenge)
 
 
 @address_list(
@@ -175,14 +188,5 @@ def admins():
 
 
 def filter_verified(addresses):
-    """Given a QuerySet of addresses, return the ones we can e-mail.
-
-    We currently e-mail verified e-mail addresses or unverified e-mail
-    addresses that are set as the primary e-mail address. At a later date
-    (when users have had a chance to verify their e-mail addresses) we can
-    change this to only e-mail verified addresses.
-
-    """
-    return addresses.filter(
-        Q(verified=True) | Q(address=F('user__email'))
-    )
+    """Only e-mail addresses whose ownership has been verified."""
+    return addresses.filter(verified=True)
