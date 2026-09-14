@@ -164,6 +164,29 @@ class ChallengeSmokeTests(TestCase):
         """Entry detail page renders."""
         self._assert_status("/e/smoke-entry/")
 
+    def test_entry_pages_with_deleted_owner(self) -> None:
+        """Entries survive owner deletion and must still render."""
+        from pyweek.challenge.models import Entry
+
+        entry = Entry.objects.get(pk="smoke-entry")
+        User.objects.get(username="smoke_owner").delete()
+        entry.refresh_from_db()
+        self.assertIsNone(entry.user)
+        for remaining_members in ([], [User.objects.get(username="smoke_judge")]):
+            entry.users.set(remaining_members)
+            for url in ("/e/smoke-entry/", "/99/entries/"):
+                with self.subTest(url=url, members=len(remaining_members)):
+                    response = self.client.get(url)
+                    self.assertContains(response, "Deleted user")
+                    self.assertNotContains(response, 'href="/u//"')
+
+    def test_entry_pages_keep_existing_owner_links(self) -> None:
+        for url in ("/e/smoke-entry/", "/99/entries/"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, 'href="/u/smoke_owner/"')
+                self.assertNotContains(response, "Deleted user")
+
     def test_entry_ratings_page_renders(self) -> None:
         """Entry ratings page renders."""
         self._assert_status("/e/smoke-entry/ratings/", expected=302)
