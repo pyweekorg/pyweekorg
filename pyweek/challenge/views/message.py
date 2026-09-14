@@ -95,7 +95,7 @@ def extract_entries(entries):
 
 def list_messages(request):
     try:
-        start = int(request.GET.get('start', 0))
+        start = max(0, int(request.GET.get('start', 0)))
     except ValueError:
         # XXX haxx0rs trying to inject SQL into my codez
         start = 0
@@ -135,7 +135,7 @@ def list_messages(request):
     return render(request, 'messages.html', {
         'diary_entries': diary_entries,
         'pages': pages,
-        'prev': start and start-MESSAGES_PER_PAGE or None,
+        'prev': max(0, start - MESSAGES_PER_PAGE) if start else None,
         'last': (m-1) * MESSAGES_PER_PAGE,
         'more_start': more_start,
         'more_end': more_end,
