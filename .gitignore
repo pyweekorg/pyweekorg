@@ -11,4 +11,7 @@ development
 dumps
 /media
 /venv*/
+node_modules/
 
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
