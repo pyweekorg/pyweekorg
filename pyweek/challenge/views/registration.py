@@ -79,8 +79,11 @@ class RegistrationForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        passwd1 = cleaned_data['password']
-        passwd2 = cleaned_data['again']
+        passwd1 = cleaned_data.get('password')
+        passwd2 = cleaned_data.get('again')
+        if passwd1 is None or passwd2 is None:
+            # Required-field errors have already been added by field validation.
+            return cleaned_data
         if passwd1 != passwd2:
             raise forms.ValidationError(
                 "The passwords you entered do not match."
