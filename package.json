@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@playwright/cli": "^0.1.19"
+  }
+}
