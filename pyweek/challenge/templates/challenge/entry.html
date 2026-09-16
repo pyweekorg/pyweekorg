@@ -19,8 +19,10 @@
         entry by
     {% if entry.is_team %}<strong>{{entry.title}}</strong>
         ({% for user in entry.users.all %}<a href="{% url 'user_display' user.username %}">{{ user.username }}</a>{% if not forloop.last %}, {% endif %}{% endfor %})
-    {% else %}
+    {% elif entry.user %}
         <a href="{% url 'user_display' entry.user.username %}">{{entry.user.username}}</a>
+    {% else %}
+        Deleted user
     {% endif %}
 </p>
 
