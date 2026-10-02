@@ -70,7 +70,7 @@ sqlparse==0.4.4
     # via django
 starvote==2.0.6
     # via -r requirements.in
-urllib3==1.26.6
+urllib3==1.26.18
     # via
     #   botocore
     #   requests
